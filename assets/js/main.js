@@ -7,6 +7,15 @@
 
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+  /* ---------- Icons: inline SVG so they look identical on every device (text arrows can turn into emoji on phones) ---------- */
+  const ICONS = {
+    ne: "M2.5 11.5l9-9M4 2.5h7.5V10",
+    left: "M12 7H2M6 3L2 7l4 4",
+    right: "M2 7h10M8 3l4 4-4 4",
+    close: "M3 3l8 8M11 3l-8 8",
+  };
+  const icon = (name) => `<svg class="ico" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="${ICONS[name]}"/></svg>`;
+
   /* ---------- Split a title into masked characters ---------- */
   function splitTitle(el, lines) {
     el.setAttribute("aria-label", lines.join(" "));
@@ -51,8 +60,8 @@
     <button class="plus" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><span></span><span></span></button>
     <nav class="menu" id="menu" aria-label="Main">
       <ol>
-        <li><a href="index.html"><span class="code">00 — Home</span><span class="inner">Home</span><span class="arrow">↗</span></a></li>
-        ${S.menu.map((m, i) => `<li><a href="${esc(m.href)}"><span class="code">${String(i + 1).padStart(2, "0")} — ${esc(m.code)}</span><span class="inner">${esc(m.label)}</span><span class="arrow">↗</span></a></li>`).join("")}
+        <li><a href="index.html"><span class="code">00 — Home</span><span class="inner">Home</span><span class="arrow">${icon("ne")}</span></a></li>
+        ${S.menu.map((m, i) => `<li><a href="${esc(m.href)}"><span class="code">${String(i + 1).padStart(2, "0")} — ${esc(m.code)}</span><span class="inner">${esc(m.label)}</span><span class="arrow">${icon("ne")}</span></a></li>`).join("")}
       </ol>
       <div class="menu-foot small"><span>${esc(S.name.join(" "))}</span><span>${esc(S.role)}</span><span>${esc(S.location)}</span></div>
     </nav>`);
@@ -129,5 +138,5 @@
     });
   }
 
-  window.UI = { esc, splitTitle, fitTitle, reveal, initReveals, onResize, reduced, hasGsap, get lenis() { return lenis; } };
+  window.UI = { esc, icon, splitTitle, fitTitle, reveal, initReveals, onResize, reduced, hasGsap, get lenis() { return lenis; } };
 })();

@@ -55,7 +55,7 @@
         `<figure class="cover" data-reveal><img src="${esc(p.cover)}" alt="${esc(p.title)}" class="parallax"></figure>
          <article class="article">
            <div class="meta small" data-reveal><span>${esc(p.code)}</span><span class="muted">${esc(p.type)}</span><span class="muted">${esc(p.year)}</span>
-             ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">Visit project ↗</a>` : ""}</div>
+             ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">Visit project ${U.icon("ne")}</a>` : ""}</div>
            <div class="prose" data-reveal>${prose(p.body)}</div>
          </article>
          ${p.gallery?.length ? `<div class="gallery">${p.gallery.map((g) => `<img src="${esc(g)}" alt="" loading="lazy" data-reveal>`).join("")}</div>` : ""}
@@ -71,9 +71,9 @@
             <figcaption class="small"><span>${esc(p.code)}</span><span class="muted">${esc(p.place)}</span></figcaption>
           </figure>`).join("")}</div>
         <div class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
-          <div class="lb-top small"><span class="lb-code"></span><button type="button" class="lb-close small">Close ✕</button></div>
+          <div class="lb-top small"><span class="lb-code"></span><button type="button" class="lb-close small">Close ${U.icon("close")}</button></div>
           <div class="lb-stage"><img alt=""></div>
-          <div class="lb-bot small"><button type="button" class="lb-prev small">← Prev</button><span class="lb-cap"></span><button type="button" class="lb-next small">Next →</button></div>
+          <div class="lb-bot small"><button type="button" class="lb-prev small">${U.icon("left")} Prev</button><span class="lb-cap"></span><button type="button" class="lb-next small">Next ${U.icon("right")}</button></div>
         </div>`;
       break;
     }
@@ -96,7 +96,7 @@
       titleLines = toLines(w.title);
       html = head(titleLines, w.excerpt, w.code) +
         `<article class="article">
-           <div class="meta small" data-reveal><span>${fmtDate(w.date)}</span><span class="muted">${esc(w.code)}</span><a href="writing.html">← All writing</a></div>
+           <div class="meta small" data-reveal><span>${fmtDate(w.date)}</span><span class="muted">${esc(w.code)}</span><a href="writing.html">${U.icon("left")} All writing</a></div>
            <div class="prose" data-reveal>${prose(w.body)}</div>
          </article>
          ${S.writing.length > 1 ? `<a class="next-link" href="article.html?slug=${encodeURIComponent(next.slug)}"><span class="small">Read next — ${esc(next.code)}</span><span class="t">${esc(next.title)}</span></a>` : ""}`;
@@ -116,7 +116,7 @@
          <section class="contact" id="contact">
            <span class="small">${esc(menuItem("about.html#contact").code)} — Contact</span><br>
            <a class="mail" href="mailto:${esc(S.email)}" data-reveal>${esc(S.email)}</a>
-           <nav class="small" data-reveal>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</nav>
+           <nav class="small" data-reveal>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ${U.icon("ne")}</a>`).join("")}</nav>
          </section>`;
       break;
     }
