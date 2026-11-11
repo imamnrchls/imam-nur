@@ -51,7 +51,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* Home starts over the photo (pure white); the scroll scene fades it to ink when the paper appears. */
 .home .plus { color: #fff; }
 .menu-open .plus { color: var(--ink) !important; } /* the menu is always paper */
-.plus span { position: absolute; width: 30px; height: 1.5px; background: currentColor; transition: transform .6s var(--ease); }
+.plus span { position: absolute; width: 30px; height: 1px; background: currentColor; /* same 1px weight as the grid lines */ transition: transform .6s var(--ease); }
 .plus span:last-child { transform: rotate(90deg); }
 .plus:hover span:first-child { transform: rotate(90deg); }
 .plus:hover span:last-child { transform: rotate(180deg); }
