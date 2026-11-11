@@ -88,6 +88,67 @@
   plus.addEventListener("click", () => toggleMenu());
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menuOpen) toggleMenu(false); });
 
+  /* ---------- Footer (shared by every page) ---------- */
+  const SOCIAL_ICONS = {
+    instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8v.01"/>',
+    linkedin: '<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M8 10.5V16M8 8v.01M11.5 16v-5.5M11.5 13.2c0-1.6 1-2.8 2.4-2.8s2.1 1 2.1 2.6V16"/>',
+  };
+  const socials = S.links.map((l) => {
+    const ic = SOCIAL_ICONS[l.label.toLowerCase()];
+    return `<a class="foot-icon" href="${esc(l.url)}" target="_blank" rel="noopener" aria-label="${esc(l.label)}" title="${esc(l.label)}">${ic ? `<svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>` : esc(l.label[0])}</a>`;
+  }).join("");
+  const F = S.footer || {};
+  const footer = document.createElement("footer");
+  footer.className = "site-foot";
+  footer.innerHTML = `
+    <svg class="foot-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="ink-duotone" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values=".33 .33 .33 0 0  .33 .33 .33 0 0  .33 .33 .33 0 0  0 0 0 1 0"/>
+        <feComponentTransfer>
+          <feFuncR type="linear" slope="1.35" intercept="-.12"/><feFuncG type="linear" slope="1.35" intercept="-.12"/><feFuncB type="linear" slope="1.35" intercept="-.12"/>
+        </feComponentTransfer>
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues=".12 .93"/><feFuncG type="table" tableValues=".24 .89"/><feFuncB type="table" tableValues=".47 .78"/>
+        </feComponentTransfer>
+      </filter>
+    </svg>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="foot-name" href="index.html"><span class="foot-mark" aria-hidden="true">IN</span>${esc(S.name.join(" ").replace(/\b(\w)(\w*)/g, (m, a, b) => a + b.toLowerCase()))}</a>
+        <p class="foot-tag">${esc(F.tagline || S.role)}</p>
+        <div class="foot-social">${socials}</div>
+      </div>
+      <nav class="foot-col" aria-label="Explore">
+        <h2>Explore</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          ${S.menu.filter((m) => !m.href.includes("#")).map((m) => `<li><a href="${esc(m.href)}">${esc(m.label)}</a></li>`).join("")}
+        </ul>
+      </nav>
+      <nav class="foot-col" aria-label="Elsewhere">
+        <h2>Elsewhere</h2>
+        <ul>${S.links.map((l) => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a></li>`).join("")}</ul>
+      </nav>
+      <div class="foot-col">
+        <h2>Contact</h2>
+        <ul>
+          <li><a href="mailto:${esc(S.email)}">${esc(S.email)}</a></li>
+          <li><span>${esc(S.location)}</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© ${new Date().getFullYear()} ${esc(S.name.join(" ").replace(/\b(\w)(\w*)/g, (m, a, b) => a + b.toLowerCase()))}.</span>
+      <span>Photos via <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span>
+    </div>
+    ${F.art ? `<div class="foot-art" aria-hidden="true"><img src="${esc(F.art)}" alt="" loading="lazy" decoding="async"></div>` : ""}`;
+  (document.querySelector("main") || document.body).insertAdjacentElement("afterend", footer);
+  if ("IntersectionObserver" in window) {
+    // The fixed label at the top of inner pages would sit on top of the footer text; hide it while the footer is in view.
+    new IntersectionObserver(([e]) => document.body.classList.toggle("foot-in-view", e.isIntersecting && e.intersectionRatio > 0.15), { threshold: [0, 0.15, 0.5] }).observe(footer);
+  }
+  footer.querySelector(".foot-art img")?.addEventListener("load", () => window.ScrollTrigger?.refresh(), { once: true });
+
   /* ---------- Page transitions ---------- */
   const wipe = document.querySelector(".wipe");
   function reveal() {

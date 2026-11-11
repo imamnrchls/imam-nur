@@ -40,7 +40,6 @@
     document.querySelector(".page-code").textContent = code;
     return `<header class="page-head"><h1 class="title" id="pageTitle"></h1>${lede ? `<div class="lede"><p class="small muted">${code ? esc(code) : ""}</p><p data-reveal>${esc(lede)}</p></div>` : ""}</header>`;
   };
-  const foot = `<footer class="page-foot small"><span>© ${new Date().getFullYear()} ${esc(S.name.join(" "))}</span><nav>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join(" &nbsp; ")}</nav></footer>`;
   const menuItem = (key) => S.menu.find((m) => m.href.startsWith(key)) || { code: "" };
 
   let titleLines = [], html = "";
@@ -151,7 +150,7 @@
     default: notFound("page");
   }
 
-  main.innerHTML = html + foot;
+  main.innerHTML = html;
 
   /* ---------- Title: split, fit, animate ---------- */
   const titleEl = document.getElementById("pageTitle");

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300..500&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300..500&family=Instrument+Serif&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -29,14 +29,6 @@
         <a class="r credit" target="_blank" rel="noopener"></a>
       </div>
     </section>
-
-    <footer class="home-foot">
-      <p class="big" data-reveal>Open for commissions, collaborations and good conversations — <a href="about.html#contact">say hello</a>.</p>
-      <div class="foot-row small">
-        <span>© <span id="y"></span> Imam Nurcholis</span>
-        <nav id="footLinks"></nav>
-      </div>
-    </footer>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -44,10 +36,6 @@
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="assets/js/content.js"></script>
   <script src="assets/js/main.js"></script>
-  <script>
-    document.getElementById("y").textContent = new Date().getFullYear();
-    document.getElementById("footLinks").innerHTML = SITE.links.map(l => `<a href="${UI.esc(l.url)}" target="_blank" rel="noopener">${UI.esc(l.label)}</a>`).join("");
-  </script>
   <script src="assets/js/home.js"></script>
 </body>
 </html>
