@@ -75,14 +75,14 @@
     plus.setAttribute("aria-expanded", open);
     plus.setAttribute("aria-label", open ? "Close menu" : "Open menu");
     if (open) lenis?.stop(); else lenis?.start();
-    if (!hasGsap) { menu.style.visibility = open ? "visible" : "hidden"; menu.style.clipPath = open ? "none" : ""; return; }
+    if (!hasGsap) { menu.style.display = open ? "flex" : "none"; menu.style.clipPath = open ? "none" : ""; return; }
     gsap.killTweensOf([menu, ".menu .inner"]);
     if (open) {
-      gsap.set(menu, { visibility: "visible" });
+      menu.style.display = "flex";
       gsap.to(menu, { clipPath: "inset(0 0 0% 0)", duration: reduced ? 0 : 0.9, ease: "expo.inOut" });
       gsap.fromTo(".menu .inner", { yPercent: 110 }, { yPercent: 0, duration: reduced ? 0 : 1, ease: "expo.out", stagger: 0.05, delay: reduced ? 0 : 0.35 });
     } else {
-      gsap.to(menu, { clipPath: "inset(0 0 100% 0)", duration: reduced ? 0 : 0.8, ease: "expo.inOut", onComplete: () => gsap.set(menu, { visibility: "hidden" }) });
+      gsap.to(menu, { clipPath: "inset(0 0 100% 0)", duration: reduced ? 0 : 0.8, ease: "expo.inOut", onComplete: () => { menu.style.display = "none"; } });
     }
   }
   plus.addEventListener("click", () => toggleMenu());
@@ -179,16 +179,24 @@
   })();
 
   /* ---------- Page transitions ---------- */
-  const wipe = document.querySelector(".wipe");
+  // The wipe is only in the page while a transition plays. A fixed full-screen black layer, even an invisible one,
+  // makes iOS Safari tint its top and bottom bars black.
+  const dropWipes = () => document.querySelectorAll(".wipe").forEach((w) => w.remove());
   function reveal() {
-    if (!hasGsap || reduced) { wipe.classList.remove("is-cover"); wipe.style.transform = "scaleY(0)"; return Promise.resolve(); }
+    const wipe = document.querySelector(".wipe");
+    if (!wipe) return Promise.resolve();
+    if (!hasGsap || reduced) { dropWipes(); return Promise.resolve(); }
     return new Promise((res) => {
-      gsap.fromTo(wipe, { scaleY: 1, transformOrigin: "top" }, { scaleY: 0, duration: 0.9, ease: "expo.inOut", onComplete: () => { wipe.classList.remove("is-cover"); res(); } });
+      gsap.fromTo(wipe, { scaleY: 1, transformOrigin: "top" }, { scaleY: 0, duration: 0.9, ease: "expo.inOut", onComplete: () => { dropWipes(); res(); } });
     });
   }
   function leave(href) {
     if (!hasGsap || reduced) { location.href = href; return; }
-    wipe.classList.add("is-active");
+    dropWipes();
+    const wipe = document.createElement("div");
+    wipe.className = "wipe is-active";
+    wipe.setAttribute("aria-hidden", "true");
+    document.body.appendChild(wipe);
     gsap.fromTo(wipe, { scaleY: 0, transformOrigin: "bottom" }, { scaleY: 1, duration: 0.7, ease: "expo.inOut", onComplete: () => (location.href = href) });
   }
   document.addEventListener("click", (e) => {
@@ -206,7 +214,7 @@
     leave(url.href);
   });
   // Coming back with the browser's back button (bfcache): uncover again
-  window.addEventListener("pageshow", (e) => { if (e.persisted) { wipe.classList.remove("is-active", "is-cover"); if (hasGsap) gsap.set(wipe, { scaleY: 0 }); } });
+  window.addEventListener("pageshow", (e) => { if (e.persisted) dropWipes(); });
 
   /* ---------- Scroll reveals ---------- */
   function initReveals(root = document) {
