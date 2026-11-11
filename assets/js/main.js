@@ -162,7 +162,7 @@
   /* ---------- Phones: keep a gap in the centre grid line around the plus while scrolling ---------- */
   (function () {
     const mq = matchMedia("(max-width: 700px)");
-    const lines = () => document.querySelectorAll(".lines .v1, .foot-lines .v1");
+    const lines = () => document.querySelectorAll(".lines .v1, .home .foot-lines .v1");
     let queued = false;
     const update = () => {
       queued = false;

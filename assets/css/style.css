@@ -171,7 +171,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .lines .v1 { left: 50%; } .lines .v2 { display: none; }
   /* On phones the centre line passes through the plus. --gy (set by main.js while scrolling) is where the plus sits
      along the line, so the gap always stays around the plus. */
-  .lines .v1, .foot-lines .v1 {
+  .lines .v1, .home .foot-lines .v1 {
     --gy: 44px;
     -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(var(--gy) - 32px), transparent calc(var(--gy) - 32px), transparent calc(var(--gy) + 32px), #000 calc(var(--gy) + 32px));
             mask-image: linear-gradient(to bottom, #000 0, #000 calc(var(--gy) - 32px), transparent calc(var(--gy) - 32px), transparent calc(var(--gy) + 32px), #000 calc(var(--gy) + 32px));
@@ -348,11 +348,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .foot-lines { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .foot-lines i {
   position: absolute; top: 0; bottom: 0; width: 1px;
-  background: linear-gradient(to bottom, rgba(11, 11, 11, .35) 0, rgba(11, 11, 11, .22) 22%, rgba(243, 243, 238, .22) 48%, rgba(243, 243, 238, .4) 100%);
+  /* starts at the same strength as the page's own lines (inner pages: faint; homepage tiles: stronger) */
+  background: linear-gradient(to bottom, var(--fl-top, rgba(11, 11, 11, .2)) 0, var(--fl-top, rgba(11, 11, 11, .2)) 14%, rgba(243, 243, 238, .22) 48%, rgba(243, 243, 238, .4) 100%);
 }
+.home .foot-lines i { --fl-top: rgba(11, 11, 11, .55); }
 .foot-lines .v1 { left: 33.333%; }
 .foot-lines .v2 { left: 66.666%; }
-@media (max-width: 700px) { .foot-lines .v1 { left: 50%; } .foot-lines .v2 { display: none; } }
+@media (max-width: 700px) { .home .foot-lines .v1 { left: 50%; } .home .foot-lines .v2 { display: none; } }
 .foot-big { margin: 0; text-shadow: 0 2px 28px rgba(11, 11, 11, .35); font-size: clamp(30px, 4.6vw, 70px); line-height: 1; letter-spacing: -.03em; font-weight: 350; max-width: 22ch; }
 .foot-big a { border-bottom: 1px solid currentColor; }
 .foot-big .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .14em; margin-bottom: -.14em; }
