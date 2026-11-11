@@ -23,7 +23,7 @@ window.SITE = {
   heroCredit: { label: "Photo: Urban Vintage / Unsplash", url: "https://unsplash.com/photos/landscape-photography-of-mountain-hit-by-sun-rays-78A265wPiO4" },
 
   // The second title that appears while scrolling (one entry per line)
-  indexTitle: ["SELECTED", "INDEX"],
+  indexTitle: ["WHAT YOU", "WANT?"],
 
   // The six tiles on the homepage. Each one is a menu entry.
   menu: [
