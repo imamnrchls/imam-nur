@@ -8,8 +8,9 @@
   const tilesEl = document.querySelector(".tiles");
 
   bgImg.src = S.heroImage;
-  document.querySelector(".credit").href = S.heroCredit.url;
-  document.querySelector(".credit").textContent = S.heroCredit.label;
+  const credit = document.querySelector(".credit");
+  if (S.heroCredit && S.heroCredit.label) { credit.href = S.heroCredit.url || "#"; credit.textContent = S.heroCredit.label; }
+  else credit.remove();
   document.querySelector(".meta-role").textContent = S.role;
 
   const nameChars = U.splitTitle(nameEl, S.name);

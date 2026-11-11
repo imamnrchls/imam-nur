@@ -20,9 +20,9 @@ window.SITE = {
     { label: "LinkedIn", url: "https://www.linkedin.com/in/imamnurcholis" },
   ],
 
-  // Homepage background (photo by Urban Vintage on Unsplash)
-  heroImage: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=80",
-  heroCredit: { label: "Photo: Urban Vintage / Unsplash", url: "https://unsplash.com/photos/landscape-photography-of-mountain-hit-by-sun-rays-78A265wPiO4" },
+  // Homepage background. Put a photo credit in heroCredit ({ label, url }) or leave it empty to hide it.
+  heroImage: "images/hero.jpg",
+  heroCredit: null,
 
   // Footer: the line on the homepage, and the picture behind it (put your own in images/)
   footer: {
