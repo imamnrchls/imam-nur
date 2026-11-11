@@ -402,3 +402,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 html.has-custom-cursor body { cursor: none; }
 html.has-custom-cursor a, html.has-custom-cursor button, html.has-custom-cursor label, html.has-custom-cursor .photo, html.has-custom-cursor .tile, html.has-custom-cursor summary { cursor: pointer; }
 html.has-custom-cursor input, html.has-custom-cursor textarea, html.has-custom-cursor select { cursor: auto; }
+
+/* About without a portrait: the text keeps the right two thirds of the grid */
+.about-grid.no-portrait > div { grid-column: 2; }
+@media (max-width: 700px) { .about-grid.no-portrait > div { grid-column: 1; } }

@@ -7,7 +7,7 @@ Built with plain HTML, CSS and JavaScript. Animations use [GSAP](https://gsap.co
 
 | File | What it shows |
 | --- | --- |
-| `index.html` | Hero with your name over the mountain photo. Scrolling pins the screen: the photo closes onto the grid line, the name rolls out, "SELECTED INDEX" rolls in, and six image tiles open. Each tile links to a section. |
+| `index.html` | Hero with your name over the mountain photo. Scrolling pins the screen: the photo closes onto the grid line, the name rolls out, a second title rolls in, and six image tiles open. Each tile links to a section. |
 | `portfolio.html` → `project.html?id=…` | Project list with a cursor-following preview, plus a detail page for each project |
 | `photos.html` | Photo grid with a lightbox (keyboard and swipe) |
 | `writing.html` → `article.html?slug=…` | Writing list, plus a reading page for each piece |
@@ -36,4 +36,4 @@ The site is static, so you can host it anywhere:
 - **GitHub Pages:** go to Settings → Pages → Deploy from branch → `main` / root.
 - **Netlify / Vercel:** import the repo. There is no build command, and the output directory is `/`.
 
-Hero photo by Urban Vintage on [Unsplash](https://unsplash.com/photos/landscape-photography-of-mountain-hit-by-sun-rays-78A265wPiO4). The other images are placeholders from Unsplash.
+The homepage tile images and the hero and footer pictures are set in `assets/js/content.js`. Replace any of them with your own files in `images/`.

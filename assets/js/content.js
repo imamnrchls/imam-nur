@@ -44,7 +44,7 @@ window.SITE = {
   ],
 
   about: {
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=75",
+    // image: "images/portrait.jpg",   // add your own portrait here and it appears on the About page
     paragraphs: [
       "I'm a sharp, analytical person who keeps looking for patterns and solutions. Curiosity pushes me to understand a problem deeply before I try to fix it.",
       "My work is in human capital: people development, performance management and operational processes. It began with Astra's Human Capital Trainee program and continued at PT Serasi Autoraya and PT Mobilitas Digital Indonesia (MODA), a joint venture of Astra and Toyota.",
@@ -59,10 +59,10 @@ window.SITE = {
     ],
   },
 
+  // Add  cover: "images/your-cover.jpg"  to a project to show an image for it (and a hover preview in the list).
   portfolio: [
     {
       id: "driver-management", code: "PF-001-1", title: "Driver Management at MODA", year: "2026", type: "Leadership",
-      cover: "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&w=1400&q=75",
       summary: "Leading the full employee lifecycle for a 350+ person driver workforce across Toyota, Daihatsu and FMCG accounts.",
       body: "Since January 2026 I have led the Driver Management function at MODA, covering talent acquisition, onboarding, training and development, and performance management.\n\n## What I own\n\nEnd-to-end recruitment strategy, turning client SLA requirements into competency profiles and hiring criteria. This delivered 40+ hires within two months at a 2-day average time-to-hire.\n\nCompetency-based training programs built on the ADDIE framework, plus company onboarding for every new hire.\n\nPerformance management frameworks that turn operational data into reports senior stakeholders can act on.",
       gallery: [],
@@ -70,7 +70,6 @@ window.SITE = {
     },
     {
       id: "driver-development", code: "PF-002-4", title: "Driver Recruitment & Development", year: "2024–2025", type: "Talent & training",
-      cover: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1400&q=75",
       summary: "Recruiting and developing drivers for high-value accounts, from first screening to continuous development.",
       body: "As Driver Development Officer (2025) and in the earlier recruitment and development role (2024), I managed the driver lifecycle end to end.\n\n## Talent acquisition\n\nRecruited and onboarded 100+ long-haul drivers within five months using competency-based screening. For the ADM Milkrun logistics scheme I recruited 27 specialized drivers in two months, to Toyota Production System standards.\n\n## Training\n\nFacilitated defensive driving training for 150+ drivers as a certified Master Trainer, and delivered safety and operational training for 100+ drivers across project sites.",
       gallery: [],
@@ -78,7 +77,6 @@ window.SITE = {
     },
     {
       id: "astra-trainee", code: "PF-003-9", title: "Astra Human Capital Trainee", year: "2024", type: "Program",
-      cover: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1400&q=75",
       summary: "An 11-month rotational program across Astra Group: classroom training with hands-on assignments.",
       body: "A highly competitive program combining two months of in-class training (grade A) with two on-the-job assignments.\n\n## In class\n\nEight core HC modules, from organizational development and recruitment to performance management, culture and industrial relations, plus continuous-improvement methods: 8 Steps, DMAIC, DMADV and Design Thinking.\n\n## PT Serasi Autoraya\n\nBuilt a technical competency assessment framework for 5+ critical fleet management positions. Simplified the competency framework from 13 to 7 core competencies while improving operational alignment. Delivered leadership competency training to 50+ supervisors.\n\n## PT Mobilitas Digital Indonesia\n\nStandardized driver lifecycle SOPs from recruitment to termination, designed a self-learning management system, and ran performance analytics for 30+ drivers with recommendations for customer leadership.",
       gallery: [],
@@ -86,7 +84,6 @@ window.SITE = {
     },
     {
       id: "social-commerce-research", code: "PF-004-6", title: "Customer Engagement & Purchase Intent on TikTok", year: "Research", type: "Publication",
-      cover: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1400&q=75",
       summary: "A study of how customer engagement relates to purchase intent in TikTok social commerce among Gen Z in Semarang.",
       body: "Published research, from my Psychology studies at Diponegoro University, on the relationship between customer engagement and product purchase intent in social commerce, focused on Generation Z in Semarang.",
       gallery: [],
@@ -94,17 +91,9 @@ window.SITE = {
     },
   ],
 
-  photos: [
-    { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=75", code: "PH-001-2", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=75", code: "PH-002-7", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1400&q=75", code: "PH-003-1", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1400&q=75", code: "PH-004-5", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=75", code: "PH-005-3", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=75", code: "PH-006-8", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1400&q=75", code: "PH-007-6", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1400&q=75", code: "PH-008-0", caption: "Placeholder caption", place: "Somewhere" },
-    { src: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1400&q=75", code: "PH-009-4", caption: "Placeholder caption", place: "Somewhere" },
-  ],
+  // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Photos page says so.
+  //   { src: "images/my-photo.jpg", code: "PH-001-2", caption: "A short caption", place: "Where it was taken" },
+  photos: [  ],
 
   writing: [
     {

@@ -48,12 +48,13 @@
   switch (page) {
     case "portfolio": {
       titleLines = ["PORTFOLIO"];
-      html = head(titleLines, "Selected projects. Hover a row to preview, click to open.", menuItem("portfolio").code) +
+      const anyCover = S.portfolio.some((p) => p.cover);
+      html = head(titleLines, anyCover ? "Selected projects. Hover a row to preview, click to open." : "Selected projects. Click one to open.", menuItem("portfolio").code) +
         `<ol class="rows">${S.portfolio.map((p) => `
-          <li class="row" data-reveal><a href="project.html?id=${encodeURIComponent(p.id)}" data-cover="${esc(p.cover)}">
+          <li class="row" data-reveal><a href="project.html?id=${encodeURIComponent(p.id)}"${p.cover ? ` data-cover="${esc(p.cover)}"` : ""}>
             <span class="code">${esc(p.code)}</span><span class="t">${esc(p.title)}</span>
             <span class="code x mid">${esc(p.type)}</span><span class="code r">${esc(p.year)}</span>
-            <img class="thumb" src="${esc(p.cover)}" alt="" loading="lazy">
+            ${p.cover ? `<img class="thumb" src="${esc(p.cover)}" alt="" loading="lazy">` : ""}
           </a></li>`).join("")}</ol>`;
       break;
     }
@@ -64,7 +65,7 @@
       document.title = `${p.title} — ${S.name.join(" ")}`;
       titleLines = toLines(p.title);
       html = head(titleLines, p.summary, p.code) +
-        `<figure class="cover" data-reveal><img src="${esc(p.cover)}" alt="${esc(p.title)}" class="parallax"></figure>
+        `${p.cover ? `<figure class="cover" data-reveal><img src="${esc(p.cover)}" alt="${esc(p.title)}" class="parallax"></figure>` : ""}
          <article class="article">
            <div class="meta small" data-reveal><span>${esc(p.code)}</span><span class="muted">${esc(p.type)}</span><span class="muted">${esc(p.year)}</span>
              ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">Visit project ${U.icon("ne")}</a>` : ""}</div>
@@ -76,7 +77,7 @@
     }
     case "photos": {
       titleLines = ["PHOTOS"];
-      html = head(titleLines, "A running archive of photographs. Click any image to view it larger.", menuItem("photos").code) +
+      html = !S.photos.length ? head(titleLines, "No photographs here yet.", menuItem("photos").code) : head(titleLines, "A running archive of photographs. Click any image to view it larger.", menuItem("photos").code) +
         `<div class="photo-grid">${S.photos.map((p, i) => `
           <figure class="photo" data-reveal data-i="${i}" tabindex="0" role="button" aria-label="Open ${esc(p.caption)}">
             <div class="ph"><img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy"></div>
@@ -118,8 +119,8 @@
       titleLines = ["ABOUT"];
       const a = S.about;
       html = head(titleLines, S.role, menuItem("about").code) +
-        `<section class="about-grid">
-           <div class="portrait" data-reveal><img src="${esc(a.image)}" alt="Portrait" class="parallax"></div>
+        `<section class="about-grid${a.image ? "" : " no-portrait"}">
+           ${a.image ? `<div class="portrait" data-reveal><img src="${esc(a.image)}" alt="Portrait" class="parallax"></div>` : ""}
            <div>
              <div class="prose" data-reveal>${a.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
              <ul class="facts" data-reveal>${a.facts.map(([k, v]) => `<li><span class="small muted">${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>
@@ -193,7 +194,7 @@
   }
 
   /* ---------- Photos: lightbox ---------- */
-  if (page === "photos") {
+  if (page === "photos" && S.photos.length) {
     const lb = document.querySelector(".lightbox"), lbImg = lb.querySelector("img");
     let cur = 0, lastFocus = null;
     const show = (i) => {
