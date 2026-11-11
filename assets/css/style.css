@@ -277,6 +277,14 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .prose blockquote p { margin: 0; }
 .prose ul { margin: 0 0 1.2em; padding-left: 1.2em; }
 .prose li { margin-bottom: .4em; }
+.codeblock { position: relative; margin: 0 0 1.4em; }
+.codeblock pre { margin: 0; padding-top: 38px; }
+.codeblock .copy {
+  position: absolute; top: 8px; right: 8px; z-index: 1; padding: 5px 10px;
+  background: var(--paper); border: 1px solid var(--line); color: var(--ink);
+  transition: background-color .25s, color .25s;
+}
+.codeblock .copy:hover, .codeblock .copy.is-done { background: var(--ink); color: var(--paper); }
 .prose pre { margin: 0 0 1.4em; padding: 14px 16px; overflow-x: auto; background: rgba(11, 11, 11, .05); border: 1px solid var(--line); font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; -webkit-overflow-scrolling: touch; }
 .prose pre code { font: inherit; white-space: pre; }
 .prose { overflow-wrap: anywhere; }

@@ -20,7 +20,7 @@
       const b = raw.trim();
       if (!b) return "";
       const code = b.match(/^@@CODE(\d+)@@$/);
-      if (code) return `<pre><code>${esc(codes[+code[1]])}</code></pre>`;
+      if (code) return `<div class="codeblock"><button type="button" class="copy small" aria-label="Copy code to clipboard">Copy</button><pre tabindex="0"><code>${esc(codes[+code[1]])}</code></pre></div>`;
       if (b.startsWith("## ")) return `<h2>${link(esc(b.slice(3)))}</h2>`;
       if (b.startsWith("> ")) return `<blockquote><p>${link(esc(b.replace(/^> ?/gm, ""))).replace(/\n/g, "<br>")}</p></blockquote>`;
       if (b.startsWith("- ")) return `<ul>${b.split("\n").map((l) => `<li>${link(esc(l.replace(/^- /, "")))}</li>`).join("")}</ul>`;
@@ -230,6 +230,28 @@
     lb.addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
     lb.addEventListener("touchend", (e) => { const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); });
   }
+
+  /* ---------- Code blocks: copy button ---------- */
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* fall back below (http pages, older browsers) */ }
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+  document.querySelectorAll(".codeblock .copy").forEach((btn) => {
+    let t;
+    btn.addEventListener("click", async () => {
+      const ok = await copyText(btn.nextElementSibling.innerText.replace(/\n$/, ""));
+      btn.textContent = ok ? "Copied" : "Press Ctrl+C";
+      btn.classList.toggle("is-done", ok);
+      clearTimeout(t);
+      t = setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("is-done"); }, 1800);
+    });
+  });
 
   // Jump to #contact etc. after render
   if (location.hash) setTimeout(() => { const t = document.querySelector(location.hash); if (t) U.lenis ? U.lenis.scrollTo(t, { offset: -80, immediate: true }) : t.scrollIntoView(); }, 300);
