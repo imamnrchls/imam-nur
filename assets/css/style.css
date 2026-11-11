@@ -219,7 +219,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .rows { list-style: none; margin: 0 0 120px; padding: 0; border-top: 1px solid var(--line); }
 .row { border-bottom: 1px solid var(--line); }
 .row a {
-  display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; gap: 16px; align-items: baseline;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: baseline;
   padding: 18px 0; transition: padding .5s var(--ease), background-color .3s;
 }
 .row a:hover { padding-left: 12px; padding-right: 12px; background: rgba(11, 11, 11, .04); }
@@ -229,7 +229,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .row .ex { margin: 6px 0 0; font-size: var(--fs-body); color: var(--muted); letter-spacing: 0; }
 .row .thumb { display: none; }
 @media (max-width: 700px) {
-  .row a { grid-template-columns: 1fr auto; row-gap: 6px; }
+  .row a { grid-template-columns: minmax(0, 1fr) auto; row-gap: 6px; }
   .row .code { grid-column: 1; grid-row: 1; }
   .row .r { grid-column: 2; grid-row: 1; }
   .row .t { grid-column: 1 / -1; }
@@ -267,7 +267,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .lightbox button:hover { text-decoration: underline; }
 
 /* Article / project / about */
-.article { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 140px; }
+.article { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; margin-bottom: 140px; }
 .article .meta { display: flex; flex-direction: column; gap: 6px; }
 .prose { max-width: 62ch; font-size: clamp(17px, 1.25vw, 20px); line-height: 1.6; }
 .prose p { margin: 0 0 1.2em; }
@@ -281,7 +281,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .prose pre code { font: inherit; white-space: pre; }
 .prose { overflow-wrap: anywhere; }
 .row .x { overflow-wrap: anywhere; }
-@media (max-width: 700px) { .article { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .article { grid-template-columns: minmax(0, 1fr); } }
 
 .cover { margin: 0 0 clamp(40px, 6vw, 90px); overflow: hidden; aspect-ratio: 16/9; background: #ddd; }
 .cover img { width: 100%; height: 115%; object-fit: cover; }
@@ -293,16 +293,16 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .next-link .t { font-size: clamp(40px, 8vw, 130px); letter-spacing: -.035em; line-height: 1; text-transform: uppercase; font-weight: 350; display: block; margin-top: 8px; transition: transform .6s var(--ease); }
 .next-link:hover .t { transform: translateX(1.5vw); }
 
-.about-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 120px; }
+.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; margin-bottom: 120px; }
 .about-grid .portrait { overflow: hidden; aspect-ratio: 3/4; background: #ddd; width: 80%; }
 .about-grid .portrait img { width: 100%; height: 100%; object-fit: cover; }
 .facts { list-style: none; padding: 0; margin: 40px 0 0; border-top: 1px solid var(--line); max-width: 62ch; }
-.facts li { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.facts li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .contact { border-top: 1px solid var(--line); padding: 40px 0 140px; }
 .contact .mail { display: inline-block; font-size: clamp(30px, 6.5vw, 110px); letter-spacing: -.035em; line-height: 1.05; margin: 14px 0 40px; border-bottom: 1px solid currentColor; word-break: break-all; }
 .contact nav { display: flex; gap: 24px; flex-wrap: wrap; }
 .contact nav a:hover { text-decoration: underline; }
-@media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } .about-grid .portrait { width: 100%; } }
+@media (max-width: 700px) { .about-grid { grid-template-columns: minmax(0, 1fr); } .about-grid .portrait { width: 100%; } }
 
 .page-foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 24px 0 calc(var(--frame-w) + 28px); border-top: 1px solid var(--line); }
 
@@ -313,3 +313,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .js [data-reveal] { opacity: 1; transform: none; }
   .scroll-cue i { animation: none; }
 }
+
+/* Grid children may shrink below their content, so wide code blocks scroll inside themselves instead of widening the page. */
+.article > *, .about-grid > * { min-width: 0; }
+.page { overflow-x: clip; }
