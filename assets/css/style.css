@@ -273,6 +273,14 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .prose p { margin: 0 0 1.2em; }
 .prose h2 { font-weight: 400; font-size: 1.5em; letter-spacing: -.02em; line-height: 1.15; margin: 1.8em 0 .6em; }
 .prose a { border-bottom: 1px solid currentColor; }
+.prose blockquote { margin: 0 0 1.2em; padding-left: 1em; border-left: 1px solid var(--ink); }
+.prose blockquote p { margin: 0; }
+.prose ul { margin: 0 0 1.2em; padding-left: 1.2em; }
+.prose li { margin-bottom: .4em; }
+.prose pre { margin: 0 0 1.4em; padding: 14px 16px; overflow-x: auto; background: rgba(11, 11, 11, .05); border: 1px solid var(--line); font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; -webkit-overflow-scrolling: touch; }
+.prose pre code { font: inherit; white-space: pre; }
+.prose { overflow-wrap: anywhere; }
+.row .x { overflow-wrap: anywhere; }
 @media (max-width: 700px) { .article { grid-template-columns: 1fr; } }
 
 .cover { margin: 0 0 clamp(40px, 6vw, 90px); overflow: hidden; aspect-ratio: 16/9; background: #ddd; }

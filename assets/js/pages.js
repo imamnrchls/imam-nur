@@ -7,11 +7,24 @@
   const fmtDate = (d) => { const x = new Date(d + "T00:00:00"); return isNaN(x) ? esc(d) : x.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }); };
   const year = (d) => String(d).slice(0, 4);
 
-  // Simple text → HTML: blank line = paragraph, "## " = heading, [text](url) = link
+  // Simple text → HTML. Blank line = paragraph, "## " = heading, "> " = quote, "- " = list,
+  // ``` fenced block = code, [text](url) = link.
   function prose(text) {
-    return String(text || "").split(/\n\s*\n/).map((b) => {
-      let h = esc(b.trim()).replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|[\w./#-]+)\)/g, '<a href="$2">$1</a>').replace(/\n/g, "<br>");
-      return b.trim().startsWith("## ") ? `<h2>${h.slice(3)}</h2>` : `<p>${h}</p>`;
+    const codes = [];
+    const src = String(text || "").replace(/```[^\n]*\n([\s\S]*?)```/g, (m, c) => {
+      codes.push(c.replace(/\s+$/, ""));
+      return `\n\n@@CODE${codes.length - 1}@@\n\n`;
+    });
+    const link = (t) => t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|[\w./#-]+)\)/g, '<a href="$2">$1</a>');
+    return src.split(/\n\s*\n/).map((raw) => {
+      const b = raw.trim();
+      if (!b) return "";
+      const code = b.match(/^@@CODE(\d+)@@$/);
+      if (code) return `<pre><code>${esc(codes[+code[1]])}</code></pre>`;
+      if (b.startsWith("## ")) return `<h2>${link(esc(b.slice(3)))}</h2>`;
+      if (b.startsWith("> ")) return `<blockquote><p>${link(esc(b.replace(/^> ?/gm, ""))).replace(/\n/g, "<br>")}</p></blockquote>`;
+      if (b.startsWith("- ")) return `<ul>${b.split("\n").map((l) => `<li>${link(esc(l.replace(/^- /, "")))}</li>`).join("")}</ul>`;
+      return `<p>${link(esc(b)).replace(/\n/g, "<br>")}</p>`;
     }).join("");
   }
   // Break long titles into lines of roughly `max` characters
@@ -84,7 +97,7 @@
           <li class="row" data-reveal><a href="article.html?slug=${encodeURIComponent(w.slug)}">
             <span class="code">${esc(w.code)}</span>
             <span><span class="t">${esc(w.title)}</span><p class="ex">${esc(w.excerpt)}</p></span>
-            <span class="code x mid"></span><span class="code r">${fmtDate(w.date)}</span>
+            <span class="code x mid">${esc((w.tags || []).join(", "))}</span><span class="code r">${fmtDate(w.date)}</span>
           </a></li>`).join("")}</ol>`;
       break;
     }
@@ -96,7 +109,7 @@
       titleLines = toLines(w.title);
       html = head(titleLines, w.excerpt, w.code) +
         `<article class="article">
-           <div class="meta small" data-reveal><span>${fmtDate(w.date)}</span><span class="muted">${esc(w.code)}</span><a href="writing.html">${U.icon("left")} All writing</a></div>
+           <div class="meta small" data-reveal><span>${fmtDate(w.date)}</span><span class="muted">${esc(w.code)}</span>${w.tags?.length ? `<span class="muted">${esc(w.tags.join(", "))}</span>` : ""}<a href="writing.html">${U.icon("left")} All writing</a>${w.source ? `<a href="${esc(w.source)}" target="_blank" rel="noopener">Original post ${U.icon("ne")}</a>` : ""}</div>
            <div class="prose" data-reveal>${prose(w.body)}</div>
          </article>
          ${S.writing.length > 1 ? `<a class="next-link" href="article.html?slug=${encodeURIComponent(next.slug)}"><span class="small">Read next — ${esc(next.code)}</span><span class="t">${esc(next.title)}</span></a>` : ""}`;
