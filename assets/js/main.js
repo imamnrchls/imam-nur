@@ -90,32 +90,83 @@
 
   /* ---------- Footer (shared by every page) ---------- */
   const F = S.footer || {};
+  const isHome = document.body.classList.contains("home");
+  const niceName = S.name.join(" ").replace(/\b(\w)(\w*)/g, (m, x, y) => x + y.toLowerCase());
+  const words = (t) => String(t).split(" ").map((w) => `<span class="w"><span>${esc(w)}</span></span>`).join(" ");
+  const cityName = String(S.location || "").split(",")[0];
   const footer = document.createElement("footer");
   footer.className = "site-foot";
   footer.innerHTML = `
-    <svg class="foot-defs" width="0" height="0" aria-hidden="true" focusable="false">
-      <filter id="ink-duotone" color-interpolation-filters="sRGB">
-        <feColorMatrix type="matrix" values=".33 .33 .33 0 0  .33 .33 .33 0 0  .33 .33 .33 0 0  0 0 0 1 0"/>
-        <feComponentTransfer>
-          <feFuncR type="linear" slope="1.35" intercept="-.12"/><feFuncG type="linear" slope="1.35" intercept="-.12"/><feFuncB type="linear" slope="1.35" intercept="-.12"/>
-        </feComponentTransfer>
-        <feComponentTransfer>
-          <feFuncR type="table" tableValues=".043 .953"/><feFuncG type="table" tableValues=".043 .953"/><feFuncB type="table" tableValues=".043 .933"/>
-        </feComponentTransfer>
-      </filter>
-    </svg>
-    ${document.body.classList.contains("home") && F.cta ? `<p class="foot-big" data-reveal>${esc(F.cta)} — <a href="about.html#contact">${esc(F.ctaLink || "say hello")}</a>.</p>` : ""}
-    <div class="foot-row small">
-      <span>© ${new Date().getFullYear()} ${esc(S.name.join(" ").replace(/\b(\w)(\w*)/g, (m, x, y) => x + y.toLowerCase()))}</span>
-      <nav>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</nav>
-    </div>
-    ${F.art ? `<div class="foot-art" aria-hidden="true"><img src="${esc(F.art)}" alt="" loading="lazy" decoding="async"></div>` : ""}`;
+    ${F.art ? `<div class="foot-art" aria-hidden="true"><img src="${esc(F.art)}" alt="" loading="lazy" decoding="async"></div>` : ""}
+    <div class="foot-inner">
+      ${isHome && F.cta ? `<p class="foot-big">${words(F.cta)} ${words("—")} <a href="about.html#contact">${words(F.ctaLink || "say hello")}</a><span class="w"><span>.</span></span></p>` : ""}
+      <div class="foot-row small">
+        <span>© ${new Date().getFullYear()} ${esc(niceName)}</span>
+        <span class="foot-time">${esc(cityName)} <time id="footTime"></time></span>
+        <nav>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</nav>
+      </div>
+    </div>`;
   (document.querySelector("main") || document.body).insertAdjacentElement("afterend", footer);
+
+  // Live local time
+  (function () {
+    const el = footer.querySelector("#footTime");
+    let fmt;
+    try { fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: S.timezone || undefined }); }
+    catch (e) { fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); }
+    const tick = () => { el.textContent = fmt.format(new Date()); };
+    tick(); setInterval(tick, 1000);
+  })();
+
+  // Footer motion: the line rises word by word, the picture drifts with scroll and follows the pointer
+  if (hasGsap && !reduced && window.ScrollTrigger) {
+    const ws = footer.querySelectorAll(".foot-big .w > span");
+    if (ws.length) {
+      gsap.set(ws, { yPercent: 120 });
+      ScrollTrigger.create({ trigger: footer, start: "top 78%", once: true, onEnter: () => gsap.to(ws, { yPercent: 0, duration: 1.2, ease: "expo.out", stagger: 0.045 }) });
+    }
+    const img = footer.querySelector(".foot-art img");
+    if (img) {
+      gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: footer, start: "top bottom", end: "bottom bottom", scrub: true } });
+      if (matchMedia("(hover: hover)").matches) {
+        const xTo = gsap.quickTo(img, "x", { duration: 1.2, ease: "power3" });
+        footer.addEventListener("mousemove", (e) => { const r = footer.getBoundingClientRect(); xTo(((e.clientX - r.left) / r.width - 0.5) * -28); });
+        footer.addEventListener("mouseleave", () => xTo(0));
+      }
+    }
+  }
   if ("IntersectionObserver" in window) {
-    // The fixed label at the top of inner pages would sit on top of the footer text; hide it while the footer is in view.
+    // The fixed label at the top of inner pages would sit on top of the footer; hide it while the footer is in view.
     new IntersectionObserver(([e]) => document.body.classList.toggle("foot-in-view", e.isIntersecting && e.intersectionRatio > 0.15), { threshold: [0, 0.15, 0.5] }).observe(footer);
   }
   footer.querySelector(".foot-art img")?.addEventListener("load", () => window.ScrollTrigger?.refresh(), { once: true });
+  window.addEventListener("load", () => window.ScrollTrigger?.refresh());
+
+  /* ---------- Custom cursor (mouse only): a disc that follows the pointer and grows over anything clickable ---------- */
+  if (!matchMedia("(pointer: coarse)").matches) {
+    document.documentElement.classList.add("has-custom-cursor");
+    const dot = document.createElement("span");
+    dot.className = "cursor-dot";
+    dot.setAttribute("aria-hidden", "true");
+    document.body.appendChild(dot);
+    const HOT = "a, button, input, textarea, select, label, summary, [role=button], .photo, .tile";
+    let tx = -100, ty = -100, x = -100, y = -100, raf = 0;
+    const loop = () => {
+      x += (tx - x) * 0.32; y += (ty - y) * 0.32;
+      dot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.1 ? requestAnimationFrame(loop) : 0;
+    };
+    addEventListener("mousemove", (e) => {
+      tx = e.clientX; ty = e.clientY;
+      if (!dot.classList.contains("visible")) { x = tx; y = ty; dot.classList.add("visible"); }
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, { passive: true });
+    document.addEventListener("mouseover", (e) => { if (e.target.closest?.(HOT)) dot.classList.add("hovered"); });
+    document.addEventListener("mouseout", (e) => { if (e.target.closest?.(HOT)) dot.classList.remove("hovered"); });
+    document.addEventListener("mousedown", () => dot.classList.add("pressed"));
+    document.addEventListener("mouseup", () => dot.classList.remove("pressed"));
+    document.documentElement.addEventListener("mouseleave", () => dot.classList.remove("visible"));
+  }
 
   /* ---------- Page transitions ---------- */
   const wipe = document.querySelector(".wipe");

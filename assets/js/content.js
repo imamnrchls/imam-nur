@@ -13,6 +13,7 @@ window.SITE = {
   name: ["IMAM", "NURCHOLIS"],          // one entry per line of the big title
   role: "Human capital & driver management",
   location: "Jakarta, Indonesia",
+  timezone: "Asia/Jakarta",              // for the live clock in the footer
   email: "imam.nurcholis@outlook.com",   // shown on About / Contact
   links: [
     { label: "Instagram", url: "https://www.instagram.com/imamnrchls/" },
@@ -23,11 +24,11 @@ window.SITE = {
   heroImage: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=80",
   heroCredit: { label: "Photo: Urban Vintage / Unsplash", url: "https://unsplash.com/photos/landscape-photography-of-mountain-hit-by-sun-rays-78A265wPiO4" },
 
-  // Footer: the line on the homepage, and the illustration along the bottom (tinted to the site's ink colour)
+  // Footer: the line on the homepage, and the picture behind it (put your own in images/)
   footer: {
     cta: "Open for commissions, collaborations and good conversations",
     ctaLink: "say hello",
-    art: "https://images.unsplash.com/photo-1725378158001-7d9bcb6528f5?auto=format&fit=crop&w=2200&q=75",
+    art: "images/footer-dither.jpg",
   },
 
   // The second title that appears while scrolling (one entry per line)
