@@ -9,6 +9,7 @@
   --frame-w: 0px; /* edge inset used for spacing; the decorative frame was removed */
   --pad: clamp(16px, 3vw, 40px);
   --font: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --display: "Instrument Serif", "Times New Roman", Georgia, serif; /* big titles, menu */
   --ease: cubic-bezier(.77, 0, .175, 1);
   --fs-small: 12px;
   --fs-body: clamp(15px, 1.05vw, 17px);
@@ -71,9 +72,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .menu li:last-child { border-bottom: 1px solid var(--line); }
 .menu a {
   display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: baseline;
-  padding: .12em 0; font-size: clamp(30px, min(7vw, 8.5vh), 108px); line-height: 1; letter-spacing: -.03em;
-  font-weight: 350;
+  padding: .12em 0; font-size: clamp(34px, min(8vw, 9.5vh), 124px); line-height: 1; letter-spacing: -.01em;
+  font-family: var(--display); font-weight: 400;
 }
+.menu a .code { font-family: var(--font); letter-spacing: .04em; }
 .menu a .code { justify-self: start; }
 .menu a .arrow { justify-self: end; font-size: .4em; line-height: 0; transition: transform .5s var(--ease); }
 .menu a:hover .arrow { transform: translateX(-.4em); }
@@ -97,8 +99,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
    Split text (big titles)
    ============================================================ */
 .title {
-  margin: 0; font-weight: 350; text-transform: uppercase;
-  letter-spacing: -.035em; line-height: .9; text-align: center;
+  margin: 0; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  letter-spacing: -.01em; line-height: .92; text-align: center;
   font-size: 18vw; /* overwritten by JS fit */
   white-space: nowrap;
 }
@@ -298,7 +300,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (max-width: 700px) { .gallery { grid-template-columns: 1fr; } }
 
 .next-link { display: block; border-top: 1px solid var(--line); padding: 28px 0 140px; }
-.next-link .t { font-size: clamp(40px, 8vw, 130px); letter-spacing: -.035em; line-height: 1; text-transform: uppercase; font-weight: 350; display: block; margin-top: 8px; transition: transform .6s var(--ease); }
+.next-link .t { font-family: var(--display); font-size: clamp(44px, 9vw, 150px); letter-spacing: -.01em; line-height: 1; text-transform: uppercase; font-weight: 400; display: block; margin-top: 8px; transition: transform .6s var(--ease); }
 .next-link:hover .t { transform: translateX(1.5vw); }
 
 .about-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; margin-bottom: 120px; }
