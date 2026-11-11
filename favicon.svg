@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
-    rect { fill: #0b0b0b; }
-    @media (prefers-color-scheme: dark) { rect { fill: #f3f3ee; } }
+    .bg { fill: #0b0b0b; }
+    .fg { fill: #f3f3ee; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #f3f3ee; }
+      .fg { fill: #0b0b0b; }
+    }
   </style>
-  <rect x="6" y="6" width="20" height="20"/>
+  <rect class="bg" width="32" height="32"/>
+  <!-- the site's "+" -->
+  <path class="fg" d="M14.25 7h3.5v7.25H25v3.5h-7.25V25h-3.5v-7.25H7v-3.5h7.25z"/>
 </svg>
