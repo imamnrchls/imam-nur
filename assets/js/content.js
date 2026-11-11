@@ -31,7 +31,7 @@ window.SITE = {
   },
 
   // The second title that appears while scrolling (one entry per line)
-  indexTitle: ["WHAT YOU", "WANT TO SEE?"],
+  indexTitle: ["WHAT DO YOU", "WANT TO SEE?"],
 
   // The six tiles on the homepage. Each one is a menu entry.
   menu: [
