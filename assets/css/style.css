@@ -341,7 +341,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .foot-art img { flex: none; max-width: none; min-width: 106%; height: calc(var(--foot-min) * 1.18); width: auto; margin-bottom: calc(var(--foot-min) * -.1); object-fit: cover; object-position: 50% 100%; will-change: transform;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30%); mask-image: linear-gradient(to bottom, transparent 0, #000 30%); /* melts the picture's top edge into the grey behind it */ }
 /* The picture is a pixel-level dither. On large and high-density screens it is enlarged, so scale it pixel-exact (crisp dots) instead of smoothing it. */
-@media (min-width: 1000px) { .foot-art img { image-rendering: pixelated; } }
+@media (min-width: 1000px) {
+  /* Desktop: a taller footer and a higher crop show the ridge, spires and hiker instead of only the dark rocks at the bottom. */
+  :root { --foot-min: clamp(340px, 52vh, 560px); }
+  .foot-art img { image-rendering: pixelated; object-position: 50% 70%; }
+}
 .foot-art::after { /* top fade into the page + a darkening so the text stays readable */
   content: ""; position: absolute; inset: 0;
   background:
