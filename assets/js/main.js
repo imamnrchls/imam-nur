@@ -97,6 +97,7 @@
   footer.className = "site-foot";
   footer.innerHTML = `
     ${F.art ? `<div class="foot-art" aria-hidden="true"><img src="${esc(F.art)}" alt="" loading="lazy" decoding="async"></div>` : ""}
+    <div class="foot-lines" aria-hidden="true"><i class="v v1"></i><i class="v v2"></i></div>
     <div class="foot-inner">
       ${isHome && F.cta ? `<p class="foot-big">${words(F.cta)} ${words("—")} <a href="about.html#contact">${words(F.ctaLink || "say hello")}</a><span class="w"><span>.</span></span></p>` : ""}
       <div class="foot-row small">
@@ -113,6 +114,8 @@
       gsap.set(ws, { yPercent: 120 });
       ScrollTrigger.create({ trigger: footer, start: "top 78%", once: true, onEnter: () => gsap.to(ws, { yPercent: 0, duration: 1.2, ease: "expo.out", stagger: 0.045 }) });
     }
+    const fl = footer.querySelectorAll(".foot-lines i");
+    if (fl.length) gsap.from(fl, { scaleY: 0, transformOrigin: "top", duration: 1.8, ease: "expo.inOut", stagger: 0.12, scrollTrigger: { trigger: footer, start: "top 80%", once: true } });
     const img = footer.querySelector(".foot-art img");
     if (img) {
       gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: footer, start: "top bottom", end: "bottom bottom", scrub: true } });
