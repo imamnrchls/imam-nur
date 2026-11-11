@@ -159,6 +159,25 @@
     document.documentElement.addEventListener("mouseleave", () => dot.classList.remove("visible"));
   }
 
+  /* ---------- Phones: keep a gap in the centre grid line around the plus while scrolling ---------- */
+  (function () {
+    const mq = matchMedia("(max-width: 700px)");
+    const lines = () => document.querySelectorAll(".lines .v1, .foot-lines .v1");
+    let queued = false;
+    const update = () => {
+      queued = false;
+      if (!mq.matches) { lines().forEach((l) => l.style.removeProperty("--gy")); return; }
+      const p = plus.getBoundingClientRect();
+      const cy = p.top + p.height / 2;
+      lines().forEach((l) => l.style.setProperty("--gy", (cy - l.getBoundingClientRect().top).toFixed(1) + "px"));
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener("scroll", queue, { passive: true });
+    addEventListener("resize", queue);
+    addEventListener("load", queue);
+    queue();
+  })();
+
   /* ---------- Page transitions ---------- */
   const wipe = document.querySelector(".wipe");
   function reveal() {
