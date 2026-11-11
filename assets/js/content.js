@@ -39,7 +39,7 @@ window.SITE = {
     { label: "Photos",     code: "PH-118-4", href: "photos.html",    image: "https://images.unsplash.com/photo-1512390225428-a9d51c817f94?auto=format&fit=crop&w=900&q=75" },
     { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=900&q=75" },
     { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?auto=format&fit=crop&w=900&q=75" },
-    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "https://images.unsplash.com/photo-1762627105132-f6ed848a23bf?auto=format&fit=crop&w=900&q=75" },
+    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "https://images.unsplash.com/photo-1616714109948-c74fe5029a4d?auto=format&fit=crop&w=900&q=75" },
     { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "https://images.unsplash.com/photo-1637597384611-0c33cef6ec03?auto=format&fit=crop&w=900&q=75" },
   ],
 
@@ -101,18 +101,65 @@ window.SITE = {
 
   // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Photos page says so.
   //   { src: "images/my-photo.jpg", code: "PH-001-2", caption: "A short caption", place: "Where it was taken" },
-  // Music recommendations. Paste the link from Apple Music (Share → Copy Link) into "url"; the page turns it into a player.
-  //   kind: "Song", "Album" or "Playlist" (songs get a short player, albums and playlists a tall one).
-  //   { url: "https://music.apple.com/...", title: "Wish You Were Here", artist: "Pink Floyd", kind: "Album", note: "Why I love it" },
+  // Music: favourite albums. "url" is the Apple Music link (Share → Copy Link). "picks" lists the track numbers
+  // you recommend most; they get the + mark in the tracklist. "note" (optional) is a line on why you love the record.
   music: [
-    { url: "https://music.apple.com/id/album/the-dark-side-of-the-moon-50th-anniversary-remastered/1665303755", title: "The Dark Side of the Moon", artist: "Pink Floyd", kind: "Album" },
-    { url: "https://music.apple.com/id/album/the-new-abnormal/1498121188", title: "The New Abnormal", artist: "The Strokes", kind: "Album" },
-    { url: "https://music.apple.com/id/album/siamese-dream/721207206", title: "Siamese Dream", artist: "The Smashing Pumpkins", kind: "Album" },
-    { url: "https://music.apple.com/id/album/ok-computer/1097861387", title: "OK Computer", artist: "Radiohead", kind: "Album" },
-    { url: "https://music.apple.com/id/album/the-stone-roses-remastered-2009/322969529", title: "The Stone Roses", artist: "The Stone Roses", kind: "Album" },
-    { url: "https://music.apple.com/id/album/be-here-now/207010732", title: "Be Here Now", artist: "Oasis", kind: "Album" },
-    { url: "https://music.apple.com/id/album/american-football-25th-anniversary-edition/1754429576", title: "American Football", artist: "American Football", kind: "Album" },
-    { url: "https://music.apple.com/id/album/blonde/1146195596", title: "Blonde", artist: "Frank Ocean", kind: "Album" },
+    {
+      url: "https://music.apple.com/id/album/the-dark-side-of-the-moon-50th-anniversary-remastered/1665303755",
+      title: "The Dark Side of the Moon", artist: "Pink Floyd", kind: "Album", year: "1973",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/49/86/18/49861852-877b-0992-fa27-58b25fa032b5/196589805232.jpg/600x600bb.jpg",
+      picks: [4, 5, 6, 7, 10],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Speak to Me", "1:11"], ["Breathe (In the Air)", "2:46"], ["On the Run", "3:34"], ["Time", "7:06"], ["The Great Gig In the Sky", "4:44"], ["Money", "6:22"], ["Us and Them", "7:50"], ["Any Colour You Like", "3:26"], ["Brain Damage", "3:50"], ["Eclipse", "2:07"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/the-new-abnormal/1498121188",
+      title: "The New Abnormal", artist: "The Strokes", kind: "Album", year: "2020",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/62/a6/ff/62a6ff2a-95c9-5302-31f4-2dcca9e40323/886448281085.jpg/600x600bb.jpg",
+      picks: [1, 2, 6, 8, 9],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["The Adults Are Talking", "5:09"], ["Selfless", "3:42"], ["Brooklyn Bridge To Chorus", "3:56"], ["Bad Decisions", "4:53"], ["Eternal Summer", "6:15"], ["At The Door", "5:10"], ["Why Are Sundays So Depressing", "4:36"], ["Not The Same Anymore", "5:37"], ["Ode To The Mets", "5:52"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/siamese-dream/721207206",
+      title: "Siamese Dream", artist: "The Smashing Pumpkins", kind: "Album", year: "1993",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/3a/dc/08/3adc08b0-e98c-b5dd-943e-a37c7ed06205/13UABIM03615.rgb.jpg/600x600bb.jpg",
+      picks: [3, 7, 9, 10, 13],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Cherub Rock", "4:57"], ["Quiet", "3:43"], ["Today", "3:21"], ["Hummer", "6:56"], ["Rocket", "4:06"], ["Disarm", "3:17"], ["Soma", "6:38"], ["Geek U.S.A.", "5:13"], ["Mayonaise", "5:49"], ["Spaceboy", "4:27"], ["Silverfuck", "8:43"], ["Sweet Sweet", "1:39"], ["Luna", "3:20"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/ok-computer/1097861387",
+      title: "OK Computer", artist: "Radiohead", kind: "Album", year: "1997",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/07/60/ba/0760ba0f-148c-b18f-d0ff-169ee96f3af5/634904078164.png/600x600bb.jpg",
+      picks: [1, 2, 4, 5, 6, 10],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Airbag", "4:48"], ["Paranoid Android", "6:27"], ["Subterranean Homesick Alien", "4:28"], ["Exit Music (For a Film)", "4:27"], ["Let Down", "5:00"], ["Karma Police", "4:24"], ["Fitter Happier", "1:57"], ["Electioneering", "3:51"], ["Climbing Up the Walls", "4:45"], ["No Surprises", "3:49"], ["Lucky", "4:19"], ["The Tourist", "5:27"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/the-stone-roses-remastered-2009/322969529",
+      title: "The Stone Roses", artist: "The Stone Roses", kind: "Album", year: "1989",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/de/bd/71/debd715a-d49b-1ec8-6b4d-bf3f25e0e90b/dj.rldpqukx.jpg/600x600bb.jpg",
+      picks: [1, 8, 10, 11],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["I Wanna Be Adored", "4:53"], ["She Bangs the Drums", "3:52"], ["Waterfall", "4:39"], ["Don't Stop", "5:21"], ["Bye Bye Bad Man", "4:04"], ["Elizabeth My Dear", "0:53"], ["(Song for My) Sugar Spun Sister", "3:27"], ["Made of Stone", "4:15"], ["Shoot You Down", "4:13"], ["This Is the One", "4:59"], ["I Am the Resurrection", "8:13"], ["Fools Gold", "9:54"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/be-here-now/207010732",
+      title: "Be Here Now", artist: "Oasis", kind: "Album", year: "1997",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music/ef/d6/2c/mzi.cokrlcna.jpg/600x600bb.jpg",
+      picks: [4, 8, 10],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["D'You Know What I Mean?", "7:42"], ["My Big Mouth", "5:03"], ["Magic Pie", "7:19"], ["Stand By Me", "5:57"], ["I Hope, I Think, I Know", "4:22"], ["The Girl In the Dirty Shirt", "5:47"], ["Fade In-Out", "6:52"], ["Don't Go Away", "4:49"], ["Be Here Now", "5:13"], ["All Around the World", "9:20"], ["It's Gettin' Better (Man!!)", "7:00"], ["All Around the World (Reprise)", "2:08"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/american-football-25th-anniversary-edition/1754429576",
+      title: "American Football", artist: "American Football", kind: "Album", year: "1999",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/3c/f1/00/3cf10033-6c61-ff25-5c3f-3b1e01dc3bf7/644110049995.png/600x600bb.jpg",
+      picks: [1, 2, 6],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Never Meant", "4:29"], ["The Summer Ends", "4:45"], ["Honestly?", "6:07"], ["For Sure", "3:16"], ["You Know I Should Be Leaving Soon", "3:41"], ["But the Regrets Are Killing Me", "3:54"], ["I'll See You When We're Both Not so Emotional", "3:44"], ["Stay Home", "8:11"], ["The One with the Wurlitzer", "2:45"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/blonde/1146195596",
+      title: "Blonde", artist: "Frank Ocean", kind: "Album", year: "2016",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/bb/45/68/bb4568f3-68cd-619d-fbcb-4e179916545d/BlondCover-Final.jpg/600x600bb.jpg",
+      picks: [3, 7, 14, 16],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Nikes", "5:14"], ["Ivy", "4:09"], ["Pink + White", "3:05"], ["Be Yourself", "1:27"], ["Solo", "4:17"], ["Skyline To", "3:05"], ["Self Control", "4:10"], ["Good Guy", "1:07"], ["Nights", "5:07"], ["Solo (Reprise)", "1:19"], ["Pretty Sweet", "2:38"], ["Facebook Story", "1:09"], ["Close to You", "1:26"], ["White Ferrari", "4:09"], ["Seigfried", "5:35"], ["Godspeed", "2:58"], ["Futura Free", "9:24"]],
+    },
   ],
 
   // A video entry uses "video" instead of "src" (autoplays muted in the grid, plays with controls in the viewer).

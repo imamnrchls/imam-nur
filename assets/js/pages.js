@@ -138,21 +138,46 @@
     case "music": {
       titleLines = ["MUSIC"];
       const list = S.music || [];
-      // music.apple.com/… → embed.music.apple.com/… (Apple's official embeddable player)
-      const embed = (u) => { try { const x = new URL(u); return x.hostname.endsWith("music.apple.com") ? `https://embed.music.apple.com${x.pathname}${x.search}` : ""; } catch { return ""; } };
-      html = !list.length ? head(titleLines, "No recommendations here yet.", menuItem("music").code) : head(titleLines, "Songs and records I keep coming back to. Press play, or open them in Apple Music.", menuItem("music").code) +
-        `<div class="music-grid">${list.map((m, i) => {
-          const src = embed(m.url), tall = (m.kind || "").toLowerCase() !== "song";
-          return `
-          <article class="track" data-reveal>
-            <div class="track-head small"><span>${esc(m.code || `MU-${String(i + 1).padStart(3, "0")}`)}</span><span class="muted">${esc(m.kind || "")}</span></div>
-            <h2 class="track-title">${esc(m.title || "")}</h2>
-            ${m.artist ? `<p class="track-artist">${esc(m.artist)}</p>` : ""}
-            ${m.note ? `<p class="track-note">${esc(m.note)}</p>` : ""}
-            ${src ? `<iframe class="track-player${tall ? " tall" : ""}" src="${esc(src)}" title="${esc(`${m.title || "Music"} on Apple Music`)}" loading="lazy" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"></iframe>` : ""}
-            ${m.url ? `<a class="small" href="${esc(m.url)}" target="_blank" rel="noopener">Open in Apple Music ${U.icon("ne")}</a>` : ""}
-          </article>`;
-        }).join("")}</div>`;
+      const code = (m, i) => m.code || `MU-${String(i + 1).padStart(3, "0")}`;
+      // Tracklist: the songs I recommend (m.picks = track numbers) carry the site's "+" mark.
+      const secs = (t) => { const [mm, ss] = String(t).split(":").map(Number); return (mm || 0) * 60 + (ss || 0); };
+      const tracklist = (m) => {
+        const tracks = m.tracks || [], picks = new Set(m.picks || []);
+        if (!tracks.length) return "";
+        const mins = Math.round(tracks.reduce((n, [, t]) => n + secs(t), 0) / 60);
+        return `<div class="tracks-wrap">
+          <div class="tracks-head small"><span>Tracklist — ${tracks.length} songs, ${mins} min</span>${picks.size ? `<span class="tracks-key"><i class="pick-mark" aria-hidden="true"></i> Start here</span>` : ""}</div>
+          <ol class="tracks">${tracks.map(([name, time], k) => {
+            const pick = picks.has(k + 1);
+            return `<li class="track${pick ? " pick" : ""}" style="--k:${k}"><span class="tn code">${String(k + 1).padStart(2, "0")}</span><span class="tt">${pick ? '<i class="pick-mark" aria-hidden="true"></i>' : ""}<span>${esc(name)}</span>${pick ? '<span class="sr-only"> (recommended)</span>' : ""}</span><span class="td code">${esc(time)}</span></li>`;
+          }).join("")}</ol>
+        </div>`;
+      };
+      html = !list.length ? head(titleLines, "No recommendations here yet.", menuItem("music").code) : head(titleLines, `${list.length} records I keep coming back to. Open one to see what to play first.`, menuItem("music").code) +
+        `<div class="covers" data-reveal aria-hidden="true">${list.map((m, i) => m.cover ? `<button type="button" tabindex="-1" data-open="${i}" style="--d:${i}"><img src="${esc(m.cover)}" alt="" loading="lazy"></button>` : "").join("")}</div>
+        <ol class="records">${list.map((m, i) => `
+          <li class="rec" data-reveal>
+            <button type="button" class="rec-row" aria-expanded="false" aria-controls="rec-${i}"${m.cover ? ` data-cover="${esc(m.cover)}"` : ""}>
+              <span class="code">${esc(code(m, i))}</span>
+              <span class="rec-t">${esc(m.title || "")}</span>
+              <span class="code x mid">${esc(m.artist || "")}</span>
+              <span class="code r">${esc(m.year || m.kind || "")}<i class="rec-plus" aria-hidden="true"></i></span>
+            </button>
+            <div class="rec-panel" id="rec-${i}">
+              <div class="rec-inner">
+                <div class="rec-side">
+                  ${m.cover ? `<div class="rec-media" aria-hidden="true">
+                    <div class="rec-disc"><div class="rec-spin"><img src="${esc(m.cover)}" alt="" loading="lazy"></div></div>
+                    <img class="rec-sleeve" src="${esc(m.cover)}" alt="" loading="lazy">
+                  </div>` : ""}
+                  <p class="small muted">${esc([m.artist, m.kind, m.year].filter(Boolean).join(" · "))}</p>
+                  ${m.note ? `<p class="rec-note">${esc(m.note)}</p>` : ""}
+                  ${m.url ? `<a class="btn-listen small" href="${esc(m.url)}" target="_blank" rel="noopener">Listen on Apple Music ${U.icon("ne")}</a>` : ""}
+                </div>
+                ${tracklist(m)}
+              </div>
+            </div>
+          </li>`).join("")}</ol>`;
       break;
     }
     default: notFound("page");
@@ -198,6 +223,36 @@
       a.addEventListener("mouseenter", () => { img.src = a.dataset.cover; gsap.to(fp, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }); });
       a.addEventListener("mouseleave", () => gsap.to(fp, { opacity: 0, scale: 0.9, duration: 0.4, ease: "expo.out" }));
     });
+  }
+
+  /* ---------- Music: open a record (one at a time); the cover follows the cursor over the list ---------- */
+  if (page === "music" && (S.music || []).length) {
+    const rows = [...document.querySelectorAll(".rec-row")];
+    const setOpen = (btn, open) => {
+      btn.setAttribute("aria-expanded", open); btn.closest(".rec").classList.toggle("open", open);
+    };
+    const toggle = (btn) => {
+      const open = btn.getAttribute("aria-expanded") !== "true";
+      rows.forEach((r) => r !== btn && r.getAttribute("aria-expanded") === "true" && setOpen(r, false));
+      setOpen(btn, open);
+      if (open) setTimeout(() => (U.lenis ? U.lenis.scrollTo(btn, { offset: -90 }) : btn.scrollIntoView({ behavior: "smooth", block: "start" })), 350);
+    };
+    rows.forEach((btn) => btn.addEventListener("click", () => toggle(btn)));
+    document.querySelectorAll(".covers [data-open]").forEach((c) => c.addEventListener("click", () => { const btn = rows[+c.dataset.open]; if (btn.getAttribute("aria-expanded") !== "true") toggle(btn); else U.lenis ? U.lenis.scrollTo(btn, { offset: -90 }) : btn.scrollIntoView({ behavior: "smooth" }); }));
+
+    if (U.hasGsap && matchMedia("(hover: hover)").matches) {
+      const fp = document.createElement("div");
+      fp.className = "float-preview square"; fp.innerHTML = "<img alt=''>";
+      document.body.appendChild(fp);
+      const img = fp.querySelector("img");
+      const xTo = gsap.quickTo(fp, "x", { duration: 0.6, ease: "power3" }), yTo = gsap.quickTo(fp, "y", { duration: 0.6, ease: "power3" });
+      addEventListener("mousemove", (e) => { xTo(e.clientX); yTo(e.clientY); });
+      rows.filter((b) => b.dataset.cover).forEach((b) => {
+        b.addEventListener("mouseenter", () => { if (b.getAttribute("aria-expanded") === "true") return; img.src = b.dataset.cover; gsap.to(fp, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }); });
+        b.addEventListener("mouseleave", () => gsap.to(fp, { opacity: 0, scale: 0.9, duration: 0.4, ease: "expo.out" }));
+        b.addEventListener("click", () => gsap.to(fp, { opacity: 0, scale: 0.9, duration: 0.3 }));
+      });
+    }
   }
 
   /* ---------- Photos: lightbox ---------- */
