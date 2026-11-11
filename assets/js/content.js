@@ -160,6 +160,34 @@ window.SITE = {
       picks: [3, 7, 14, 16],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Nikes", "5:14"], ["Ivy", "4:09"], ["Pink + White", "3:05"], ["Be Yourself", "1:27"], ["Solo", "4:17"], ["Skyline To", "3:05"], ["Self Control", "4:10"], ["Good Guy", "1:07"], ["Nights", "5:07"], ["Solo (Reprise)", "1:19"], ["Pretty Sweet", "2:38"], ["Facebook Story", "1:09"], ["Close to You", "1:26"], ["White Ferrari", "4:09"], ["Seigfried", "5:35"], ["Godspeed", "2:58"], ["Futura Free", "9:24"]],
     },
+    {
+      url: "https://music.apple.com/id/album/peripheral-vision/1493926962",
+      title: "Peripheral Vision", artist: "Turnover", kind: "Album", year: "2015",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/66/74/26/667426e1-00ac-10d7-ad69-9f6d66f23b0b/67530.jpg/600x600bb.jpg",
+      picks: [1, 3, 8, 10],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Cutting My Fingers Off", "3:16"], ["New Scream", "4:12"], ["Humming", "3:58"], ["Hello Euphoria", "3:46"], ["Dizzy On the Comedown", "4:16"], ["Diazepam", "3:19"], ["Like Slow Disappearing", "3:56"], ["Take My Head", "3:14"], ["Threshold", "1:28"], ["I Would Hate You If I Could", "4:03"], ["Intrapersonal", "3:46"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/currents/1440838039",
+      title: "Currents", artist: "Tame Impala", kind: "Album", year: "2015",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/a8/2e/b4/a82eb490-f30a-a321-461a-0383c88fec95/15UMGIM23316.rgb.jpg/600x600bb.jpg",
+      picks: [1, 4, 5, 13],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Let It Happen", "7:47"], ["Nangs", "1:48"], ["The Moment", "4:15"], ["Yes I'm Changing", "4:31"], ["Eventually", "5:19"], ["Gossip", "0:55"], ["The Less I Know the Better", "3:39"], ["Past Life", "3:48"], ["Disciples", "1:48"], ["'Cause I'm a Man", "4:02"], ["Reality In Motion", "4:13"], ["Love/Paranoia", "3:06"], ["New Person, Same Old Mistakes", "6:02"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/getting-killed/1818548779",
+      title: "Getting Killed", artist: "Geese", kind: "Album", year: "2025",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/0b/b8/f1/0bb8f1d7-1df0-20c0-9539-51d08058eeb1/5400863191436_Cover.jpg/600x600bb.jpg",
+      picks: [2, 8, 10],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Trinidad", "3:45"], ["Cobra", "3:05"], ["Husbands", "4:08"], ["Getting Killed", "4:45"], ["Islands of Men", "5:54"], ["100 Horses", "3:46"], ["Half Real", "3:22"], ["Au Pays du Cocaine", "3:31"], ["Bow Down", "3:28"], ["Taxes", "3:18"], ["Long Island City Here I Come", "6:37"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/submarine-ep/422325910",
+      title: "Submarine", artist: "Alex Turner", kind: "EP", year: "2011",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/fa/a6/00/faa60001-c7aa-d51e-70a8-0b092f810d24/mzi.iylunwbj.jpg/600x600bb.jpg",
+      picks: [2, 4, 5],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Stuck On the Puzzle (Intro)", "0:54"], ["Hiding Tonight", "3:07"], ["Glass In the Park", "4:00"], ["It's Hard to Get Around the Wind", "4:07"], ["Stuck On the Puzzle", "3:31"], ["Piledriver Waltz", "3:25"]],
+    },
   ],
 
   // A video entry uses "video" instead of "src" (autoplays muted in the grid, plays with controls in the viewer).
