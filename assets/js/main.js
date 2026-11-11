@@ -114,7 +114,7 @@
     if (!els.length) return;
     if (!hasGsap || !window.ScrollTrigger || reduced) { els.forEach((el) => { el.style.opacity = 1; el.style.transform = "none"; }); return; }
     ScrollTrigger.batch(els, {
-      start: "top 92%",
+      start: "top 99%", // near the bottom of the page an element may never rise above a stricter line
       once: true,
       onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 1.1, ease: "expo.out", stagger: 0.08 }),
     });
