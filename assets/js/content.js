@@ -15,6 +15,7 @@ window.SITE = {
   location: "Jakarta, Indonesia",
   email: "imam.nurcholis@outlook.com",   // shown on About / Contact
   links: [
+    { label: "Instagram", url: "https://www.instagram.com/imamnrchls/" },
     { label: "LinkedIn", url: "https://www.linkedin.com/in/imamnurcholis" },
   ],
 
