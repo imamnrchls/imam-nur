@@ -177,6 +177,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 @media (max-width: 700px) {
   .lines .v1 { left: 50%; } .lines .v2 { display: none; }
+  /* On phones the centre line passes through the plus, so leave a gap around it (plus centre is 44px from the top). */
+  .lines .v1 {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 12px, transparent 12px, transparent 76px, #000 76px);
+            mask-image: linear-gradient(to bottom, #000 0, #000 12px, transparent 12px, transparent 76px, #000 76px);
+  }
   .lines .h { top: 33.333%; box-shadow: 0 calc(33.333svh) 0 var(--ln); }
   .tiles { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); }
   .tile { padding: 16% 0 8%; }
