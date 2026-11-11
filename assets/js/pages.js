@@ -1,0 +1,223 @@
+/* Inner pages: everything is rendered from content.js */
+(function () {
+  const S = window.SITE, U = window.UI, esc = U.esc;
+  const page = document.body.dataset.page;
+  const main = document.getElementById("page");
+  const params = new URLSearchParams(location.search);
+  const fmtDate = (d) => { const x = new Date(d + "T00:00:00"); return isNaN(x) ? esc(d) : x.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }); };
+  const year = (d) => String(d).slice(0, 4);
+
+  // Simple text → HTML: blank line = paragraph, "## " = heading, [text](url) = link
+  function prose(text) {
+    return String(text || "").split(/\n\s*\n/).map((b) => {
+      let h = esc(b.trim()).replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|[\w./#-]+)\)/g, '<a href="$2">$1</a>').replace(/\n/g, "<br>");
+      return b.trim().startsWith("## ") ? `<h2>${h.slice(3)}</h2>` : `<p>${h}</p>`;
+    }).join("");
+  }
+  // Break long titles into lines of roughly `max` characters
+  function toLines(text, max = 12) {
+    const out = []; let cur = "";
+    String(text).toUpperCase().split(/\s+/).forEach((w) => {
+      if (cur && (cur + " " + w).length > max) { out.push(cur); cur = w; } else cur = cur ? cur + " " + w : w;
+    });
+    if (cur) out.push(cur);
+    return out;
+  }
+  const head = (lines, lede = "", code = "") => {
+    document.querySelector(".page-code").textContent = code;
+    return `<header class="page-head"><h1 class="title" id="pageTitle"></h1>${lede ? `<div class="lede"><p class="small muted">${code ? esc(code) : ""}</p><p data-reveal>${esc(lede)}</p></div>` : ""}</header>`;
+  };
+  const foot = `<footer class="page-foot small"><span>© ${new Date().getFullYear()} ${esc(S.name.join(" "))}</span><nav>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join(" &nbsp; ")}</nav></footer>`;
+  const menuItem = (key) => S.menu.find((m) => m.href.startsWith(key)) || { code: "" };
+
+  let titleLines = [], html = "";
+  const notFound = (what) => { titleLines = ["NOT", "FOUND"]; html = head(titleLines) + `<p class="prose">That ${what} doesn't exist. <a href="index.html">Back home</a>.</p>`; };
+
+  switch (page) {
+    case "portfolio": {
+      titleLines = ["PORTFOLIO"];
+      html = head(titleLines, "Selected projects. Hover a row to preview, click to open.", menuItem("portfolio").code) +
+        `<ol class="rows">${S.portfolio.map((p) => `
+          <li class="row" data-reveal><a href="project.html?id=${encodeURIComponent(p.id)}" data-cover="${esc(p.cover)}">
+            <span class="code">${esc(p.code)}</span><span class="t">${esc(p.title)}</span>
+            <span class="code x mid">${esc(p.type)}</span><span class="code r">${esc(p.year)}</span>
+            <img class="thumb" src="${esc(p.cover)}" alt="" loading="lazy">
+          </a></li>`).join("")}</ol>`;
+      break;
+    }
+    case "project": {
+      const i = S.portfolio.findIndex((p) => p.id === params.get("id"));
+      if (i < 0) { notFound("project"); break; }
+      const p = S.portfolio[i], next = S.portfolio[(i + 1) % S.portfolio.length];
+      document.title = `${p.title} — ${S.name.join(" ")}`;
+      titleLines = toLines(p.title);
+      html = head(titleLines, p.summary, p.code) +
+        `<figure class="cover" data-reveal><img src="${esc(p.cover)}" alt="${esc(p.title)}" class="parallax"></figure>
+         <article class="article">
+           <div class="meta small" data-reveal><span>${esc(p.code)}</span><span class="muted">${esc(p.type)}</span><span class="muted">${esc(p.year)}</span>
+             ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">Visit project ↗</a>` : ""}</div>
+           <div class="prose" data-reveal>${prose(p.body)}</div>
+         </article>
+         ${p.gallery?.length ? `<div class="gallery">${p.gallery.map((g) => `<img src="${esc(g)}" alt="" loading="lazy" data-reveal>`).join("")}</div>` : ""}
+         ${S.portfolio.length > 1 ? `<a class="next-link" href="project.html?id=${encodeURIComponent(next.id)}"><span class="small">Next project — ${esc(next.code)}</span><span class="t">${esc(next.title)}</span></a>` : ""}`;
+      break;
+    }
+    case "photos": {
+      titleLines = ["PHOTOS"];
+      html = head(titleLines, "A running archive of photographs. Click any image to view it larger.", menuItem("photos").code) +
+        `<div class="photo-grid">${S.photos.map((p, i) => `
+          <figure class="photo" data-reveal data-i="${i}" tabindex="0" role="button" aria-label="Open ${esc(p.caption)}">
+            <div class="ph"><img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy"></div>
+            <figcaption class="small"><span>${esc(p.code)}</span><span class="muted">${esc(p.place)}</span></figcaption>
+          </figure>`).join("")}</div>
+        <div class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+          <div class="lb-top small"><span class="lb-code"></span><button type="button" class="lb-close small">Close ✕</button></div>
+          <div class="lb-stage"><img alt=""></div>
+          <div class="lb-bot small"><button type="button" class="lb-prev small">← Prev</button><span class="lb-cap"></span><button type="button" class="lb-next small">Next →</button></div>
+        </div>`;
+      break;
+    }
+    case "writing": {
+      titleLines = ["WRITING"];
+      html = head(titleLines, "Essays, notes and things I want to remember.", menuItem("writing").code) +
+        `<ol class="rows">${S.writing.map((w) => `
+          <li class="row" data-reveal><a href="article.html?slug=${encodeURIComponent(w.slug)}">
+            <span class="code">${esc(w.code)}</span>
+            <span><span class="t">${esc(w.title)}</span><p class="ex">${esc(w.excerpt)}</p></span>
+            <span class="code x mid"></span><span class="code r">${fmtDate(w.date)}</span>
+          </a></li>`).join("")}</ol>`;
+      break;
+    }
+    case "article": {
+      const i = S.writing.findIndex((w) => w.slug === params.get("slug"));
+      if (i < 0) { notFound("piece of writing"); break; }
+      const w = S.writing[i], next = S.writing[(i + 1) % S.writing.length];
+      document.title = `${w.title} — ${S.name.join(" ")}`;
+      titleLines = toLines(w.title);
+      html = head(titleLines, w.excerpt, w.code) +
+        `<article class="article">
+           <div class="meta small" data-reveal><span>${fmtDate(w.date)}</span><span class="muted">${esc(w.code)}</span><a href="writing.html">← All writing</a></div>
+           <div class="prose" data-reveal>${prose(w.body)}</div>
+         </article>
+         ${S.writing.length > 1 ? `<a class="next-link" href="article.html?slug=${encodeURIComponent(next.slug)}"><span class="small">Read next — ${esc(next.code)}</span><span class="t">${esc(next.title)}</span></a>` : ""}`;
+      break;
+    }
+    case "about": {
+      titleLines = ["ABOUT"];
+      const a = S.about;
+      html = head(titleLines, S.role, menuItem("about").code) +
+        `<section class="about-grid">
+           <div class="portrait" data-reveal><img src="${esc(a.image)}" alt="Portrait" class="parallax"></div>
+           <div>
+             <div class="prose" data-reveal>${a.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+             <ul class="facts" data-reveal>${a.facts.map(([k, v]) => `<li><span class="small muted">${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>
+           </div>
+         </section>
+         <section class="contact" id="contact">
+           <span class="small">${esc(menuItem("about.html#contact").code)} — Contact</span><br>
+           <a class="mail" href="mailto:${esc(S.email)}" data-reveal>${esc(S.email)}</a>
+           <nav class="small" data-reveal>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</nav>
+         </section>`;
+      break;
+    }
+    case "archive": {
+      titleLines = ["ARCHIVE"];
+      const all = [
+        ...S.portfolio.map((p) => ({ code: p.code, title: p.title, kind: "Portfolio", y: p.year, href: `project.html?id=${encodeURIComponent(p.id)}` })),
+        ...S.writing.map((w) => ({ code: w.code, title: w.title, kind: "Writing", y: year(w.date), href: `article.html?slug=${encodeURIComponent(w.slug)}` })),
+        ...S.photos.map((p) => ({ code: p.code, title: p.caption, kind: "Photo", y: "", href: "photos.html" })),
+      ];
+      html = head(titleLines, `Everything in one list — ${all.length} entries.`, menuItem("archive").code) +
+        `<ol class="rows">${all.map((r) => `
+          <li class="row" data-reveal><a href="${r.href}">
+            <span class="code">${esc(r.code)}</span><span class="t">${esc(r.title)}</span>
+            <span class="code x mid">${esc(r.kind)}</span><span class="code r">${esc(r.y)}</span>
+          </a></li>`).join("")}</ol>`;
+      break;
+    }
+    default: notFound("page");
+  }
+
+  main.innerHTML = html + foot;
+
+  /* ---------- Title: split, fit, animate ---------- */
+  const titleEl = document.getElementById("pageTitle");
+  const chars = U.splitTitle(titleEl, titleLines);
+  const fit = () => {
+    const cs = getComputedStyle(main);
+    const w = main.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    U.fitTitle(titleEl, { width: 1, height: titleLines.length > 1 ? 0.55 : 0.32, box: { clientWidth: w, clientHeight: innerHeight } });
+  };
+  fit();
+  document.fonts?.ready.then(() => { fit(); window.ScrollTrigger?.refresh(); });
+  U.onResize(() => { fit(); window.ScrollTrigger?.refresh(); });
+
+  if (U.hasGsap && !U.reduced) {
+    gsap.set(chars, { yPercent: 110 });
+    U.reveal().then(() => {});
+    gsap.to(chars, { yPercent: 0, duration: 1.4, ease: "expo.out", stagger: 0.04, delay: 0.45 });
+    gsap.from(".page-lines i", { scaleY: 0, duration: 1.6, ease: "expo.inOut", stagger: 0.1, delay: 0.2 });
+    gsap.from(".topbar > *", { autoAlpha: 0, y: -10, duration: 1, stagger: 0.08, delay: 0.6 });
+    if (window.ScrollTrigger) {
+      document.querySelectorAll(".parallax").forEach((img) => {
+        gsap.fromTo(img, { yPercent: -8 }, { yPercent: 0, ease: "none", scrollTrigger: { trigger: img.parentElement, start: "top bottom", end: "bottom top", scrub: true } });
+      });
+    }
+  } else U.reveal();
+  U.initReveals();
+
+  /* ---------- Portfolio: floating cover preview ---------- */
+  if (page === "portfolio" && U.hasGsap && matchMedia("(hover: hover)").matches) {
+    const fp = document.createElement("div");
+    fp.className = "float-preview"; fp.innerHTML = "<img alt=''>";
+    document.body.appendChild(fp);
+    const img = fp.querySelector("img");
+    const xTo = gsap.quickTo(fp, "x", { duration: 0.6, ease: "power3" }), yTo = gsap.quickTo(fp, "y", { duration: 0.6, ease: "power3" });
+    addEventListener("mousemove", (e) => { xTo(e.clientX); yTo(e.clientY); });
+    document.querySelectorAll(".row a[data-cover]").forEach((a) => {
+      a.addEventListener("mouseenter", () => { img.src = a.dataset.cover; gsap.to(fp, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }); });
+      a.addEventListener("mouseleave", () => gsap.to(fp, { opacity: 0, scale: 0.9, duration: 0.4, ease: "expo.out" }));
+    });
+  }
+
+  /* ---------- Photos: lightbox ---------- */
+  if (page === "photos") {
+    const lb = document.querySelector(".lightbox"), lbImg = lb.querySelector("img");
+    let cur = 0, lastFocus = null;
+    const show = (i) => {
+      cur = (i + S.photos.length) % S.photos.length;
+      const p = S.photos[cur];
+      lbImg.src = p.src; lbImg.alt = p.caption;
+      lb.querySelector(".lb-code").textContent = `${p.code} — ${cur + 1}/${S.photos.length}`;
+      lb.querySelector(".lb-cap").textContent = `${p.caption}${p.place ? " · " + p.place : ""}`;
+      if (U.hasGsap) gsap.fromTo(lbImg, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" });
+    };
+    const open = (i) => {
+      lastFocus = document.activeElement; show(i); U.lenis?.stop();
+      if (U.hasGsap) gsap.to(lb, { autoAlpha: 1, duration: 0.4 }); else { lb.style.visibility = "visible"; lb.style.opacity = 1; }
+      lb.querySelector(".lb-close").focus();
+    };
+    const close = () => {
+      U.lenis?.start();
+      if (U.hasGsap) gsap.to(lb, { autoAlpha: 0, duration: 0.3 }); else { lb.style.visibility = "hidden"; lb.style.opacity = 0; }
+      lastFocus?.focus();
+    };
+    document.querySelectorAll(".photo").forEach((f) => {
+      f.addEventListener("click", () => open(+f.dataset.i));
+      f.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(+f.dataset.i); } });
+    });
+    lb.querySelector(".lb-close").addEventListener("click", close);
+    lb.querySelector(".lb-prev").addEventListener("click", () => show(cur - 1));
+    lb.querySelector(".lb-next").addEventListener("click", () => show(cur + 1));
+    addEventListener("keydown", (e) => {
+      if (lb.style.visibility !== "visible" && getComputedStyle(lb).visibility !== "visible") return;
+      if (e.key === "Escape") close(); if (e.key === "ArrowLeft") show(cur - 1); if (e.key === "ArrowRight") show(cur + 1);
+    });
+    let sx = 0;
+    lb.addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
+    lb.addEventListener("touchend", (e) => { const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); });
+  }
+
+  // Jump to #contact etc. after render
+  if (location.hash) setTimeout(() => { const t = document.querySelector(location.hash); if (t) U.lenis ? U.lenis.scrollTo(t, { offset: -80, immediate: true }) : t.scrollIntoView(); }, 300);
+})();

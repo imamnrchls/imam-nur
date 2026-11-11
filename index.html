@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Imam Nurcholis</title>
+  <meta name="description" content="Portfolio, photographs and writing by Imam Nurcholis.">
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300..500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="home">
+  <main>
+    <section class="stage" aria-label="Introduction">
+      <div class="hero-bg"><img alt="" fetchpriority="high"></div>
+      <div class="lines" aria-hidden="true"><i class="v v1"></i><i class="v v2"></i><i class="h"></i></div>
+      <nav class="tiles" aria-label="Sections"></nav>
+      <div class="titles">
+        <h1 class="title title--name"></h1>
+        <p class="title title--index" aria-hidden="true"></p>
+      </div>
+      <div class="hero-meta small">
+        <span class="meta-role"></span>
+        <span class="c scroll-cue"><i></i>Scroll</span>
+        <a class="r credit" target="_blank" rel="noopener"></a>
+      </div>
+    </section>
+
+    <footer class="home-foot">
+      <p class="big" data-reveal>Open for commissions, collaborations and good conversations — <a href="about.html#contact">say hello</a>.</p>
+      <div class="foot-row small" data-reveal>
+        <span>© <span id="y"></span> Imam Nurcholis</span>
+        <nav id="footLinks"></nav>
+      </div>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="assets/js/content.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+    document.getElementById("footLinks").innerHTML = SITE.links.map(l => `<a href="${UI.esc(l.url)}" target="_blank" rel="noopener">${UI.esc(l.label)}</a>`).join("");
+  </script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>
