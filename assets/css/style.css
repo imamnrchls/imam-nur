@@ -44,11 +44,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .plus {
   position: fixed; top: calc(var(--frame-w) + 44px); left: 50%; z-index: 80;
   width: 44px; height: 44px; margin: -22px 0 0 -22px;
-  /* White + "difference" inverts whatever is underneath: light on the photo, dark on paper. */
-  color: #fff;
+  color: var(--ink);
   display: grid; place-items: center;
-  mix-blend-mode: difference;
 }
+/* Home starts over the photo (pure white); the scroll scene fades it to ink when the paper appears. */
+.home .plus { color: #fff; }
+.menu-open .plus { color: var(--ink) !important; } /* the menu is always paper */
 .plus span { position: absolute; width: 30px; height: 1.5px; background: currentColor; transition: transform .6s var(--ease); }
 .plus span:last-child { transform: rotate(90deg); }
 .plus:hover span:first-child { transform: rotate(90deg); }

@@ -85,6 +85,7 @@
       tl.to(".hero-bg", { clipPath: "inset(50% 0% 50% 0%)", duration: 1, ease: "power2.inOut" }, 0)
         .to(bgImg, { scale: 1.2, duration: 1, ease: "power2.inOut" }, 0)
         .to(stage, { "--fg": "#0b0b0b", "--ln": "rgba(11,11,11,.55)", duration: 0.35 }, 0.45)
+        .to(".plus", { color: "#0b0b0b", duration: 0.35 }, 0.45)
         .to(".hero-meta", { autoAlpha: 0, duration: 0.3 }, 0.1)
       // 2. the name rolls up and out, the index title rolls in
         .to(nameChars, { yPercent: -110, duration: 0.6, stagger: { each: 0.03, from: "start" }, ease: "power2.in" }, 0.25)
