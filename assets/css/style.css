@@ -93,8 +93,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .wipe {
   position: fixed; inset: 0; z-index: 85; background: var(--ink);
   transform: scaleY(0); transform-origin: bottom; pointer-events: none;
+  /* Fully hidden unless a transition is playing: iOS Safari tints its top and bottom bars from fixed full-screen layers,
+     so an idle (even scaled-to-zero) black layer turns the bars black instead of letting the page show through. */
+  visibility: hidden;
 }
-.js .wipe.is-cover { transform: scaleY(1); }
+.js .wipe.is-cover { transform: scaleY(1); visibility: visible; }
+.wipe.is-active { visibility: visible; }
 
 /* ============================================================
    Split text (big titles)

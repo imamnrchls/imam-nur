@@ -188,6 +188,7 @@
   }
   function leave(href) {
     if (!hasGsap || reduced) { location.href = href; return; }
+    wipe.classList.add("is-active");
     gsap.fromTo(wipe, { scaleY: 0, transformOrigin: "bottom" }, { scaleY: 1, duration: 0.7, ease: "expo.inOut", onComplete: () => (location.href = href) });
   }
   document.addEventListener("click", (e) => {
@@ -205,7 +206,7 @@
     leave(url.href);
   });
   // Coming back with the browser's back button (bfcache): uncover again
-  window.addEventListener("pageshow", (e) => { if (e.persisted && hasGsap) gsap.set(wipe, { scaleY: 0 }); });
+  window.addEventListener("pageshow", (e) => { if (e.persisted) { wipe.classList.remove("is-active", "is-cover"); if (hasGsap) gsap.set(wipe, { scaleY: 0 }); } });
 
   /* ---------- Scroll reveals ---------- */
   function initReveals(root = document) {
