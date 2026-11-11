@@ -160,7 +160,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .hero-meta > * { pointer-events: auto; }
 .hero-meta .c { text-align: center; }
-.hero-meta .r { text-align: right; }
+.hero-meta .r { text-align: right; grid-column: 3; justify-self: end; }
+.hero-meta .c { grid-column: 2; }
 .hero-meta a:hover { text-decoration: underline; }
 .scroll-cue { display: inline-flex; gap: 8px; align-items: center; }
 .scroll-cue i { display: inline-block; width: 1px; height: 22px; background: currentColor; transform-origin: top; animation: cue 1.8s var(--ease) infinite; }
@@ -179,6 +180,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .tile-img { width: 50%; }
   .hero-meta { grid-template-columns: 1fr 1fr; }
   .hero-meta .c { display: none; }
+  .hero-meta .r { grid-column: 2; }
 }
 
 /* ============================================================
