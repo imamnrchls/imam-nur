@@ -93,7 +93,16 @@ window.SITE = {
 
   // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Photos page says so.
   //   { src: "images/my-photo.jpg", code: "PH-001-2", caption: "A short caption", place: "Where it was taken" },
-  photos: [  ],
+  // A video entry uses "video" instead of "src" (autoplays muted in the grid, plays with controls in the viewer).
+  photos: [
+    { src: "images/photos/photo-01.jpg", code: "PH-001-2", caption: "Standing on the slope", place: "" },
+    { src: "images/photos/photo-02.jpg", code: "PH-002-6", caption: "On the ridge trail", place: "" },
+    { src: "images/photos/photo-03.jpg", code: "PH-003-1", caption: "Heading down above the clouds", place: "" },
+    { src: "images/photos/photo-04.jpg", code: "PH-004-5", caption: "Along the hillside path", place: "" },
+    { src: "images/photos/photo-05.jpg", code: "PH-005-9", caption: "Ridgeline over the clouds", place: "" },
+    { src: "images/photos/photo-06.jpg", code: "PH-006-3", caption: "Clouds and campsite below", place: "" },
+    { video: "images/photos/photo-07.mp4", code: "PH-007-8", caption: "On the move", place: "" },
+  ],
 
   writing: [
     {

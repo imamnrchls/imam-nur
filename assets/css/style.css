@@ -245,8 +245,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .photo-grid { columns: 3; column-gap: clamp(12px, 2vw, 28px); margin-bottom: 120px; }
 .photo { break-inside: avoid; margin: 0 0 clamp(20px, 3vw, 44px); cursor: zoom-in; }
 .photo .ph { overflow: hidden; background: #ddd; }
-.photo img { width: 100%; height: auto; transition: transform 1.1s var(--ease); }
-.photo:hover img { transform: scale(1.04); }
+.photo img, .photo video { display: block; width: 100%; height: auto; transition: transform 1.1s var(--ease); }
+.photo:hover img, .photo:hover video { transform: scale(1.04); }
 .photo figcaption { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; }
 @media (max-width: 900px) { .photo-grid { columns: 2; } }
 @media (max-width: 520px) { .photo-grid { columns: 1; } }
@@ -259,7 +259,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .lightbox .lb-top, .lightbox .lb-bot { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .lightbox .lb-stage { display: grid; place-items: center; min-height: 0; padding: 20px 0; }
-.lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.lightbox img, .lightbox video { max-width: 100%; max-height: 100%; object-fit: contain; }
+.lightbox [hidden] { display: none; }
 .lightbox button:hover { text-decoration: underline; }
 
 /* Article / project / about */
@@ -402,3 +403,6 @@ html.has-custom-cursor input, html.has-custom-cursor textarea, html.has-custom-c
 /* About without a portrait: the text keeps the right two thirds of the grid */
 .about-grid.no-portrait > div { grid-column: 2; }
 @media (max-width: 700px) { .about-grid.no-portrait > div { grid-column: 1; } }
+
+/* Grid lines: kept on the homepage and in every footer; hidden in the body of inner pages. */
+.page-lines { display: none; }

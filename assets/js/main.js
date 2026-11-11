@@ -126,9 +126,13 @@
       }
     }
   }
-  if ("IntersectionObserver" in window) {
-    // The fixed label at the top of inner pages would sit on top of the footer; hide it while the footer is in view.
-    new IntersectionObserver(([e]) => document.body.classList.toggle("foot-in-view", e.isIntersecting && e.intersectionRatio > 0.15), { threshold: [0, 0.15, 0.5] }).observe(footer);
+  {
+    // The fixed label at the top of inner pages would sit on top of the footer; hide it only once the footer actually reaches the top of the screen.
+    // (On a short page the footer is visible from the start, and the label should stay.)
+    const bar = () => document.body.classList.toggle("foot-in-view", footer.getBoundingClientRect().top < 90);
+    window.addEventListener("scroll", bar, { passive: true });
+    window.addEventListener("resize", bar);
+    bar();
   }
   footer.querySelector(".foot-art img")?.addEventListener("load", () => window.ScrollTrigger?.refresh(), { once: true });
   window.addEventListener("load", () => window.ScrollTrigger?.refresh());

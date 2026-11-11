@@ -1,7 +1,7 @@
 // Tiny static file server used only for local preview.
 const http = require("http"), fs = require("fs"), path = require("path");
 const root = __dirname;
-const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml" };
+const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".mp4": "video/mp4" };
 http.createServer((req, res) => {
   const rel = decodeURIComponent(req.url.split("?")[0]);
   const file = path.join(root, rel === "/" ? "index.html" : rel);

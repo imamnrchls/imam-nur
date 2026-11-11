@@ -80,12 +80,12 @@
       html = !S.photos.length ? head(titleLines, "No photographs here yet.", menuItem("photos").code) : head(titleLines, "A running archive of photographs. Click any image to view it larger.", menuItem("photos").code) +
         `<div class="photo-grid">${S.photos.map((p, i) => `
           <figure class="photo" data-reveal data-i="${i}" tabindex="0" role="button" aria-label="Open ${esc(p.caption)}">
-            <div class="ph"><img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy"></div>
+            <div class="ph">${p.video ? `<video src="${esc(p.video)}#t=0.1" muted loop autoplay playsinline preload="metadata" aria-label="${esc(p.caption)}"></video>` : `<img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy">`}</div>
             <figcaption class="small"><span>${esc(p.code)}</span><span class="muted">${esc(p.place)}</span></figcaption>
           </figure>`).join("")}</div>
         <div class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
           <div class="lb-top small"><span class="lb-code"></span><button type="button" class="lb-close small">Close ${U.icon("close")}</button></div>
-          <div class="lb-stage"><img alt=""></div>
+          <div class="lb-stage"><img alt=""><video controls playsinline loop hidden></video></div>
           <div class="lb-bot small"><button type="button" class="lb-prev small">${U.icon("left")} Prev</button><span class="lb-cap"></span><button type="button" class="lb-next small">Next ${U.icon("right")}</button></div>
         </div>`;
       break;
@@ -195,15 +195,17 @@
 
   /* ---------- Photos: lightbox ---------- */
   if (page === "photos" && S.photos.length) {
-    const lb = document.querySelector(".lightbox"), lbImg = lb.querySelector("img");
+    const lb = document.querySelector(".lightbox"), lbImg = lb.querySelector("img"), lbVid = lb.querySelector("video");
     let cur = 0, lastFocus = null;
     const show = (i) => {
       cur = (i + S.photos.length) % S.photos.length;
       const p = S.photos[cur];
-      lbImg.src = p.src; lbImg.alt = p.caption;
+      lbVid.pause();
+      lbImg.hidden = !!p.video; lbVid.hidden = !p.video;
+      if (p.video) { lbVid.src = p.video; lbVid.play().catch(() => {}); } else { lbVid.removeAttribute("src"); lbImg.src = p.src; lbImg.alt = p.caption; }
       lb.querySelector(".lb-code").textContent = `${p.code} — ${cur + 1}/${S.photos.length}`;
       lb.querySelector(".lb-cap").textContent = `${p.caption}${p.place ? " · " + p.place : ""}`;
-      if (U.hasGsap) gsap.fromTo(lbImg, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" });
+      if (U.hasGsap) gsap.fromTo(p.video ? lbVid : lbImg, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" });
     };
     const open = (i) => {
       lastFocus = document.activeElement; show(i); U.lenis?.stop();
@@ -211,6 +213,7 @@
       lb.querySelector(".lb-close").focus();
     };
     const close = () => {
+      lbVid.pause();
       U.lenis?.start();
       if (U.hasGsap) gsap.to(lb, { autoAlpha: 0, duration: 0.3 }); else { lb.style.visibility = "hidden"; lb.style.opacity = 0; }
       lastFocus?.focus();
