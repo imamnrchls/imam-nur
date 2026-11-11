@@ -93,7 +93,6 @@
   const isHome = document.body.classList.contains("home");
   const niceName = S.name.join(" ").replace(/\b(\w)(\w*)/g, (m, x, y) => x + y.toLowerCase());
   const words = (t) => String(t).split(" ").map((w) => `<span class="w"><span>${esc(w)}</span></span>`).join(" ");
-  const cityName = String(S.location || "").split(",")[0];
   const footer = document.createElement("footer");
   footer.className = "site-foot";
   footer.innerHTML = `
@@ -102,21 +101,10 @@
       ${isHome && F.cta ? `<p class="foot-big">${words(F.cta)} ${words("—")} <a href="about.html#contact">${words(F.ctaLink || "say hello")}</a><span class="w"><span>.</span></span></p>` : ""}
       <div class="foot-row small">
         <span>© ${new Date().getFullYear()} ${esc(niceName)}</span>
-        <span class="foot-time">${esc(cityName)} <time id="footTime"></time></span>
         <nav>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</nav>
       </div>
     </div>`;
   (document.querySelector("main") || document.body).insertAdjacentElement("afterend", footer);
-
-  // Live local time
-  (function () {
-    const el = footer.querySelector("#footTime");
-    let fmt;
-    try { fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: S.timezone || undefined }); }
-    catch (e) { fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); }
-    const tick = () => { el.textContent = fmt.format(new Date()); };
-    tick(); setInterval(tick, 1000);
-  })();
 
   // Footer motion: the line rises word by word, the picture drifts with scroll and follows the pointer
   if (hasGsap && !reduced && window.ScrollTrigger) {

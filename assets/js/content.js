@@ -13,7 +13,6 @@ window.SITE = {
   name: ["IMAM", "NURCHOLIS"],          // one entry per line of the big title
   role: "Human capital & driver management",
   location: "Jakarta, Indonesia",
-  timezone: "Asia/Jakarta",              // for the live clock in the footer
   email: "imam.nurcholis@outlook.com",   // shown on About / Contact
   links: [
     { label: "Instagram", url: "https://www.instagram.com/imamnrchls/" },
