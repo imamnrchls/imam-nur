@@ -12,7 +12,7 @@
     el.setAttribute("aria-label", lines.join(" "));
     el.innerHTML = lines.map((line) =>
       `<span class="line" aria-hidden="true"><span class="line-inner">${[...line].map((ch) =>
-        ch === " " ? `<span class="mask">&nbsp;</span>` : `<span class="mask"><span class="char">${esc(ch)}</span></span>`
+        ch === " " ? `<span class="mask">&nbsp;</span>` : `<span class="mask"><span class="char"><span class="ci">${esc(ch)}</span></span></span>`
       ).join("")}</span></span>`).join("");
     return el.querySelectorAll(".char");
   }

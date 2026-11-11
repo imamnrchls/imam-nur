@@ -103,7 +103,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .title .line { display: block; }
 .title .line-inner { display: inline-block; }
 .title .mask { display: inline-block; overflow: hidden; vertical-align: top; padding: .04em 0 .02em; margin: -.04em 0 -.02em; }
-.title .char { display: inline-block; will-change: transform; }
+.title .char, .title .ci { display: inline-block; will-change: transform; }
 
 /* ============================================================
    HOME

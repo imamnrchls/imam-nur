@@ -54,10 +54,12 @@
     const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
     if (U.reduced) { U.reveal(); tl.set([".lines i", nameChars, ".hero-meta", ".plus"], { clearProps: "all" }); return tl; }
     U.reveal();
-    tl.from(bgImg, { scale: 1.25, duration: 2.6, ease: "expo.out" }, 0.1)
+    // The intro moves the inner layer (.ci, .hero-bg) and the scroll scene moves the outer layer
+    // (.char, img), so scrolling back up always returns to the intro's final state.
+    tl.from(".hero-bg", { scale: 1.25, duration: 2.6, ease: "expo.out" }, 0.1)
       .from(".lines .v", { scaleY: 0, duration: 1.6, stagger: 0.12, ease: "expo.inOut" }, 0.2)
       .from(".lines .h", { scaleX: 0, duration: 1.6, ease: "expo.inOut" }, 0.35)
-      .from(nameChars, {
+      .from(nameEl.querySelectorAll(".ci"), {
         yPercent: 110, duration: 1.5,
         stagger: { each: 0.045, from: "center" },
       }, 0.7)
