@@ -112,11 +112,11 @@ window.SITE = {
       tracks: [["Speak to Me", "1:11"], ["Breathe (In the Air)", "2:46"], ["On the Run", "3:34"], ["Time", "7:06"], ["The Great Gig In the Sky", "4:44"], ["Money", "6:22"], ["Us and Them", "7:50"], ["Any Colour You Like", "3:26"], ["Brain Damage", "3:50"], ["Eclipse", "2:07"]],
     },
     {
-      url: "https://music.apple.com/id/album/the-new-abnormal/1498121188",
-      title: "The New Abnormal", artist: "The Strokes", kind: "Album", year: "2020",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/62/a6/ff/62a6ff2a-95c9-5302-31f4-2dcca9e40323/886448281085.jpg/600x600bb.jpg",
-      picks: [1, 2, 6, 8, 9],   // track numbers you recommend, e.g. [2, 5]
-      tracks: [["The Adults Are Talking", "5:09"], ["Selfless", "3:42"], ["Brooklyn Bridge To Chorus", "3:56"], ["Bad Decisions", "4:53"], ["Eternal Summer", "6:15"], ["At The Door", "5:10"], ["Why Are Sundays So Depressing", "4:36"], ["Not The Same Anymore", "5:37"], ["Ode To The Mets", "5:52"]],
+      url: "https://music.apple.com/id/album/the-stone-roses-remastered-2009/322969529",
+      title: "The Stone Roses", artist: "The Stone Roses", kind: "Album", year: "1989",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/de/bd/71/debd715a-d49b-1ec8-6b4d-bf3f25e0e90b/dj.rldpqukx.jpg/600x600bb.jpg",
+      picks: [1, 8, 10, 11],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["I Wanna Be Adored", "4:53"], ["She Bangs the Drums", "3:52"], ["Waterfall", "4:39"], ["Don't Stop", "5:21"], ["Bye Bye Bad Man", "4:04"], ["Elizabeth My Dear", "0:53"], ["(Song for My) Sugar Spun Sister", "3:27"], ["Made of Stone", "4:15"], ["Shoot You Down", "4:13"], ["This Is the One", "4:59"], ["I Am the Resurrection", "8:13"], ["Fools Gold", "9:54"]],
     },
     {
       url: "https://music.apple.com/id/album/siamese-dream/721207206",
@@ -133,13 +133,6 @@ window.SITE = {
       tracks: [["Airbag", "4:48"], ["Paranoid Android", "6:27"], ["Subterranean Homesick Alien", "4:28"], ["Exit Music (For a Film)", "4:27"], ["Let Down", "5:00"], ["Karma Police", "4:24"], ["Fitter Happier", "1:57"], ["Electioneering", "3:51"], ["Climbing Up the Walls", "4:45"], ["No Surprises", "3:49"], ["Lucky", "4:19"], ["The Tourist", "5:27"]],
     },
     {
-      url: "https://music.apple.com/id/album/the-stone-roses-remastered-2009/322969529",
-      title: "The Stone Roses", artist: "The Stone Roses", kind: "Album", year: "1989",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/de/bd/71/debd715a-d49b-1ec8-6b4d-bf3f25e0e90b/dj.rldpqukx.jpg/600x600bb.jpg",
-      picks: [1, 8, 10, 11],   // track numbers you recommend, e.g. [2, 5]
-      tracks: [["I Wanna Be Adored", "4:53"], ["She Bangs the Drums", "3:52"], ["Waterfall", "4:39"], ["Don't Stop", "5:21"], ["Bye Bye Bad Man", "4:04"], ["Elizabeth My Dear", "0:53"], ["(Song for My) Sugar Spun Sister", "3:27"], ["Made of Stone", "4:15"], ["Shoot You Down", "4:13"], ["This Is the One", "4:59"], ["I Am the Resurrection", "8:13"], ["Fools Gold", "9:54"]],
-    },
-    {
       url: "https://music.apple.com/id/album/be-here-now/207010732",
       title: "Be Here Now", artist: "Oasis", kind: "Album", year: "1997",
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music/ef/d6/2c/mzi.cokrlcna.jpg/600x600bb.jpg",
@@ -154,11 +147,11 @@ window.SITE = {
       tracks: [["Never Meant", "4:29"], ["The Summer Ends", "4:45"], ["Honestly?", "6:07"], ["For Sure", "3:16"], ["You Know I Should Be Leaving Soon", "3:41"], ["But the Regrets Are Killing Me", "3:54"], ["I'll See You When We're Both Not so Emotional", "3:44"], ["Stay Home", "8:11"], ["The One with the Wurlitzer", "2:45"]],
     },
     {
-      url: "https://music.apple.com/id/album/blonde/1146195596",
-      title: "Blonde", artist: "Frank Ocean", kind: "Album", year: "2016",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/bb/45/68/bb4568f3-68cd-619d-fbcb-4e179916545d/BlondCover-Final.jpg/600x600bb.jpg",
-      picks: [3, 7, 14, 16],   // track numbers you recommend, e.g. [2, 5]
-      tracks: [["Nikes", "5:14"], ["Ivy", "4:09"], ["Pink + White", "3:05"], ["Be Yourself", "1:27"], ["Solo", "4:17"], ["Skyline To", "3:05"], ["Self Control", "4:10"], ["Good Guy", "1:07"], ["Nights", "5:07"], ["Solo (Reprise)", "1:19"], ["Pretty Sweet", "2:38"], ["Facebook Story", "1:09"], ["Close to You", "1:26"], ["White Ferrari", "4:09"], ["Seigfried", "5:35"], ["Godspeed", "2:58"], ["Futura Free", "9:24"]],
+      url: "https://music.apple.com/id/album/submarine-ep/422325910",
+      title: "Submarine", artist: "Alex Turner", kind: "EP", year: "2011",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/fa/a6/00/faa60001-c7aa-d51e-70a8-0b092f810d24/mzi.iylunwbj.jpg/600x600bb.jpg",
+      picks: [2, 4, 5],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Stuck On the Puzzle (Intro)", "0:54"], ["Hiding Tonight", "3:07"], ["Glass In the Park", "4:00"], ["It's Hard to Get Around the Wind", "4:07"], ["Stuck On the Puzzle", "3:31"], ["Piledriver Waltz", "3:25"]],
     },
     {
       url: "https://music.apple.com/id/album/peripheral-vision/1493926962",
@@ -175,18 +168,25 @@ window.SITE = {
       tracks: [["Let It Happen", "7:47"], ["Nangs", "1:48"], ["The Moment", "4:15"], ["Yes I'm Changing", "4:31"], ["Eventually", "5:19"], ["Gossip", "0:55"], ["The Less I Know the Better", "3:39"], ["Past Life", "3:48"], ["Disciples", "1:48"], ["'Cause I'm a Man", "4:02"], ["Reality In Motion", "4:13"], ["Love/Paranoia", "3:06"], ["New Person, Same Old Mistakes", "6:02"]],
     },
     {
+      url: "https://music.apple.com/id/album/blonde/1146195596",
+      title: "Blonde", artist: "Frank Ocean", kind: "Album", year: "2016",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/bb/45/68/bb4568f3-68cd-619d-fbcb-4e179916545d/BlondCover-Final.jpg/600x600bb.jpg",
+      picks: [3, 7, 14, 16],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Nikes", "5:14"], ["Ivy", "4:09"], ["Pink + White", "3:05"], ["Be Yourself", "1:27"], ["Solo", "4:17"], ["Skyline To", "3:05"], ["Self Control", "4:10"], ["Good Guy", "1:07"], ["Nights", "5:07"], ["Solo (Reprise)", "1:19"], ["Pretty Sweet", "2:38"], ["Facebook Story", "1:09"], ["Close to You", "1:26"], ["White Ferrari", "4:09"], ["Seigfried", "5:35"], ["Godspeed", "2:58"], ["Futura Free", "9:24"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/the-new-abnormal/1498121188",
+      title: "The New Abnormal", artist: "The Strokes", kind: "Album", year: "2020",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/62/a6/ff/62a6ff2a-95c9-5302-31f4-2dcca9e40323/886448281085.jpg/600x600bb.jpg",
+      picks: [1, 2, 6, 8, 9],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["The Adults Are Talking", "5:09"], ["Selfless", "3:42"], ["Brooklyn Bridge To Chorus", "3:56"], ["Bad Decisions", "4:53"], ["Eternal Summer", "6:15"], ["At The Door", "5:10"], ["Why Are Sundays So Depressing", "4:36"], ["Not The Same Anymore", "5:37"], ["Ode To The Mets", "5:52"]],
+    },
+    {
       url: "https://music.apple.com/id/album/getting-killed/1818548779",
       title: "Getting Killed", artist: "Geese", kind: "Album", year: "2025",
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/0b/b8/f1/0bb8f1d7-1df0-20c0-9539-51d08058eeb1/5400863191436_Cover.jpg/600x600bb.jpg",
       picks: [2, 8, 10],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Trinidad", "3:45"], ["Cobra", "3:05"], ["Husbands", "4:08"], ["Getting Killed", "4:45"], ["Islands of Men", "5:54"], ["100 Horses", "3:46"], ["Half Real", "3:22"], ["Au Pays du Cocaine", "3:31"], ["Bow Down", "3:28"], ["Taxes", "3:18"], ["Long Island City Here I Come", "6:37"]],
-    },
-    {
-      url: "https://music.apple.com/id/album/submarine-ep/422325910",
-      title: "Submarine", artist: "Alex Turner", kind: "EP", year: "2011",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/fa/a6/00/faa60001-c7aa-d51e-70a8-0b092f810d24/mzi.iylunwbj.jpg/600x600bb.jpg",
-      picks: [2, 4, 5],   // track numbers you recommend, e.g. [2, 5]
-      tracks: [["Stuck On the Puzzle (Intro)", "0:54"], ["Hiding Tonight", "3:07"], ["Glass In the Park", "4:00"], ["It's Hard to Get Around the Wind", "4:07"], ["Stuck On the Puzzle", "3:31"], ["Piledriver Waltz", "3:25"]],
     },
   ],
 
