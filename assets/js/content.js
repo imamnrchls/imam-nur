@@ -28,12 +28,12 @@ window.SITE = {
 
   // The six tiles on the homepage. Each one is a menu entry.
   menu: [
-    { label: "About",      code: "AB-010-7", href: "about.html",     image: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=900&q=75" },
-    { label: "Photos",     code: "PH-118-4", href: "photos.html",    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=75" },
-    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?auto=format&fit=crop&w=900&q=75" },
-    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&w=900&q=75" },
-    { label: "Archive",    code: "AR-129-2", href: "archive.html",   image: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=900&q=75" },
-    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=75" },
+    { label: "About",      code: "AB-010-7", href: "about.html",     image: "https://images.unsplash.com/photo-1544502062-f82887f03d1c?auto=format&fit=crop&w=900&q=75" },
+    { label: "Photos",     code: "PH-118-4", href: "photos.html",    image: "https://images.unsplash.com/photo-1512390225428-a9d51c817f94?auto=format&fit=crop&w=900&q=75" },
+    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=900&q=75" },
+    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?auto=format&fit=crop&w=900&q=75" },
+    { label: "Archive",    code: "AR-129-2", href: "archive.html",   image: "https://images.unsplash.com/photo-1762627105132-f6ed848a23bf?auto=format&fit=crop&w=900&q=75" },
+    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "https://images.unsplash.com/photo-1637597384611-0c33cef6ec03?auto=format&fit=crop&w=900&q=75" },
   ],
 
   about: {
