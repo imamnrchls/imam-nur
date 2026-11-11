@@ -28,7 +28,7 @@ window.SITE = {
   footer: {
     cta: "Open for commissions, collaborations and good conversations",
     ctaLink: "say hello",
-    art: "images/footer-dither.jpg",
+    art: "images/footer-bg.jpg",
   },
 
   // The second title that appears while scrolling (one entry per line)
