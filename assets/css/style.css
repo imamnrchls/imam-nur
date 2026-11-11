@@ -212,7 +212,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .page-head .lede p:last-child { grid-column: 2; }
 @media (max-width: 700px) { .page-head .lede { grid-template-columns: 1fr; } .page-head .lede p:last-child { grid-column: 1; } }
 
-/* Index rows (portfolio / writing / archive) */
+/* Index rows (portfolio / writing) */
 .rows { list-style: none; margin: 0 0 120px; padding: 0; border-top: 1px solid var(--line); }
 .row { border-bottom: 1px solid var(--line); }
 .row a {
@@ -408,3 +408,16 @@ html.has-custom-cursor input, html.has-custom-cursor textarea, html.has-custom-c
 
 /* Grid lines: kept on the homepage and in every footer; hidden in the body of inner pages. */
 .page-lines { display: none; }
+
+/* Music: recommendations with Apple Music players */
+.music-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px) clamp(16px, 2vw, 28px); margin-bottom: 120px; border-top: 1px solid var(--line); padding-top: 24px; }
+.track { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.track-head { display: flex; justify-content: space-between; gap: 12px; }
+.track-title { margin: 6px 0 0; font-family: var(--display); font-weight: 400; font-size: clamp(28px, 3vw, 44px); line-height: 1; }
+.track-artist { margin: 0; }
+.track-note { margin: 0; color: var(--muted); max-width: 52ch; }
+.track-player { width: 100%; height: 175px; border: 0; border-radius: 10px; overflow: hidden; background: transparent; margin-top: 8px; }
+.track-player.tall { height: 450px; }
+.track > a.small { align-self: flex-start; }
+.track > a.small:hover { text-decoration: underline; }
+@media (max-width: 700px) { .music-grid { grid-template-columns: minmax(0, 1fr); } }

@@ -135,19 +135,24 @@
          </section>`;
       break;
     }
-    case "archive": {
-      titleLines = ["ARCHIVE"];
-      const all = [
-        ...S.portfolio.map((p) => ({ code: p.code, title: p.title, kind: "Portfolio", y: p.year, href: `project.html?id=${encodeURIComponent(p.id)}` })),
-        ...S.writing.map((w) => ({ code: w.code, title: w.title, kind: "Writing", y: year(w.date), href: `article.html?slug=${encodeURIComponent(w.slug)}` })),
-        ...S.photos.map((p) => ({ code: p.code, title: p.caption, kind: "Photo", y: "", href: "photos.html" })),
-      ];
-      html = head(titleLines, `Everything in one list — ${all.length} entries.`, menuItem("archive").code) +
-        `<ol class="rows">${all.map((r) => `
-          <li class="row" data-reveal><a href="${r.href}">
-            <span class="code">${esc(r.code)}</span><span class="t">${esc(r.title)}</span>
-            <span class="code x mid">${esc(r.kind)}</span><span class="code r">${esc(r.y)}</span>
-          </a></li>`).join("")}</ol>`;
+    case "music": {
+      titleLines = ["MUSIC"];
+      const list = S.music || [];
+      // music.apple.com/… → embed.music.apple.com/… (Apple's official embeddable player)
+      const embed = (u) => { try { const x = new URL(u); return x.hostname.endsWith("music.apple.com") ? `https://embed.music.apple.com${x.pathname}${x.search}` : ""; } catch { return ""; } };
+      html = !list.length ? head(titleLines, "No recommendations here yet.", menuItem("music").code) : head(titleLines, "Songs and records I keep coming back to. Press play, or open them in Apple Music.", menuItem("music").code) +
+        `<div class="music-grid">${list.map((m, i) => {
+          const src = embed(m.url), tall = (m.kind || "").toLowerCase() !== "song";
+          return `
+          <article class="track" data-reveal>
+            <div class="track-head small"><span>${esc(m.code || `MU-${String(i + 1).padStart(3, "0")}`)}</span><span class="muted">${esc(m.kind || "")}</span></div>
+            <h2 class="track-title">${esc(m.title || "")}</h2>
+            ${m.artist ? `<p class="track-artist">${esc(m.artist)}</p>` : ""}
+            ${m.note ? `<p class="track-note">${esc(m.note)}</p>` : ""}
+            ${src ? `<iframe class="track-player${tall ? " tall" : ""}" src="${esc(src)}" title="${esc(`${m.title || "Music"} on Apple Music`)}" loading="lazy" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"></iframe>` : ""}
+            ${m.url ? `<a class="small" href="${esc(m.url)}" target="_blank" rel="noopener">Open in Apple Music ${U.icon("ne")}</a>` : ""}
+          </article>`;
+        }).join("")}</div>`;
       break;
     }
     default: notFound("page");

@@ -39,7 +39,7 @@ window.SITE = {
     { label: "Photos",     code: "PH-118-4", href: "photos.html",    image: "https://images.unsplash.com/photo-1512390225428-a9d51c817f94?auto=format&fit=crop&w=900&q=75" },
     { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=900&q=75" },
     { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?auto=format&fit=crop&w=900&q=75" },
-    { label: "Archive",    code: "AR-129-2", href: "archive.html",   image: "https://images.unsplash.com/photo-1762627105132-f6ed848a23bf?auto=format&fit=crop&w=900&q=75" },
+    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "https://images.unsplash.com/photo-1762627105132-f6ed848a23bf?auto=format&fit=crop&w=900&q=75" },
     { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "https://images.unsplash.com/photo-1637597384611-0c33cef6ec03?auto=format&fit=crop&w=900&q=75" },
   ],
 
@@ -101,6 +101,20 @@ window.SITE = {
 
   // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Photos page says so.
   //   { src: "images/my-photo.jpg", code: "PH-001-2", caption: "A short caption", place: "Where it was taken" },
+  // Music recommendations. Paste the link from Apple Music (Share → Copy Link) into "url"; the page turns it into a player.
+  //   kind: "Song", "Album" or "Playlist" (songs get a short player, albums and playlists a tall one).
+  //   { url: "https://music.apple.com/...", title: "Wish You Were Here", artist: "Pink Floyd", kind: "Album", note: "Why I love it" },
+  music: [
+    { url: "https://music.apple.com/id/album/the-dark-side-of-the-moon-50th-anniversary-remastered/1665303755", title: "The Dark Side of the Moon", artist: "Pink Floyd", kind: "Album" },
+    { url: "https://music.apple.com/id/album/the-new-abnormal/1498121188", title: "The New Abnormal", artist: "The Strokes", kind: "Album" },
+    { url: "https://music.apple.com/id/album/siamese-dream/721207206", title: "Siamese Dream", artist: "The Smashing Pumpkins", kind: "Album" },
+    { url: "https://music.apple.com/id/album/ok-computer/1097861387", title: "OK Computer", artist: "Radiohead", kind: "Album" },
+    { url: "https://music.apple.com/id/album/the-stone-roses-remastered-2009/322969529", title: "The Stone Roses", artist: "The Stone Roses", kind: "Album" },
+    { url: "https://music.apple.com/id/album/be-here-now/207010732", title: "Be Here Now", artist: "Oasis", kind: "Album" },
+    { url: "https://music.apple.com/id/album/american-football-25th-anniversary-edition/1754429576", title: "American Football", artist: "American Football", kind: "Album" },
+    { url: "https://music.apple.com/id/album/blonde/1146195596", title: "Blonde", artist: "Frank Ocean", kind: "Album" },
+  ],
+
   // A video entry uses "video" instead of "src" (autoplays muted in the grid, plays with controls in the viewer).
   photos: [
     { src: "images/photos/photo-01.jpg", code: "PH-001-2", caption: "Standing on the slope", place: "" },

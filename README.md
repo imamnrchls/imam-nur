@@ -12,7 +12,7 @@ Built with plain HTML, CSS and JavaScript. Animations use [GSAP](https://gsap.co
 | `photos.html` | Photo grid with a lightbox (keyboard and swipe) |
 | `writing.html` → `article.html?slug=…` | Writing list, plus a reading page for each piece |
 | `about.html` (`#contact`) | Bio, facts, email and links |
-| `archive.html` | Every item in one list |
+| `music.html` | Music recommendations with Apple Music players |
 
 ## Editing content
 
