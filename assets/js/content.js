@@ -44,7 +44,7 @@ window.SITE = {
   ],
 
   about: {
-    // image: "images/portrait.jpg",   // add your own portrait here and it appears on the About page
+    image: "images/portrait.jpg",
     paragraphs: [
       "I'm a sharp, analytical person who keeps looking for patterns and solutions. Curiosity pushes me to understand a problem deeply before I try to fix it.",
       "My work is in human capital: people development, performance management and operational processes. It began with Astra's Human Capital Trainee program and continued at PT Serasi Autoraya and PT Mobilitas Digital Indonesia (MODA), a joint venture of Astra and Toyota.",
