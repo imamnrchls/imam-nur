@@ -11,7 +11,7 @@
 */
 window.SITE = {
   name: ["IMAM", "NURCHOLIS"],          // one entry per line of the big title
-  role: "Human capital & driver management",
+  role: "People person, hiker & music lover",
   location: "Jakarta, Indonesia",
   email: "imam.nurcholis@outlook.com",   // shown on About / Contact
   links: [
@@ -25,7 +25,7 @@ window.SITE = {
 
   // Footer: the line on the homepage, and the picture behind it (put your own in images/)
   footer: {
-    cta: "Open for commissions, collaborations and good conversations",
+    cta: "Up for a hike, a good album or a long conversation",
     ctaLink: "say hello",
     art: "images/footer-mountain.png",
   },
@@ -46,14 +46,22 @@ window.SITE = {
   about: {
     image: "images/portrait.jpg",
     paragraphs: [
-      "I'm a sharp, analytical person who keeps looking for patterns and solutions. Curiosity pushes me to understand a problem deeply before I try to fix it.",
-      "My work is in human capital: people development, performance management and operational processes. It began with Astra's Human Capital Trainee program and continued at PT Serasi Autoraya and PT Mobilitas Digital Indonesia (MODA), a joint venture of Astra and Toyota.",
-      "Today I lead Driver Management at MODA, running the full employee lifecycle for a 350+ person frontline workforce. I'm also working on my interpersonal skills, because strong relationships and clear communication matter as much as good systems.",
+      "I'm Imam, a psychology graduate from Diponegoro University, living in Jakarta. I'm curious by nature: I like to understand how things, and people, work before I try to change them.",
+      "Outside work you'll most likely find me outdoors: on a mountain trail with a heavy pack, camping above the clouds, or on a road trip with friends. On ordinary days it's the gym, a run or a ride. There's usually music in my ears (Pink Floyd, The Smashing Pumpkins, Oasis) and a camera somewhere nearby. Now and then I write too: short poems, essays and notes, some of them under Writing.",
+      "By day I work in human capital. I lead Driver Management at MODA, a joint venture of Astra and Toyota, looking after a 350+ person frontline workforce, after starting out in Astra's Human Capital Trainee program. The work and the rest share a root: I like people, and I like watching them grow.",
     ],
+    // "Off the clock": the things I like. One [label, value] pair per row.
+    likes: [
+      ["Outdoors", "Hiking, camping, road trips"],
+      ["Moving", "Gym, running, cycling"],
+      ["Music", "Pink Floyd, The Smashing Pumpkins, Oasis"],
+      ["Films", "Sinners, Fight Club"],
+      ["Also", "Photography, writing, good conversations"],
+    ],
+    // "At work"
     facts: [
       ["Role", "Driver Management Head, MODA (PT Mobilitas Digital Indonesia)"],
-      ["Based in", "Jakarta, Indonesia"],
-      ["Education", "B.A. Psychology, Diponegoro University"],
+      ["Studied", "B.A. Psychology, Diponegoro University"],
       ["Certified", "Defensive Driving Master Trainer; Astra Leadership Competencies"],
       ["Methods", "ADDIE, PDCA, 8 Steps, DMAIC, DMADV, Design Thinking"],
     ],

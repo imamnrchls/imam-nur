@@ -123,7 +123,9 @@
            ${a.image ? `<div class="portrait" data-reveal><img src="${esc(a.image)}" alt="Portrait" class="parallax"></div>` : ""}
            <div>
              <div class="prose" data-reveal>${a.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
-             <ul class="facts" data-reveal>${a.facts.map(([k, v]) => `<li><span class="small muted">${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>
+             ${[["Off the clock", a.likes], ["At work", a.facts]].filter(([, rows]) => rows?.length).map(([label, rows]) => `
+             <h2 class="facts-label small" data-reveal>${esc(label)}</h2>
+             <ul class="facts" data-reveal>${rows.map(([k, v]) => `<li><span class="small muted">${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>`).join("")}
            </div>
          </section>
          <section class="contact" id="contact">
