@@ -46,6 +46,7 @@ window.SITE = {
 
   about: {
     image: "images/portrait.jpg",
+    ascii: true,   // drifting clouds turn parts of the portrait into characters (false = plain photo)
     paragraphs: [
       "I'm Imam, a psychology graduate from Diponegoro University, living in Jakarta. I'm curious by nature: I like to understand how things, and people, work before I try to change them.",
       "Outside work you'll most likely find me outdoors: on a mountain trail with a heavy pack, camping above the clouds, or on a road trip with friends. On ordinary days it's the gym, a run or a ride. There's usually music in my ears (Pink Floyd, The Smashing Pumpkins, Oasis) and a camera somewhere nearby. Now and then I write too: short poems, essays and notes, some of them under Writing.",
