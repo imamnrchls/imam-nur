@@ -18,7 +18,7 @@
 
   tilesEl.innerHTML = S.menu.map((m) => `
     <a class="tile" href="${U.esc(m.href)}" aria-label="${U.esc(m.label)}">
-      <span class="tile-img"><img src="${U.esc(m.image)}" alt="" loading="eager" decoding="async"></span>
+      <span class="tile-img"><img src="${U.esc(m.image)}" alt="" decoding="async" fetchpriority="low"></span>
       <span class="tile-label code"><span>${U.esc(m.code)}</span><span>${U.esc(m.label)}</span></span>
     </a>`).join("");
   const tiles = tilesEl.querySelectorAll(".tile");
