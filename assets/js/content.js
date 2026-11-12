@@ -102,7 +102,7 @@ window.SITE = {
       summary: "A Driver Management Information System I designed and built for MODA, covering the whole driver lifecycle in one place.",
       body: "DMIS replaces scattered spreadsheets with one system for the Driver Management function I lead. I designed and built it end to end, from the data model to the screens.\n\n## What it covers\n\nRecruitment → driver database → training → discipline and rewards → KPI → termination. Every module links back to the driver's profile and writes to an audit log.\n\n## Rules in the system, not in people's heads\n\nRecruitment is a staged pipeline: screening, health test, written test, driving test, interview, offer. The server decides pass or fail from set thresholds and blocks a candidate who hasn't passed. Licence (SIM/SIO) expiry alerts, a daily digest, route matching and coverage, and Excel import and export for the existing HR master.\n\n## Access by role\n\nSeven roles, from Super Admin to read-only management, defined in one permission table. Supervisors can be limited to their own pools, and sensitive data such as ID numbers and health results is shown only to the roles that need it.\n\nBuilt with Next.js, TypeScript and Prisma. Screens are in Bahasa Indonesia. Access is by company login.",
       gallery: [],
-      url: "https://moda-dmis.my.id",
+      url: "",
     },
     {
       id: "akar-asa", code: "PF-006-8", title: "Akar Asa", year: "2026", type: "Websites",
