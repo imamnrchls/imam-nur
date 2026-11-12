@@ -183,6 +183,13 @@ window.SITE = {
       tracks: [["The Adults Are Talking", "5:09"], ["Selfless", "3:42"], ["Brooklyn Bridge To Chorus", "3:56"], ["Bad Decisions", "4:53"], ["Eternal Summer", "6:15"], ["At The Door", "5:10"], ["Why Are Sundays So Depressing", "4:36"], ["Not The Same Anymore", "5:37"], ["Ode To The Mets", "5:52"]],
     },
     {
+      url: "https://music.apple.com/id/album/nurture/1894533111",
+      title: "Nurture", artist: "Porter Robinson", kind: "Album", year: "2021",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f7/b0/67/f7b067e8-6759-c676-6b6d-d4f5b049d23f/858275061918_Cover.jpg/600x600bb.jpg",
+      picks: [2, 3, 12],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Lifelike", "1:35"], ["Look at the Sky", "5:10"], ["Get Your Wish", "3:39"], ["Wind Tempos", "6:04"], ["Musician", "3:59"], ["do-re-mi-fa-so-la-ti-do", "3:35"], ["Mother", "3:46"], ["dullscythe", "4:00"], ["Sweet Time", "4:12"], ["Mirror", "5:07"], ["Something Comforting", "4:42"], ["Blossom", "3:46"], ["Unfold", "4:46"], ["Trying to Feel Alive", "4:40"]],
+    },
+    {
       url: "https://music.apple.com/id/album/getting-killed/1818548779",
       title: "Getting Killed", artist: "Geese", kind: "Album", year: "2025",
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/0b/b8/f1/0bb8f1d7-1df0-20c0-9539-51d08058eeb1/5400863191436_Cover.jpg/600x600bb.jpg",
