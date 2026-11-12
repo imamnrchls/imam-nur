@@ -6,6 +6,8 @@
   const params = new URLSearchParams(location.search);
   const fmtDate = (d) => { const x = new Date(d + "T00:00:00"); return isNaN(x) ? esc(d) : x.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }); };
   const year = (d) => String(d).slice(0, 4);
+  // width/height attributes reserve the space before an image loads (no layout jump)
+  const size = (p) => (p.w > 0 && p.h > 0 ? ` width="${+p.w}" height="${+p.h}"` : "");
 
   // Simple text → HTML. Blank line = paragraph, "## " = heading, "> " = quote, "- " = list,
   // ``` fenced block = code, [text](url) = link.
@@ -80,7 +82,9 @@
       html = !S.photos.length ? head(titleLines, "Nothing here yet.", menuItem("photos").code) : head(titleLines, "A running archive of photographs and short videos. Click any one to view it larger.", menuItem("photos").code) +
         `<div class="photo-grid">${S.photos.map((p, i) => `
           <figure class="photo" data-reveal data-i="${i}" tabindex="0" role="button" aria-label="Open ${esc(p.caption)}">
-            <div class="ph">${p.video ? `<video src="${esc(p.video)}#t=0.1" muted loop autoplay playsinline preload="metadata" aria-label="${esc(p.caption)}"></video>` : `<img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy">`}</div>
+            <div class="ph">${p.video
+              ? `<video data-src="${esc(p.video)}"${p.thumb ? ` poster="${esc(p.thumb)}"` : ""}${size(p)} muted loop playsinline preload="none" aria-label="${esc(p.caption)}"></video>`
+              : `<img src="${esc(p.thumb || p.src)}" alt="${esc(p.caption)}"${size(p)} loading="lazy" decoding="async">`}</div>
             <figcaption class="small"><span>${esc(p.code)}</span><span class="muted">${esc(p.place)}</span></figcaption>
           </figure>`).join("")}</div>
         <div class="lightbox" role="dialog" aria-modal="true" aria-label="Gallery viewer">
@@ -257,6 +261,16 @@
 
   /* ---------- Photos: lightbox ---------- */
   if (page === "photos" && S.photos.length) {
+    // Grid videos: download and play only while on screen (and never on their own with reduced motion)
+    const gridVids = document.querySelectorAll(".photo video[data-src]");
+    const load = (v) => { if (!v.src) { v.src = v.dataset.src; v.preload = "auto"; } };
+    if ("IntersectionObserver" in window && !U.reduced) {
+      const io = new IntersectionObserver((entries) => entries.forEach(({ target: v, isIntersecting }) => {
+        if (isIntersecting) { load(v); v.play().catch(() => {}); } else v.pause();
+      }), { rootMargin: "200px 0px" });
+      gridVids.forEach((v) => io.observe(v));
+    } else if (!U.reduced) gridVids.forEach((v) => { load(v); v.autoplay = true; });
+
     const lb = document.querySelector(".lightbox"), lbImg = lb.querySelector("img"), lbVid = lb.querySelector("video");
     let cur = 0, lastFocus = null;
     const show = (i) => {
@@ -319,5 +333,5 @@
   });
 
   // Jump to #contact etc. after render
-  if (location.hash) setTimeout(() => { const t = document.querySelector(location.hash); if (t) U.lenis ? U.lenis.scrollTo(t, { offset: -80, immediate: true }) : t.scrollIntoView(); }, 300);
+  if (location.hash) setTimeout(() => { let t = null; try { t = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (e) { /* malformed hash */ } if (t) U.lenis ? U.lenis.scrollTo(t, { offset: -80, immediate: true }) : t.scrollIntoView(); }, 300);
 })();
