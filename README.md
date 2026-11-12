@@ -7,7 +7,7 @@ Built with plain HTML, CSS and JavaScript. Animations use [GSAP](https://gsap.co
 
 | File | What it shows |
 | --- | --- |
-| `index.html` | Hero with your name over the mountain photo. Scrolling pins the screen: the photo closes onto the grid line, the name rolls out, a second title rolls in, and six image tiles open. Each tile links to a section. |
+| `index.html` | Hero with your name over the mountain photo and a drifting field of characters (`assets/js/ascii-field.js`; turn it off with `heroAscii: false` in `content.js`). The field clears around the mouse and stays still for visitors who prefer reduced motion. Scrolling pins the screen: the photo closes onto the grid line, the name rolls out, a second title rolls in, and six image tiles open. Each tile links to a section. |
 | `portfolio.html` → `project.html?id=…` | Project list with a cursor-following preview, plus a detail page for each project |
 | `photos.html` | Gallery: photo and video grid with a lightbox (keyboard and swipe) |
 | `writing.html` → `article.html?slug=…` | Writing list, plus a reading page for each piece |

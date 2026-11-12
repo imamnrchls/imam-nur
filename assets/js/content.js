@@ -21,6 +21,7 @@ window.SITE = {
 
   // Homepage background. Put a photo credit in heroCredit ({ label, url }) or leave it empty to hide it.
   heroImage: "images/hero.jpg",
+  heroAscii: true,   // the drifting field of characters behind the name on the homepage (false = off)
   heroCredit: null,
 
   // Footer: the line on the homepage, and the picture behind it (put your own in images/)

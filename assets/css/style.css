@@ -124,6 +124,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero-bg { position: absolute; inset: 0; overflow: hidden; background: #2b2a28; will-change: clip-path; }
 .hero-bg img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 60%; }
 .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.08) 40%, rgba(0,0,0,.32)); }
+.hero-bg .ascii-field { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 
 .lines { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 .lines i { position: absolute; background: var(--ln); }
