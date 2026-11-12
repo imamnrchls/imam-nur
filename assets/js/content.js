@@ -97,6 +97,20 @@ window.SITE = {
       gallery: [],
       url: "",
     },
+    {
+      id: "moda-dmis", code: "PF-005-3", title: "MODA DMIS", year: "2026", type: "Web app",
+      summary: "A Driver Management Information System I designed and built for MODA, covering the whole driver lifecycle in one place.",
+      body: "DMIS replaces scattered spreadsheets with one system for the Driver Management function I lead. I designed and built it end to end, from the data model to the screens.\n\n## What it covers\n\nRecruitment → driver database → training → discipline and rewards → KPI → termination. Every module links back to the driver's profile and writes to an audit log.\n\n## Rules in the system, not in people's heads\n\nRecruitment is a staged pipeline: screening, health test, written test, driving test, interview, offer. The server decides pass or fail from set thresholds and blocks a candidate who hasn't passed. Licence (SIM/SIO) expiry alerts, a daily digest, route matching and coverage, and Excel import and export for the existing HR master.\n\n## Access by role\n\nSeven roles, from Super Admin to read-only management, defined in one permission table. Supervisors can be limited to their own pools, and sensitive data such as ID numbers and health results is shown only to the roles that need it.\n\nBuilt with Next.js, TypeScript and Prisma. Screens are in Bahasa Indonesia. Access is by company login.",
+      gallery: [],
+      url: "",
+    },
+    {
+      id: "akar-asa", code: "PF-006-8", title: "Akar Asa", year: "2026", type: "Websites",
+      summary: "Two sites I designed and built for Akar Asa, a nature-lovers' group from Kopeng on the slopes of Mount Merbabu: a public website and a gear-rental app.",
+      body: "Akar Asa is a Kelompok Pecinta Alam from Kopeng, Semarang Regency, founded on 12 December 2017. It works on spring conservation, forest-fire response, river clean-ups, tree planting and environmental education on Mount Merbabu. I designed and built both of its sites.\n\n## Website: [akarasa.space](https://akarasa.space)\n\nThe public face of the group: its mission, history and activities, plus a library of articles. A static site, fully self-contained (fonts, images and scripts all served locally), so it stays fast and cheap to host.\n\n## Akar Asa Rental: [akar-asa.web.id](https://akar-asa.web.id)\n\nAn internal app that runs the group's outdoor gear rental day to day: inventory and stock movements, availability checks, customers, bookings and walk-ins, check-out and partial check-in with late, damage and loss fees, deposits, payments, a finance ledger, cash counts, reports and an audit log. Owner, Manager and Staff roles; screens in Bahasa Indonesia and English.\n\nBuilt with Next.js, TypeScript and Prisma, and deployed with atomic, rollback-safe releases.",
+      gallery: [],
+      url: "https://akarasa.space",
+    },
   ],
 
   // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Gallery page says so.
