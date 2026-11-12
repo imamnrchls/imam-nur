@@ -11,7 +11,7 @@ Built with plain HTML, CSS and JavaScript. Animations use [GSAP](https://gsap.co
 | `portfolio.html` → `project.html?id=…` | Project list with a cursor-following preview, plus a detail page for each project |
 | `photos.html` | Gallery: photo and video grid with a lightbox (keyboard and swipe) |
 | `writing.html` → `article.html?slug=…` | Writing list, plus a reading page for each piece |
-| `about.html` (`#contact`) | Bio, facts, email and links |
+| `about.html` (`#contact`) | Bio, facts, email and links. Drifting clouds turn parts of the portrait into characters, and the mouse clears them (`ascii: false` under `about` in `content.js` turns this off). |
 | `music.html` | Music recommendations with Apple Music players |
 
 ## Editing content

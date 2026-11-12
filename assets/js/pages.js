@@ -124,7 +124,7 @@
       const a = S.about;
       html = head(titleLines, S.role, menuItem("about").code) +
         `<section class="about-grid${a.image ? "" : " no-portrait"}">
-           ${a.image ? `<div class="portrait" data-reveal><img src="${esc(a.image)}" alt="Portrait" class="parallax"></div>` : ""}
+           ${a.image ? `<div class="portrait"${a.ascii === false ? "" : " data-ascii"} data-reveal><img src="${esc(a.image)}" alt="Portrait" class="parallax"></div>` : ""}
            <div>
              <div class="prose" data-reveal>${a.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
              ${[["Off the clock", a.likes], ["At work", a.facts]].filter(([, rows]) => rows?.length).map(([label, rows]) => `
