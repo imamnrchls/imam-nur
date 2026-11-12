@@ -54,8 +54,8 @@ window.SITE = {
     likes: [
       ["Outdoors", "Hiking, camping, road trips"],
       ["Moving", "Gym, running, cycling"],
-      ["Music", "Pink Floyd, The Smashing Pumpkins, Oasis"],
-      ["Films", "Sinners, Fight Club"],
+      ["Music", "Alternative & indie rock, psychedelic, Britpop"],
+      ["Films", "Psychological thrillers, horror"],
       ["Also", "Photography, writing, good conversations"],
     ],
     // "At work"
