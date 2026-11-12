@@ -1,14 +1,35 @@
 // Tiny static file server used only for local preview.
 const http = require("http"), fs = require("fs"), path = require("path");
 const root = __dirname;
-const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".mp4": "video/mp4" };
+const types = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".mp4": "video/mp4" };
+// Same security headers a production host should send (see README → Deploy).
+const security = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+};
 http.createServer((req, res) => {
-  const rel = decodeURIComponent(req.url.split("?")[0]);
+  let rel;
+  try { rel = decodeURIComponent(req.url.split("?")[0]); } catch { return res.writeHead(400, security).end("Bad request"); }
   const file = path.join(root, rel === "/" ? "index.html" : rel);
-  if (!file.startsWith(root)) return res.writeHead(403).end();
-  fs.readFile(file, (err, data) => {
-    if (err) return res.writeHead(404).end("Not found");
-    res.writeHead(200, { "Content-Type": types[path.extname(file).toLowerCase()] || "application/octet-stream", "Cache-Control": "no-store" });
-    res.end(data);
+  // Stay inside the site folder, and never serve dotfiles/dot-folders (.git, .claude, …) or the server itself.
+  const inside = path.relative(root, file);
+  if (!inside || inside.startsWith("..") || path.isAbsolute(inside) || inside.split(path.sep).some((p) => p.startsWith(".")) || inside === "serve.js")
+    return res.writeHead(403, security).end("Forbidden");
+  fs.stat(file, (err, st) => {
+    if (err || !st.isFile()) return res.writeHead(404, security).end("Not found");
+    const type = types[path.extname(file).toLowerCase()] || "application/octet-stream";
+    const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+    const head = { ...security, "Content-Type": type, "Cache-Control": "no-store", "Accept-Ranges": "bytes" };
+    if (range && (range[1] || range[2])) { // Safari needs range requests to play video
+      let start = range[1] ? +range[1] : st.size - +range[2], end = range[1] && range[2] ? Math.min(+range[2], st.size - 1) : st.size - 1;
+      if (start < 0) start = 0;
+      if (start > end) return res.writeHead(416, { ...security, "Content-Range": `bytes */${st.size}` }).end();
+      res.writeHead(206, { ...head, "Content-Range": `bytes ${start}-${end}/${st.size}`, "Content-Length": end - start + 1 });
+      return fs.createReadStream(file, { start, end }).pipe(res);
+    }
+    res.writeHead(200, { ...head, "Content-Length": st.size });
+    fs.createReadStream(file).pipe(res);
   });
-}).listen(4174, "127.0.0.1");
+}).listen(4174, "127.0.0.1", () => console.log("http://localhost:4174"));

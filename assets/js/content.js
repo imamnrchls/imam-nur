@@ -212,16 +212,18 @@ window.SITE = {
     },
   ],
 
-  // A video entry uses "video" instead of "src" (autoplays muted in the grid, plays with controls in the viewer).
+  // A video entry uses "video" instead of "src" (plays muted in the grid while on screen, with controls in the viewer).
+  // "thumb" is a smaller copy shown in the grid (the viewer loads the full "src"); for a video it is the poster frame.
+  // "w"/"h" are the pixel size of the thumb, so the grid keeps its layout while images load. All three are optional.
   photos: [
-    { src: "images/photos/photo-01.jpg", code: "PH-001-2", caption: "Standing on the slope", place: "" },
-    { src: "images/photos/photo-02.jpg", code: "PH-002-6", caption: "On the ridge trail", place: "" },
-    { src: "images/photos/photo-03.jpg", code: "PH-003-1", caption: "Heading down above the clouds", place: "" },
-    { src: "images/photos/photo-04.jpg", code: "PH-004-5", caption: "Along the hillside path", place: "" },
-    { src: "images/photos/photo-05.jpg", code: "PH-005-9", caption: "Ridgeline over the clouds", place: "" },
-    { src: "images/photos/photo-06.jpg", code: "PH-006-3", caption: "Clouds and campsite below", place: "" },
-    { video: "images/photos/photo-07.mp4", code: "VD-001-8", caption: "On the move", place: "" },
-    { src: "images/photos/photo-08.jpg", code: "PH-007-4", caption: "Koi in the pond", place: "" },
+    { src: "images/photos/photo-01.jpg", thumb: "images/photos/thumbs/photo-01.jpg", w: 675, h: 900, code: "PH-001-2", caption: "Standing on the slope", place: "" },
+    { src: "images/photos/photo-02.jpg", thumb: "images/photos/thumbs/photo-02.jpg", w: 900, h: 675, code: "PH-002-6", caption: "On the ridge trail", place: "" },
+    { src: "images/photos/photo-03.jpg", thumb: "images/photos/thumbs/photo-03.jpg", w: 900, h: 675, code: "PH-003-1", caption: "Heading down above the clouds", place: "" },
+    { src: "images/photos/photo-04.jpg", thumb: "images/photos/thumbs/photo-04.jpg", w: 900, h: 675, code: "PH-004-5", caption: "Along the hillside path", place: "" },
+    { src: "images/photos/photo-05.jpg", thumb: "images/photos/thumbs/photo-05.jpg", w: 900, h: 675, code: "PH-005-9", caption: "Ridgeline over the clouds", place: "" },
+    { src: "images/photos/photo-06.jpg", thumb: "images/photos/thumbs/photo-06.jpg", w: 675, h: 900, code: "PH-006-3", caption: "Clouds and campsite below", place: "" },
+    { video: "images/photos/photo-07.mp4", thumb: "images/photos/thumbs/photo-07.jpg", w: 720, h: 1280, code: "VD-001-8", caption: "On the move", place: "" },
+    { src: "images/photos/photo-08.jpg", thumb: "images/photos/thumbs/photo-08.jpg", w: 675, h: 900, code: "PH-007-4", caption: "Koi in the pond", place: "" },
   ],
 
   writing: [

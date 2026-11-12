@@ -202,7 +202,7 @@
     const samePage = url.pathname === location.pathname && url.search === location.search;
     if (samePage && url.hash) { // in-page anchor
       e.preventDefault(); if (menuOpen) toggleMenu(false);
-      const t = document.querySelector(url.hash); if (t) lenis ? lenis.scrollTo(t, { offset: -80 }) : t.scrollIntoView();
+      let t = null; try { t = document.getElementById(decodeURIComponent(url.hash.slice(1))); } catch (e) { /* malformed hash */ } if (t) lenis ? lenis.scrollTo(t, { offset: -80 }) : t.scrollIntoView();
       return;
     }
     e.preventDefault();
