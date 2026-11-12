@@ -199,6 +199,7 @@ window.SITE = {
     { src: "images/photos/photo-05.jpg", code: "PH-005-9", caption: "Ridgeline over the clouds", place: "" },
     { src: "images/photos/photo-06.jpg", code: "PH-006-3", caption: "Clouds and campsite below", place: "" },
     { video: "images/photos/photo-07.mp4", code: "PH-007-8", caption: "On the move", place: "" },
+    { src: "images/photos/photo-08.jpg", code: "PH-008-4", caption: "Koi in the pond", place: "" },
   ],
 
   writing: [
