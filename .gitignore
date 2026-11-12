@@ -2,3 +2,8 @@
 node_modules/
 .DS_Store
 Thumbs.db
+
+# local test screenshots
+/*.png
+!/apple-touch-icon.png
+!/favicon-32.png
