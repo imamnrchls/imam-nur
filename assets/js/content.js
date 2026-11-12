@@ -97,6 +97,20 @@ window.SITE = {
       gallery: [],
       url: "",
     },
+    {
+      id: "moda-dmis", code: "PF-005-3", title: "MODA DMIS", year: "In progress", type: "Web app",
+      summary: "A Driver Management Information System for MODA: recruitment, manpower, training, discipline, KPIs and termination in one place.",
+      body: "DMIS is an integrated information system for the Driver Management function at MODA, the team I lead.\n\n## What it covers\n\nOne system to follow the whole driver lifecycle: recruitment stages, the driver database and manpower, training, discipline, performance assessment and KPIs, through to turnover and termination.\n\nIt is an internal tool, so access is by company login.",
+      gallery: [],
+      url: "https://moda-dmis.my.id",
+    },
+    {
+      id: "akar-asa", code: "PF-006-8", title: "Akar Asa", year: "In progress", type: "Website",
+      summary: "Websites for Akar Asa, a nature-lovers' group (Kelompok Pecinta Alam) from Kopeng on the slopes of Mount Merbabu.",
+      body: "Akar Asa is a community organisation from Kopeng, Semarang Regency, founded on 12 December 2017. It works on spring conservation, forest-fire response, river clean-ups, tree planting and environmental education on the slopes of Mount Merbabu.\n\n## The sites\n\n[akarasa.space](https://akarasa.space): the group's main site, with its focus areas, activities and articles.\n\n[akar-asa.my.id](https://akar-asa.my.id): Akar Asa Gear.",
+      gallery: [],
+      url: "https://akarasa.space",
+    },
   ],
 
   // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Gallery page says so.
