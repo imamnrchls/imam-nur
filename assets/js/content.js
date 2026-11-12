@@ -55,7 +55,7 @@ window.SITE = {
       ["Outdoors", "Hiking, camping, road trips"],
       ["Moving", "Gym, running, cycling"],
       ["Music", "Alternative & indie rock, psychedelic, Britpop"],
-      ["Films", "Psychological thrillers, horror"],
+      ["Films", "Drama, romance, psychological thrillers, horror"],
       ["Also", "Photography, writing, good conversations"],
     ],
     // "At work"
