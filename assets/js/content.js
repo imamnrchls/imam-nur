@@ -36,7 +36,7 @@ window.SITE = {
   // The six tiles on the homepage. Each one is a menu entry.
   menu: [
     { label: "About",      code: "AB-010-7", href: "about.html",     image: "https://images.unsplash.com/photo-1544502062-f82887f03d1c?auto=format&fit=crop&w=900&q=75" },
-    { label: "Photos",     code: "PH-118-4", href: "photos.html",    image: "https://images.unsplash.com/photo-1512390225428-a9d51c817f94?auto=format&fit=crop&w=900&q=75" },
+    { label: "Gallery",    code: "GA-118-4", href: "photos.html",    image: "https://images.unsplash.com/photo-1512390225428-a9d51c817f94?auto=format&fit=crop&w=900&q=75" },
     { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=900&q=75" },
     { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?auto=format&fit=crop&w=900&q=75" },
     { label: "Music",      code: "MU-129-2", href: "music.html",     image: "https://images.unsplash.com/photo-1616714109948-c74fe5029a4d?auto=format&fit=crop&w=900&q=75" },
@@ -99,8 +99,9 @@ window.SITE = {
     },
   ],
 
-  // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Photos page says so.
+  // Your own photographs. Add entries like the one below (put the file in images/). While the list is empty the Gallery page says so.
   //   { src: "images/my-photo.jpg", code: "PH-001-2", caption: "A short caption", place: "Where it was taken" },
+  // Codes: PH-### for photos, VD-### for videos, each numbered on its own.
   // Music: favourite albums. "url" is the Apple Music link (Share → Copy Link). "picks" lists the track numbers
   // you recommend most; they get the + mark in the tracklist. "note" (optional) is a line on why you love the record.
   music: [
@@ -198,8 +199,8 @@ window.SITE = {
     { src: "images/photos/photo-04.jpg", code: "PH-004-5", caption: "Along the hillside path", place: "" },
     { src: "images/photos/photo-05.jpg", code: "PH-005-9", caption: "Ridgeline over the clouds", place: "" },
     { src: "images/photos/photo-06.jpg", code: "PH-006-3", caption: "Clouds and campsite below", place: "" },
-    { video: "images/photos/photo-07.mp4", code: "PH-007-8", caption: "On the move", place: "" },
-    { src: "images/photos/photo-08.jpg", code: "PH-008-4", caption: "Koi in the pond", place: "" },
+    { video: "images/photos/photo-07.mp4", code: "VD-001-8", caption: "On the move", place: "" },
+    { src: "images/photos/photo-08.jpg", code: "PH-007-4", caption: "Koi in the pond", place: "" },
   ],
 
   writing: [

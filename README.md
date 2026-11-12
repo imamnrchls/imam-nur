@@ -9,7 +9,7 @@ Built with plain HTML, CSS and JavaScript. Animations use [GSAP](https://gsap.co
 | --- | --- |
 | `index.html` | Hero with your name over the mountain photo. Scrolling pins the screen: the photo closes onto the grid line, the name rolls out, a second title rolls in, and six image tiles open. Each tile links to a section. |
 | `portfolio.html` → `project.html?id=…` | Project list with a cursor-following preview, plus a detail page for each project |
-| `photos.html` | Photo grid with a lightbox (keyboard and swipe) |
+| `photos.html` | Gallery: photo and video grid with a lightbox (keyboard and swipe) |
 | `writing.html` → `article.html?slug=…` | Writing list, plus a reading page for each piece |
 | `about.html` (`#contact`) | Bio, facts, email and links |
 | `music.html` | Music recommendations with Apple Music players |
