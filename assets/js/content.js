@@ -3,7 +3,7 @@
   ALL CONTENT LIVES HERE. Edit, save, refresh.
   ─────────────────────────────────────────────────────────────
   IMAGES   Put your files in  website/images/  and use  "images/my-file.jpg".
-           Any full web address (https://...) works too.
+           A full web address (https://...) also works, but its host must be allowed in the Content-Security-Policy (see README).
   WRITING  Separate paragraphs in "body" with a blank line.
            Lines starting with "## " become sub-headings.
   CODES    The small labels (like "PF-001-1") are decorative archive codes,
@@ -20,7 +20,7 @@ window.SITE = {
   ],
 
   // Homepage background. Put a photo credit in heroCredit ({ label, url }) or leave it empty to hide it.
-  heroImage: "images/hero-ridge.jpg",
+  heroImage: "images/hero-ridge.webp",
   heroAscii: true,   // the drifting field of characters behind the name on the homepage (false = off)
   heroCredit: null,
 
@@ -28,7 +28,7 @@ window.SITE = {
   footer: {
     cta: "Up for a hike, a good album or a long conversation",
     ctaLink: "say hello",
-    art: "images/footer-mountain.png",
+    art: "images/footer-mountain.webp",
   },
 
   // The second title that appears while scrolling (one entry per line)
@@ -36,16 +36,16 @@ window.SITE = {
 
   // The six tiles on the homepage. Each one is a menu entry.
   menu: [
-    { label: "About",      code: "AB-010-7", href: "about.html",     image: "https://images.unsplash.com/photo-1544502062-f82887f03d1c?auto=format&fit=crop&w=900&q=75" },
-    { label: "Gallery",    code: "GA-118-4", href: "photos.html",    image: "https://images.unsplash.com/photo-1512390225428-a9d51c817f94?auto=format&fit=crop&w=900&q=75" },
-    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=900&q=75" },
-    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?auto=format&fit=crop&w=900&q=75" },
-    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "https://images.unsplash.com/photo-1616714109948-c74fe5029a4d?auto=format&fit=crop&w=900&q=75" },
-    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "https://images.unsplash.com/photo-1637597384611-0c33cef6ec03?auto=format&fit=crop&w=900&q=75" },
+    { label: "About",      code: "AB-010-7", href: "about.html",     image: "images/tiles/about.webp" },
+    { label: "Gallery",    code: "GA-118-4", href: "photos.html",    image: "images/tiles/gallery.webp" },
+    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "images/tiles/writing.webp" },
+    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "images/tiles/portfolio.webp" },
+    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "images/tiles/music.webp" },
+    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "images/tiles/contact.webp" },
   ],
 
   about: {
-    image: "images/portrait.jpg",
+    image: "images/portrait.webp",
     ascii: true,   // the same drifting characters as the homepage, over the portrait (false = plain photo)
     paragraphs: [
       "I'm Imam, a psychology graduate from Diponegoro University, living in Jakarta. I'm curious by nature: I like to understand how things, and people, work before I try to change them.",
@@ -124,91 +124,91 @@ window.SITE = {
     {
       url: "https://music.apple.com/id/album/the-dark-side-of-the-moon-50th-anniversary-remastered/1665303755",
       title: "The Dark Side of the Moon", artist: "Pink Floyd", kind: "Album", year: "1973",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/49/86/18/49861852-877b-0992-fa27-58b25fa032b5/196589805232.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/49/86/18/49861852-877b-0992-fa27-58b25fa032b5/196589805232.jpg/400x400bb.webp",
       picks: [4, 5, 6, 7, 10],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Speak to Me", "1:11"], ["Breathe (In the Air)", "2:46"], ["On the Run", "3:34"], ["Time", "7:06"], ["The Great Gig In the Sky", "4:44"], ["Money", "6:22"], ["Us and Them", "7:50"], ["Any Colour You Like", "3:26"], ["Brain Damage", "3:50"], ["Eclipse", "2:07"]],
     },
     {
       url: "https://music.apple.com/id/album/the-stone-roses-remastered-2009/322969529",
       title: "The Stone Roses", artist: "The Stone Roses", kind: "Album", year: "1989",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/de/bd/71/debd715a-d49b-1ec8-6b4d-bf3f25e0e90b/dj.rldpqukx.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Features115/v4/de/bd/71/debd715a-d49b-1ec8-6b4d-bf3f25e0e90b/dj.rldpqukx.jpg/400x400bb.webp",
       picks: [1, 8, 10, 11],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["I Wanna Be Adored", "4:53"], ["She Bangs the Drums", "3:52"], ["Waterfall", "4:39"], ["Don't Stop", "5:21"], ["Bye Bye Bad Man", "4:04"], ["Elizabeth My Dear", "0:53"], ["(Song for My) Sugar Spun Sister", "3:27"], ["Made of Stone", "4:15"], ["Shoot You Down", "4:13"], ["This Is the One", "4:59"], ["I Am the Resurrection", "8:13"], ["Fools Gold", "9:54"]],
     },
     {
       url: "https://music.apple.com/id/album/siamese-dream/721207206",
       title: "Siamese Dream", artist: "The Smashing Pumpkins", kind: "Album", year: "1993",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/3a/dc/08/3adc08b0-e98c-b5dd-943e-a37c7ed06205/13UABIM03615.rgb.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/3a/dc/08/3adc08b0-e98c-b5dd-943e-a37c7ed06205/13UABIM03615.rgb.jpg/400x400bb.webp",
       picks: [3, 7, 9, 10, 13],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Cherub Rock", "4:57"], ["Quiet", "3:43"], ["Today", "3:21"], ["Hummer", "6:56"], ["Rocket", "4:06"], ["Disarm", "3:17"], ["Soma", "6:38"], ["Geek U.S.A.", "5:13"], ["Mayonaise", "5:49"], ["Spaceboy", "4:27"], ["Silverfuck", "8:43"], ["Sweet Sweet", "1:39"], ["Luna", "3:20"]],
     },
     {
       url: "https://music.apple.com/id/album/ok-computer/1097861387",
       title: "OK Computer", artist: "Radiohead", kind: "Album", year: "1997",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/07/60/ba/0760ba0f-148c-b18f-d0ff-169ee96f3af5/634904078164.png/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/07/60/ba/0760ba0f-148c-b18f-d0ff-169ee96f3af5/634904078164.png/400x400bb.webp",
       picks: [1, 2, 4, 5, 6, 10],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Airbag", "4:48"], ["Paranoid Android", "6:27"], ["Subterranean Homesick Alien", "4:28"], ["Exit Music (For a Film)", "4:27"], ["Let Down", "5:00"], ["Karma Police", "4:24"], ["Fitter Happier", "1:57"], ["Electioneering", "3:51"], ["Climbing Up the Walls", "4:45"], ["No Surprises", "3:49"], ["Lucky", "4:19"], ["The Tourist", "5:27"]],
     },
     {
       url: "https://music.apple.com/id/album/be-here-now/207010732",
       title: "Be Here Now", artist: "Oasis", kind: "Album", year: "1997",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music/ef/d6/2c/mzi.cokrlcna.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music/ef/d6/2c/mzi.cokrlcna.jpg/400x400bb.webp",
       picks: [4, 8, 10],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["D'You Know What I Mean?", "7:42"], ["My Big Mouth", "5:03"], ["Magic Pie", "7:19"], ["Stand By Me", "5:57"], ["I Hope, I Think, I Know", "4:22"], ["The Girl In the Dirty Shirt", "5:47"], ["Fade In-Out", "6:52"], ["Don't Go Away", "4:49"], ["Be Here Now", "5:13"], ["All Around the World", "9:20"], ["It's Gettin' Better (Man!!)", "7:00"], ["All Around the World (Reprise)", "2:08"]],
     },
     {
       url: "https://music.apple.com/id/album/american-football-25th-anniversary-edition/1754429576",
       title: "American Football", artist: "American Football", kind: "Album", year: "1999",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/3c/f1/00/3cf10033-6c61-ff25-5c3f-3b1e01dc3bf7/644110049995.png/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/3c/f1/00/3cf10033-6c61-ff25-5c3f-3b1e01dc3bf7/644110049995.png/400x400bb.webp",
       picks: [1, 2, 6],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Never Meant", "4:29"], ["The Summer Ends", "4:45"], ["Honestly?", "6:07"], ["For Sure", "3:16"], ["You Know I Should Be Leaving Soon", "3:41"], ["But the Regrets Are Killing Me", "3:54"], ["I'll See You When We're Both Not so Emotional", "3:44"], ["Stay Home", "8:11"], ["The One with the Wurlitzer", "2:45"]],
     },
     {
       url: "https://music.apple.com/id/album/submarine-ep/422325910",
       title: "Submarine", artist: "Alex Turner", kind: "EP", year: "2011",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/fa/a6/00/faa60001-c7aa-d51e-70a8-0b092f810d24/mzi.iylunwbj.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/fa/a6/00/faa60001-c7aa-d51e-70a8-0b092f810d24/mzi.iylunwbj.jpg/400x400bb.webp",
       picks: [2, 4, 5],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Stuck On the Puzzle (Intro)", "0:54"], ["Hiding Tonight", "3:07"], ["Glass In the Park", "4:00"], ["It's Hard to Get Around the Wind", "4:07"], ["Stuck On the Puzzle", "3:31"], ["Piledriver Waltz", "3:25"]],
     },
     {
       url: "https://music.apple.com/id/album/peripheral-vision/1493926962",
       title: "Peripheral Vision", artist: "Turnover", kind: "Album", year: "2015",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/66/74/26/667426e1-00ac-10d7-ad69-9f6d66f23b0b/67530.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/66/74/26/667426e1-00ac-10d7-ad69-9f6d66f23b0b/67530.jpg/400x400bb.webp",
       picks: [1, 3, 8, 10],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Cutting My Fingers Off", "3:16"], ["New Scream", "4:12"], ["Humming", "3:58"], ["Hello Euphoria", "3:46"], ["Dizzy On the Comedown", "4:16"], ["Diazepam", "3:19"], ["Like Slow Disappearing", "3:56"], ["Take My Head", "3:14"], ["Threshold", "1:28"], ["I Would Hate You If I Could", "4:03"], ["Intrapersonal", "3:46"]],
     },
     {
       url: "https://music.apple.com/id/album/currents/1440838039",
       title: "Currents", artist: "Tame Impala", kind: "Album", year: "2015",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/a8/2e/b4/a82eb490-f30a-a321-461a-0383c88fec95/15UMGIM23316.rgb.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/a8/2e/b4/a82eb490-f30a-a321-461a-0383c88fec95/15UMGIM23316.rgb.jpg/400x400bb.webp",
       picks: [1, 4, 5, 13],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Let It Happen", "7:47"], ["Nangs", "1:48"], ["The Moment", "4:15"], ["Yes I'm Changing", "4:31"], ["Eventually", "5:19"], ["Gossip", "0:55"], ["The Less I Know the Better", "3:39"], ["Past Life", "3:48"], ["Disciples", "1:48"], ["'Cause I'm a Man", "4:02"], ["Reality In Motion", "4:13"], ["Love/Paranoia", "3:06"], ["New Person, Same Old Mistakes", "6:02"]],
     },
     {
       url: "https://music.apple.com/id/album/blonde/1146195596",
       title: "Blonde", artist: "Frank Ocean", kind: "Album", year: "2016",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/bb/45/68/bb4568f3-68cd-619d-fbcb-4e179916545d/BlondCover-Final.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/bb/45/68/bb4568f3-68cd-619d-fbcb-4e179916545d/BlondCover-Final.jpg/400x400bb.webp",
       picks: [3, 7, 14, 16],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Nikes", "5:14"], ["Ivy", "4:09"], ["Pink + White", "3:05"], ["Be Yourself", "1:27"], ["Solo", "4:17"], ["Skyline To", "3:05"], ["Self Control", "4:10"], ["Good Guy", "1:07"], ["Nights", "5:07"], ["Solo (Reprise)", "1:19"], ["Pretty Sweet", "2:38"], ["Facebook Story", "1:09"], ["Close to You", "1:26"], ["White Ferrari", "4:09"], ["Seigfried", "5:35"], ["Godspeed", "2:58"], ["Futura Free", "9:24"]],
     },
     {
       url: "https://music.apple.com/id/album/the-new-abnormal/1498121188",
       title: "The New Abnormal", artist: "The Strokes", kind: "Album", year: "2020",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/62/a6/ff/62a6ff2a-95c9-5302-31f4-2dcca9e40323/886448281085.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/62/a6/ff/62a6ff2a-95c9-5302-31f4-2dcca9e40323/886448281085.jpg/400x400bb.webp",
       picks: [1, 2, 6, 8, 9],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["The Adults Are Talking", "5:09"], ["Selfless", "3:42"], ["Brooklyn Bridge To Chorus", "3:56"], ["Bad Decisions", "4:53"], ["Eternal Summer", "6:15"], ["At The Door", "5:10"], ["Why Are Sundays So Depressing", "4:36"], ["Not The Same Anymore", "5:37"], ["Ode To The Mets", "5:52"]],
     },
     {
       url: "https://music.apple.com/id/album/nurture/1894533111",
       title: "Nurture", artist: "Porter Robinson", kind: "Album", year: "2021",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f7/b0/67/f7b067e8-6759-c676-6b6d-d4f5b049d23f/858275061918_Cover.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f7/b0/67/f7b067e8-6759-c676-6b6d-d4f5b049d23f/858275061918_Cover.jpg/400x400bb.webp",
       picks: [2, 3, 12],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Lifelike", "1:35"], ["Look at the Sky", "5:10"], ["Get Your Wish", "3:39"], ["Wind Tempos", "6:04"], ["Musician", "3:59"], ["do-re-mi-fa-so-la-ti-do", "3:35"], ["Mother", "3:46"], ["dullscythe", "4:00"], ["Sweet Time", "4:12"], ["Mirror", "5:07"], ["Something Comforting", "4:42"], ["Blossom", "3:46"], ["Unfold", "4:46"], ["Trying to Feel Alive", "4:40"]],
     },
     {
       url: "https://music.apple.com/id/album/getting-killed/1818548779",
       title: "Getting Killed", artist: "Geese", kind: "Album", year: "2025",
-      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/0b/b8/f1/0bb8f1d7-1df0-20c0-9539-51d08058eeb1/5400863191436_Cover.jpg/600x600bb.jpg",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/0b/b8/f1/0bb8f1d7-1df0-20c0-9539-51d08058eeb1/5400863191436_Cover.jpg/400x400bb.webp",
       picks: [2, 8, 10],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Trinidad", "3:45"], ["Cobra", "3:05"], ["Husbands", "4:08"], ["Getting Killed", "4:45"], ["Islands of Men", "5:54"], ["100 Horses", "3:46"], ["Half Real", "3:22"], ["Au Pays du Cocaine", "3:31"], ["Bow Down", "3:28"], ["Taxes", "3:18"], ["Long Island City Here I Come", "6:37"]],
     },
@@ -218,14 +218,14 @@ window.SITE = {
   // "thumb" is a smaller copy shown in the grid (the viewer loads the full "src"); for a video it is the poster frame.
   // "w"/"h" are the pixel size of the thumb, so the grid keeps its layout while images load. All three are optional.
   photos: [
-    { src: "images/photos/photo-01.jpg", thumb: "images/photos/thumbs/photo-01.jpg", w: 675, h: 900, code: "PH-001-2", caption: "Standing on the slope", place: "" },
-    { src: "images/photos/photo-02.jpg", thumb: "images/photos/thumbs/photo-02.jpg", w: 900, h: 675, code: "PH-002-6", caption: "On the ridge trail", place: "" },
-    { src: "images/photos/photo-03.jpg", thumb: "images/photos/thumbs/photo-03.jpg", w: 900, h: 675, code: "PH-003-1", caption: "Heading down above the clouds", place: "" },
-    { src: "images/photos/photo-04.jpg", thumb: "images/photos/thumbs/photo-04.jpg", w: 900, h: 675, code: "PH-004-5", caption: "Along the hillside path", place: "" },
-    { src: "images/photos/photo-05.jpg", thumb: "images/photos/thumbs/photo-05.jpg", w: 900, h: 675, code: "PH-005-9", caption: "Ridgeline over the clouds", place: "" },
-    { src: "images/photos/photo-06.jpg", thumb: "images/photos/thumbs/photo-06.jpg", w: 675, h: 900, code: "PH-006-3", caption: "Clouds and campsite below", place: "" },
-    { video: "images/photos/photo-07.mp4", thumb: "images/photos/thumbs/photo-07.jpg", w: 720, h: 1280, code: "VD-001-8", caption: "On the move", place: "" },
-    { src: "images/photos/photo-08.jpg", thumb: "images/photos/thumbs/photo-08.jpg", w: 675, h: 900, code: "PH-007-4", caption: "Koi in the pond", place: "" },
+    { src: "images/photos/photo-01.jpg", thumb: "images/photos/thumbs/photo-01.webp", w: 600, h: 800, code: "PH-001-2", caption: "Standing on the slope", place: "" },
+    { src: "images/photos/photo-02.jpg", thumb: "images/photos/thumbs/photo-02.webp", w: 800, h: 600, code: "PH-002-6", caption: "On the ridge trail", place: "" },
+    { src: "images/photos/photo-03.jpg", thumb: "images/photos/thumbs/photo-03.webp", w: 800, h: 600, code: "PH-003-1", caption: "Heading down above the clouds", place: "" },
+    { src: "images/photos/photo-04.jpg", thumb: "images/photos/thumbs/photo-04.webp", w: 800, h: 600, code: "PH-004-5", caption: "Along the hillside path", place: "" },
+    { src: "images/photos/photo-05.jpg", thumb: "images/photos/thumbs/photo-05.webp", w: 800, h: 600, code: "PH-005-9", caption: "Ridgeline over the clouds", place: "" },
+    { src: "images/photos/photo-06.jpg", thumb: "images/photos/thumbs/photo-06.webp", w: 600, h: 800, code: "PH-006-3", caption: "Clouds and campsite below", place: "" },
+    { video: "images/photos/photo-07.mp4", thumb: "images/photos/thumbs/photo-07.webp", w: 720, h: 1280, code: "VD-001-8", caption: "On the move", place: "" },
+    { src: "images/photos/photo-08.jpg", thumb: "images/photos/thumbs/photo-08.webp", w: 600, h: 800, code: "PH-007-4", caption: "Koi in the pond", place: "" },
   ],
 
   writing: [

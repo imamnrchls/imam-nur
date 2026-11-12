@@ -5,7 +5,6 @@
   const main = document.getElementById("page");
   const params = new URLSearchParams(location.search);
   const fmtDate = (d) => { const x = new Date(d + "T00:00:00"); return isNaN(x) ? esc(d) : x.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }); };
-  const year = (d) => String(d).slice(0, 4);
   // width/height attributes reserve the space before an image loads (no layout jump)
   const size = (p) => (p.w > 0 && p.h > 0 ? ` width="${+p.w}" height="${+p.h}"` : "");
 
@@ -153,12 +152,12 @@
           <div class="tracks-head small"><span>Tracklist — ${tracks.length} songs, ${mins} min</span>${picks.size ? `<span class="tracks-key"><i class="pick-mark" aria-hidden="true"></i> Start here</span>` : ""}</div>
           <ol class="tracks">${tracks.map(([name, time], k) => {
             const pick = picks.has(k + 1);
-            return `<li class="track${pick ? " pick" : ""}" style="--k:${k}"><span class="tn code">${String(k + 1).padStart(2, "0")}</span><span class="tt">${pick ? '<i class="pick-mark" aria-hidden="true"></i>' : ""}<span>${esc(name)}</span>${pick ? '<span class="sr-only"> (recommended)</span>' : ""}</span><span class="td code">${esc(time)}</span></li>`;
+            return `<li class="track${pick ? " pick" : ""}" data-k="${k}"><span class="tn code">${String(k + 1).padStart(2, "0")}</span><span class="tt">${pick ? '<i class="pick-mark" aria-hidden="true"></i>' : ""}<span>${esc(name)}</span>${pick ? '<span class="sr-only"> (recommended)</span>' : ""}</span><span class="td code">${esc(time)}</span></li>`;
           }).join("")}</ol>
         </div>`;
       };
       html = !list.length ? head(titleLines, "No recommendations here yet.", menuItem("music").code) : head(titleLines, `${list.length} records I keep coming back to. Open one to see what to play first.`, menuItem("music").code) +
-        `<div class="covers" data-reveal aria-hidden="true">${list.map((m, i) => m.cover ? `<button type="button" tabindex="-1" data-open="${i}" style="--d:${i}"><img src="${esc(m.cover)}" alt="" loading="lazy"></button>` : "").join("")}</div>
+        `<div class="covers" data-reveal aria-hidden="true">${list.map((m, i) => m.cover ? `<button type="button" tabindex="-1" data-open="${i}"><img src="${esc(m.cover)}" alt="" loading="lazy"></button>` : "").join("")}</div>
         <ol class="records">${list.map((m, i) => `
           <li class="rec" data-reveal>
             <button type="button" class="rec-row" aria-expanded="false" aria-controls="rec-${i}"${m.cover ? ` data-cover="${esc(m.cover)}"` : ""}>
@@ -188,6 +187,8 @@
   }
 
   main.innerHTML = html;
+  // Per-item CSS values are set here, not in style="" attributes, so the CSP can forbid inline styles
+  main.querySelectorAll("[data-k]").forEach((el) => el.style.setProperty("--k", el.dataset.k));
 
   /* ---------- Title: split, fit, animate ---------- */
   const titleEl = document.getElementById("pageTitle");
