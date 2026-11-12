@@ -1,11 +1,8 @@
-/* Drifting fields of characters.
-   A slowly moving cloud-like noise pattern is drawn as a grid of monospace characters, and the mouse clears a soft hole around itself.
-
-   - Homepage hero (".hero-bg"): faint characters float over the photo. Denser parts use heavier symbols,
-     and the edges of each cloud spell letters from the name. Turn off with  heroAscii: false  in content.js.
-   - About portrait (".portrait[data-ascii]"): inside each cloud the photo itself turns into characters
-     (brighter areas get denser characters). Turn off with  ascii: false  in the about section of content.js.
-
+/* Drifting fields of characters, used behind the homepage name and over the About portrait.
+   A slowly moving cloud-like noise pattern is drawn as a grid of faint monospace characters over the photo.
+   Denser parts use heavier symbols, the edges of each cloud spell letters from the name,
+   and the mouse clears a soft hole around itself.
+   Turn off with  heroAscii: false  (homepage) or  ascii: false  under about (About page) in content.js.
    Both pause when off screen, and show one still frame for visitors who prefer reduced motion. */
 (function () {
   const S = window.SITE || {};
@@ -32,7 +29,6 @@
   }
   const fbm = (x, y, z) => noise(x, y, z) * 0.57 + noise(x * 2.03, y * 2.03, z * 1.3) * 0.29 + noise(x * 4.1, y * 4.1, z * 1.7) * 0.14;
   const hash = (i, j) => { const s = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return s - Math.floor(s); };
-  const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
   function mount(host, o) {
     const canvas = document.createElement("canvas");
@@ -43,7 +39,7 @@
     if (!ctx) return;
 
     const chars = [...new Set([...o.ramp, ...(o.edge || [])])];
-    let cell = 14, cols = 0, rows = 0, dpr = 1, W = 0, H = 0, atlas = null, glyph = {}, lum = null, tint = null;
+    let cell = 14, cols = 0, rows = 0, dpr = 1, W = 0, H = 0, atlas = null, glyph = {};
 
     /* Each character is drawn once into a strip, then copied for every cell */
     function buildAtlas() {
@@ -52,31 +48,11 @@
       atlas.width = s * chars.length; atlas.height = s;
       const a = atlas.getContext("2d");
       a.fillStyle = o.color;
+      if (o.shadow) { a.shadowColor = o.shadow; a.shadowBlur = 2.5 * dpr; } // keeps light characters readable on a bright photo
       a.font = `500 ${Math.round(cell * o.fontScale * dpr)}px ${FONT}`;
       a.textAlign = "center"; a.textBaseline = "middle";
       glyph = {};
       chars.forEach((ch, i) => { a.fillText(ch, i * s + s / 2, s / 2 + dpr * 0.5); glyph[ch] = i * s; });
-    }
-
-    /* Image mode: brightness of the photo under each cell (the photo is drawn like object-fit: cover) */
-    function sample() {
-      lum = null; tint = null;
-      const img = o.image;
-      if (!img || !img.naturalWidth || !cols) return;
-      try {
-        const c = document.createElement("canvas"); c.width = cols; c.height = rows;
-        const g = c.getContext("2d", { willReadFrequently: true });
-        const k = Math.max(cols * cell / img.naturalWidth, rows * cell / img.naturalHeight);
-        const sw = cols * cell / k, sh = rows * cell / k;
-        g.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, 0, 0, cols, rows);
-        const px = g.getImageData(0, 0, cols, rows).data;
-        lum = new Float32Array(cols * rows); tint = new Array(cols * rows);
-        for (let i = 0; i < lum.length; i++) {
-          const r = px[i * 4], g2 = px[i * 4 + 1], b = px[i * 4 + 2];
-          lum[i] = (r * 0.299 + g2 * 0.587 + b * 0.114) / 255;
-          tint[i] = `rgb(${(r * o.shade) | 0},${(g2 * o.shade) | 0},${(b * o.shade) | 0})`; // a deep shade of the photo's own colour
-        }
-      } catch (e) { lum = null; } // an image from another site without CORS cannot be read; fall back to plain characters
     }
 
     function resize() {
@@ -88,7 +64,7 @@
       cell = o.cell(W);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       cols = Math.ceil(W / cell); rows = Math.ceil(H / cell);
-      buildAtlas(); sample();
+      buildAtlas();
     }
 
     /* Pointer, eased, in the host's unscaled pixels */
@@ -127,14 +103,7 @@
           if (d < o.thresh) continue;
           const X = Math.round(x * dpr - s / 2), Y = Math.round(y * dpr - s / 2);
           let ch, alpha;
-          if (lum) {
-            // the photo turns into characters: the cell takes a deep shade of the photo's colour,
-            // and a character as bright as the photo there is drawn on top
-            const k = smooth(o.thresh, o.thresh + 0.08, d), n = j * cols + i, L = lum[n];
-            ctx.globalAlpha = 0.92 * k; ctx.fillStyle = tint[n]; ctx.fillRect(X, Y, s, s);
-            ch = o.ramp[Math.min(o.ramp.length - 1, (L * 1.15 * o.ramp.length) | 0)];
-            alpha = k * (0.55 + L * 0.45);
-          } else if (o.edge && d < o.thresh + o.edgeW) {
+          if (o.edge && d < o.thresh + o.edgeW) {
             ch = o.edge[(((hash(i, j) * 97) | 0) + Math.floor(t / 1400 + hash(j, i) * 4)) % o.edge.length]; // each cell changes letter on its own beat
             alpha = 0.3;
           } else {
@@ -142,9 +111,8 @@
             ch = o.ramp[Math.min(o.ramp.length - 1, (k * o.ramp.length) | 0)];
             alpha = 0.16 + k * 0.32;
           }
-          if (ch === " ") continue;
           if (hash(i + 13, j + blink) > 0.985) alpha = Math.min(0.9, alpha + 0.35);   // an occasional brighter glyph
-          ctx.globalAlpha = alpha;
+          ctx.globalAlpha = Math.min(1, alpha * (o.boost || 1));
           ctx.drawImage(atlas, glyph[ch], 0, s, s, X, Y, s, s);
         }
       }
@@ -166,7 +134,7 @@
 
     if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; wake(); }).observe(host);
     resize();
-    if (o.image && !o.image.complete) o.image.addEventListener("load", () => { resize(); if (reduced) still(); }, { once: true });
+    if (o.follow && !o.follow.complete) o.follow.addEventListener("load", () => { resize(); if (reduced) still(); }, { once: true });
     if (reduced) still(); else wake();
     let rt;
     addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { resize(); if (reduced) still(); }, 150); });
@@ -174,24 +142,24 @@
     document.addEventListener("visibilitychange", wake);
   }
 
+  // The look both places share
+  const LOOK = { ramp: ".:-=+*#%".split(""), edge: NAME, color: "#f3f3ee", fontScale: 0.78, thresh: 0.47, edgeW: 0.045 };
+
   /* ---------- Homepage hero ---------- */
   const hero = document.querySelector(".hero-bg");
   if (hero && S.heroAscii !== false) mount(hero, {
-    ramp: ".:-=+*#%".split(""), edge: NAME, color: "#f3f3ee", fontScale: 0.78,
-    thresh: 0.47, edgeW: 0.045, scale: 0.0468,
+    ...LOOK, scale: 0.0468,
     cell: (w) => (w < 700 ? 11 : w < 1200 ? 13 : 14),
     radius: (w) => Math.max(110, Math.min(220, w * 0.13)),
     visible: () => scrollY < innerHeight * 1.1,              // the scroll scene closes the hero after this
   });
 
-  /* ---------- About portrait ---------- */
+  /* ---------- About portrait (same look, scaled to the smaller frame) ---------- */
   const portrait = document.querySelector(".portrait[data-ascii]");
   const pimg = portrait && portrait.querySelector("img");
   if (portrait && pimg) mount(portrait, {
-    image: pimg, follow: pimg,
-    ramp: ".:-=+*#%@".split(""), color: "#f3f3ee", shade: 0.28, fontScale: 1,
-    thresh: 0.5, scale: 0.06,
-    cell: (w) => (w < 420 ? 10 : 11),
+    ...LOOK, follow: pimg, scale: 0.075, thresh: 0.44, boost: 1.7, shadow: "rgba(11, 11, 11, .75)",  // the photo is brighter and busier than the hero
+    cell: () => 11,
     radius: (w) => Math.max(70, w * 0.22),
   });
 })();
