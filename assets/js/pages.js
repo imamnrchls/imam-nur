@@ -76,14 +76,14 @@
       break;
     }
     case "photos": {
-      titleLines = ["PHOTOS"];
-      html = !S.photos.length ? head(titleLines, "No photographs here yet.", menuItem("photos").code) : head(titleLines, "A running archive of photographs. Click any image to view it larger.", menuItem("photos").code) +
+      titleLines = ["GALLERY"];
+      html = !S.photos.length ? head(titleLines, "Nothing here yet.", menuItem("photos").code) : head(titleLines, "A running archive of photographs and short videos. Click any one to view it larger.", menuItem("photos").code) +
         `<div class="photo-grid">${S.photos.map((p, i) => `
           <figure class="photo" data-reveal data-i="${i}" tabindex="0" role="button" aria-label="Open ${esc(p.caption)}">
             <div class="ph">${p.video ? `<video src="${esc(p.video)}#t=0.1" muted loop autoplay playsinline preload="metadata" aria-label="${esc(p.caption)}"></video>` : `<img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy">`}</div>
             <figcaption class="small"><span>${esc(p.code)}</span><span class="muted">${esc(p.place)}</span></figcaption>
           </figure>`).join("")}</div>
-        <div class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+        <div class="lightbox" role="dialog" aria-modal="true" aria-label="Gallery viewer">
           <div class="lb-top small"><span class="lb-code"></span><button type="button" class="lb-close small">Close ${U.icon("close")}</button></div>
           <div class="lb-stage"><img alt=""><video controls playsinline loop hidden></video></div>
           <div class="lb-bot small"><button type="button" class="lb-prev small">${U.icon("left")} Prev</button><span class="lb-cap"></span><button type="button" class="lb-next small">Next ${U.icon("right")}</button></div>
