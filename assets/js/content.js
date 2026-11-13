@@ -20,7 +20,7 @@ window.SITE = {
   ],
 
   // Homepage background. Put a photo credit in heroCredit ({ label, url }) or leave it empty to hide it.
-  heroImage: "images/hero-ridge.webp",
+  heroImage: "images/hero-trail.webp",
   heroAscii: true,   // drifting characters behind the name and on the six homepage tiles (false = off)
   heroCredit: null,
 
