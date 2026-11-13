@@ -28,8 +28,7 @@ window.SITE = {
   footer: {
     cta: "Up for a hike, a good album or a long conversation",
     ctaLink: "say hello",
-    art: "images/footer-mountain.webp",
-    artMotion: true,   // the picture's cloud drifts and the mouse dissolves its dots (assets/js/footer-art.js); false = still picture
+    art: "images/footer-painted.webp",   // drawn from images/footer-photo.webp by tools/paint.js (&detail=0.3&hatch=0.25)
   },
 
   // The second title that appears while scrolling (one entry per line)
@@ -37,12 +36,12 @@ window.SITE = {
 
   // The six tiles on the homepage. Each one is a menu entry.
   menu: [
-    { label: "About",      code: "AB-010-7", href: "about.html",     image: "images/tiles/about.webp" },
-    { label: "Gallery",    code: "GA-118-4", href: "photos.html",    image: "images/tiles/gallery.webp" },
-    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "images/tiles/writing.webp" },
-    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "images/tiles/portfolio.webp" },
-    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "images/tiles/music.webp" },
-    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "images/tiles/contact.webp" },
+    { label: "About",      code: "AB-010-7", href: "about.html",     image: "images/tiles/about-painted.webp" },
+    { label: "Gallery",    code: "GA-118-4", href: "photos.html",    image: "images/tiles/gallery-painted.webp" },
+    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "images/tiles/writing-painted.webp" },
+    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "images/tiles/portfolio-painted.webp" },
+    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "images/tiles/music-painted.webp" },
+    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "images/tiles/contact-painted.webp" },
   ],
 
   about: {
