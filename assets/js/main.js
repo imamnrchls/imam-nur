@@ -122,7 +122,7 @@
     }
     const fl = footer.querySelectorAll(".foot-lines i");
     if (fl.length) gsap.from(fl, { scaleY: 0, transformOrigin: "top", duration: 1.8, ease: "expo.inOut", stagger: 0.12, scrollTrigger: { trigger: footer, start: "top 80%", once: true } });
-    const img = footer.querySelector(".foot-pic");   // the frame moves; the picture (and the canvas drawn over it, footer-art.js) fills it
+    const img = footer.querySelector(".foot-pic");   // the frame moves; the picture fills it
     if (img) {
       gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: footer, start: "top bottom", end: "bottom bottom", scrub: true } });
       if (matchMedia("(hover: hover)").matches) {

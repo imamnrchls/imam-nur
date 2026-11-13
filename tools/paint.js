@@ -10,11 +10,15 @@
    4. Paper grain is laid over the result.
 
    Everything random comes from one seed, so the same photo always gives the same drawing.
-   Options go in the address:  ?src=images/photo.webp&w=1600&seed=7&colors=18  */
+   Options go in the address:  ?src=images/photo.webp&w=1600&seed=7&colors=20&scale=1
+   scale sizes the strokes: 1 suits a 1600-px picture shown full screen; a picture shown small (the homepage tiles)
+   needs smaller strokes, or it turns into a few blobs. detail below 1 adds finer strokes where the photo is soft
+   (a hazy, low-contrast photo needs about 0.5); hatch below 1 lays fewer loose scribbles over the top.
+   grade (default 1, 0 = off) is the site-wide colour grade, so every picture belongs to the same site (see step 4).  */
 (async function () {
   const q = new URLSearchParams(location.search);
   const SRC = "../" + (q.get("src") || "images/hero-trail.webp");
-  const OUT_W = +(q.get("w") || 1600), SEED = +(q.get("seed") || 7), COLORS = +(q.get("colors") || 20);
+  const OUT_W = +(q.get("w") || 1600), K = +(q.get("scale") || 1), DETAIL = +(q.get("detail") || 1), HATCHING = +(q.get("hatch") || 1), GRADE = +(q.get("grade") ?? 1), SEED = +(q.get("seed") || 7), COLORS = +(q.get("colors") || 20);
   const HATCH = -0.62;                         // the shared stroke direction, in radians (rising to the right)
   const status = document.getElementById("status");
 
@@ -87,14 +91,14 @@
   // One stroke: a bundle of thin wavering lines with gaps (chalk grain)
   function stroke(x, y, ang, len, wid, col, alpha) {
     const dx = Math.cos(ang), dy = Math.sin(ang), nx = -dy, ny = dx;
-    const lines = Math.max(2, Math.round(wid / 1.7)), bend = rr(-0.12, 0.12) * len;
+    const lines = Math.max(2, Math.round(wid / (1.7 * Math.max(K, 0.5)))), bend = rr(-0.12, 0.12) * len;
     for (let k = 0; k < lines; k++) {
       if (rnd() < 0.3) continue;                                   // a gap: paper shows through
-      const o = (k / (lines - 1) - 0.5) * wid + rr(-0.6, 0.6);
+      const o = (k / (lines - 1) - 0.5) * wid + rr(-0.6, 0.6) * K;
       const a = -len / 2 * rr(0.72, 1.05), b = len / 2 * rr(0.72, 1.05);
       const l = rr(-7, 7);                                           // each line a touch lighter or darker
       ctx.strokeStyle = `rgba(${clamp(col[0] + l, 0, 255) | 0},${clamp(col[1] + l, 0, 255) | 0},${clamp(col[2] + l, 0, 255) | 0},${alpha * rr(0.55, 1)})`;
-      ctx.lineWidth = rr(0.9, 2.3);
+      ctx.lineWidth = rr(0.9, 2.3) * Math.max(K, 0.45);
       ctx.beginPath();
       ctx.moveTo(x + dx * a + nx * o, y + dy * a + ny * o);
       ctx.quadraticCurveTo(x + nx * (o + bend), y + ny * (o + bend), x + dx * b + nx * (o + rr(-1, 1)), y + dy * b + ny * (o + rr(-1, 1)));
@@ -111,6 +115,7 @@
     { wid: 6,  step: 4,  blur: 1.5, need: 15, follow: 0.85, len: 3.4, alpha: 0.92 },
     { wid: 3,  step: 3,  blur: 0.6, need: 26, follow: 1.0,  len: 3.0, alpha: 0.95 },
   ];
+  for (const L of LAYERS) { L.need *= DETAIL; L.wid *= K; L.step = Math.max(1.5, L.step * K); L.blur *= K; }
   for (const [n, L] of LAYERS.entries()) {
     status.textContent = `Painting… layer ${n + 1} of ${LAYERS.length}`;
     await new Promise((r) => setTimeout(r));
@@ -138,9 +143,9 @@
   {
     status.textContent = "Painting… hatching";
     await new Promise((r) => setTimeout(r));
-    const ref = pixels(6), STEP = 20;
+    const ref = pixels(6 * K), STEP = 20 * K;
     for (let y = 0; y < H + STEP; y += STEP) for (let x = 0; x < W + STEP; x += STEP) {
-      if (rnd() < 0.45) continue;
+      if (rnd() > 0.55 * HATCHING) continue;
       const px = x + rr(-0.5, 0.5) * STEP, py = y + rr(-0.5, 0.5) * STEP;
       const cx = clamp(px | 0, 0, W - 1), cy = clamp(py | 0, 0, H - 1), i = (cy * W + cx) * 4;
       const [gx, gy] = edge(cx, cy);
@@ -148,15 +153,28 @@
       const [c1, c2] = nearest(ref[i], ref[i + 1], ref[i + 2]);
       const lift = rnd() < 0.5 ? 26 : -22;                           // a lighter or a darker stick of the same family
       const col = rnd() < 0.5 ? c2 : [c1[0] + lift, c1[1] + lift, c1[2] + lift];
-      stroke(px, py, HATCH + rr(-0.1, 0.1), rr(40, 95), rr(5, 11), col, 0.5);
+      stroke(px, py, HATCH + rr(-0.1, 0.1), rr(40, 95) * K, rr(5, 11) * K, col, 0.5);
     }
   }
 
-  /* ---------- 4. paper grain ---------- */
+  /* ---------- 4. the site's colour grade, then paper grain ----------
+     Every picture keeps its own colours, but all of them share:
+     - shadows that sink into one deep navy ink (near the site's ink, #0b0b0b, with a little blue),
+     - highlights that lean to the site's paper colour (#f3f3ee) instead of pure white,
+     - a ceiling on how vivid a colour may be, so no picture shouts over the others. */
+  const INK = [20, 27, 42], PAPER = [243, 243, 238], MAX_CHROMA = 125;
   const d = ctx.getImageData(0, 0, W, H), p = d.data;
   for (let i = 0; i < p.length; i += 4) {
-    const g = (rnd() - 0.5) * 20 + (rnd() < 0.015 ? 24 : 0);
-    p[i] = clamp(p[i] + g, 0, 255); p[i + 1] = clamp(p[i + 1] + g, 0, 255); p[i + 2] = clamp(p[i + 2] + g, 0, 255);
+    let r = p[i], g = p[i + 1], b = p[i + 2];
+    if (GRADE) {
+      const l = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+      const sh = (1 - l) ** 2.2 * 0.65 * GRADE, hi = l ** 3 * 0.45 * GRADE;
+      r += (INK[0] - r) * sh + (PAPER[0] - r) * hi; g += (INK[1] - g) * sh + (PAPER[1] - g) * hi; b += (INK[2] - b) * sh + (PAPER[2] - b) * hi;
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), c = mx - mn;
+      if (c > MAX_CHROMA) { const y = r * 0.299 + g * 0.587 + b * 0.114, k = 1 - (1 - MAX_CHROMA / c) * GRADE; r = y + (r - y) * k; g = y + (g - y) * k; b = y + (b - y) * k; }
+    }
+    const n = (rnd() - 0.5) * 20 + (rnd() < 0.015 ? 24 : 0);
+    p[i] = clamp(r + n, 0, 255); p[i + 1] = clamp(g + n, 0, 255); p[i + 2] = clamp(b + n, 0, 255);
   }
   ctx.putImageData(d, 0, 0);
   status.textContent = `Done: ${W}×${H}, ${palette.length} colours, seed ${SEED}. Right-click the picture to save it.`;
