@@ -96,7 +96,7 @@
   const footer = document.createElement("footer");
   footer.className = "site-foot";
   footer.innerHTML = `
-    ${F.art ? `<div class="foot-art" aria-hidden="true"><img src="${esc(F.art)}" alt="" loading="lazy" decoding="async"></div>` : ""}
+    ${F.art ? `<div class="foot-art" aria-hidden="true"><div class="foot-pic"><img src="${esc(F.art)}" alt="" loading="lazy" decoding="async"></div></div>` : ""}
     <div class="foot-lines" aria-hidden="true"><i class="v v1"></i><i class="v v2"></i></div>
     <div class="foot-inner">
       ${isHome && F.cta ? `<p class="foot-big">${words(F.cta)} ${words("—")} <a href="about.html#contact">${words(F.ctaLink || "say hello")}</a><span class="w"><span>.</span></span></p>` : ""}
@@ -116,7 +116,7 @@
     }
     const fl = footer.querySelectorAll(".foot-lines i");
     if (fl.length) gsap.from(fl, { scaleY: 0, transformOrigin: "top", duration: 1.8, ease: "expo.inOut", stagger: 0.12, scrollTrigger: { trigger: footer, start: "top 80%", once: true } });
-    const img = footer.querySelector(".foot-art img");
+    const img = footer.querySelector(".foot-pic");   // the frame moves; the picture (and the canvas drawn over it, footer-art.js) fills it
     if (img) {
       gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: footer, start: "top bottom", end: "bottom bottom", scrub: true } });
       if (matchMedia("(hover: hover)").matches) {

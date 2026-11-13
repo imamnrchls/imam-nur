@@ -29,6 +29,7 @@ window.SITE = {
     cta: "Up for a hike, a good album or a long conversation",
     ctaLink: "say hello",
     art: "images/footer-mountain.webp",
+    artMotion: true,   // the picture's cloud drifts and the mouse dissolves its dots (assets/js/footer-art.js); false = still picture
   },
 
   // The second title that appears while scrolling (one entry per line)
