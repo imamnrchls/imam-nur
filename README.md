@@ -25,6 +25,19 @@ All text, images and links are in **`assets/js/content.js`**. Edit that file, sa
 - The homepage tiles come from the `menu` list.
 - In writing `body`, a blank line starts a new paragraph, and a line starting with `## ` becomes a sub-heading.
 
+## Favicon
+
+The icon is the monogram **IN** in Instrument Serif (the site's display face), paper (`#f3f3ee`) on the navy ink of the painted pictures (`#141b2a`).
+
+| File | Used by |
+| --- | --- |
+| `favicon.svg` | Browsers that support SVG icons (Chrome, Edge, Firefox): sharp at every size |
+| `favicon.ico` (16, 32, 48 px) | Every other browser, including Safari versions without SVG icon support, plus Windows and search results. The 16 px layer is drawn separately so it stays crisp |
+| `apple-touch-icon.png` (180 px) | iPhone and iPad home screen |
+| `site.webmanifest` + `icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | Android home screen and installed web apps |
+
+To change it, edit `tools/favicon/make.py` (or the SVGs it writes), then run `python3 tools/favicon/pack.py` from the repository root. Bump the `?v=` on the icon links in every `.html` file, so browsers fetch the new icon.
+
 ## Run locally
 
 ```bash
