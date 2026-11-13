@@ -25,6 +25,18 @@ All text, images and links are in **`assets/js/content.js`**. Edit that file, sa
 - The homepage tiles come from the `menu` list.
 - In writing `body`, a blank line starts a new paragraph, and a line starting with `## ` becomes a sub-heading.
 
+## Favicon
+
+The icon is the site's "+" on a solid square. There are four files, and **they must all show the same design**, because each browser uses a different one:
+
+| File | Used by |
+| --- | --- |
+| `favicon.svg` | Chrome, Edge, Firefox (it flips to a light tile in a dark browser theme) |
+| `favicon.ico` (16, 32, 48 px) and `favicon-32.png` | Safari and other browsers without SVG icon support, Windows, search results |
+| `apple-touch-icon.png` (180 px) | iPhone and iPad home screen, Safari Favorites |
+
+After changing the icon, bump the `?v=` on the icon links in every `.html` file. Safari keeps favicons in its own cache, so on a Mac that already visited the site the old icon can stay until that cache is cleared (Safari → Settings → Privacy → Manage Website Data → remove the site, then restart Safari).
+
 ## Run locally
 
 ```bash
