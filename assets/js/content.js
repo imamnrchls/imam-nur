@@ -210,7 +210,7 @@ window.SITE = {
       url: "https://music.apple.com/id/album/kontemplasi/1741330967",
       title: "Kontemplasi", artist: "Alkateri", kind: "Album", year: "2024",
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/65/a2/f8/65a2f83e-adf1-129a-8d7f-cfc2a2bedfb0/859786864272_cover.jpg/600x600bb.jpg",
-      picks: [1, 3, 4, 6],   // track numbers you recommend, e.g. [2, 5]
+      picks: [1, 3, 4, 6, 8],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Penetrasi", "3:17"], ["Buang", "2:59"], ["Lebih Dari", "4:51"], ["Egosentris", "4:38"], ["BDO", "5:10"], ["Zaman", "5:52"], ["Esok", "4:56"], ["Kontemplasi", "4:33"]],
     },
     {
