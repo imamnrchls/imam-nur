@@ -3,7 +3,9 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# local test screenshots
+# local test screenshots (the site's own icons are listed as exceptions)
 /*.png
 !/apple-touch-icon.png
-!/favicon-32.png
+!/icon-192.png
+!/icon-512.png
+!/icon-maskable-512.png
