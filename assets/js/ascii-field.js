@@ -17,6 +17,8 @@
   const K = 3;          // the cloud shape is computed every K cells and blended in between
   const FRAME = 42;     // ms between frames (~24 fps)
   const LEVELS = 10;    // opacity steps baked into the glyph strip (fewer steps = fewer redraws)
+  const BUDGET = 900;   // most characters (re)drawn per field per frame: the first frame would otherwise draw thousands at once
+                        // and stall the homepage intro; the rest simply follow on the next frames
 
   /* ---------- Noise: smooth 3D value noise + two octaves ---------- */
   const P = new Uint8Array(512);
@@ -133,6 +135,7 @@
       // 3. every cell: blend the coarse grid, cut the hole, pick a character
       const blink = Math.floor(t / 900) * 0.618, step = t / 1400, edge = o.edge, ramp = o.ramp, nE = edge ? edge.length : 0;
       const t0 = o.thresh, t1 = o.thresh + (o.edgeW || 0), boost = o.boost || 1;
+      let budget = reduced ? Infinity : BUDGET;
       for (let j = 0; j < rows; j++) {
         const J = (j / K) | 0, fy = (j - J * K) / K, y = j * cell + cell / 2, dy = y - ease.y;
         const rowHole = holeOn && dy * dy < R2;
@@ -162,6 +165,7 @@
             code = 1 + glyph[ch] * LEVELS + (level - 1);
           }
           if (code === shown[c]) continue;                                                 // unchanged: leave it
+          if (budget-- <= 0) continue;                                                     // over this frame's budget: next frame
           shown[c] = code;
           const X = Math.round(x * dpr - s / 2), Y = Math.round(y * dpr - s / 2);
           ctx.clearRect(X, Y, s, s);
