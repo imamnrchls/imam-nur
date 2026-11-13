@@ -13,11 +13,12 @@
    Options go in the address:  ?src=images/photo.webp&w=1600&seed=7&colors=20&scale=1
    scale sizes the strokes: 1 suits a 1600-px picture shown full screen; a picture shown small (the homepage tiles)
    needs smaller strokes, or it turns into a few blobs. detail below 1 adds finer strokes where the photo is soft
-   (a hazy, low-contrast photo needs about 0.5); hatch below 1 lays fewer loose scribbles over the top.  */
+   (a hazy, low-contrast photo needs about 0.5); hatch below 1 lays fewer loose scribbles over the top.
+   grade (default 1, 0 = off) is the site-wide colour grade, so every picture belongs to the same site (see step 4).  */
 (async function () {
   const q = new URLSearchParams(location.search);
   const SRC = "../" + (q.get("src") || "images/hero-trail.webp");
-  const OUT_W = +(q.get("w") || 1600), K = +(q.get("scale") || 1), DETAIL = +(q.get("detail") || 1), HATCHING = +(q.get("hatch") || 1), SEED = +(q.get("seed") || 7), COLORS = +(q.get("colors") || 20);
+  const OUT_W = +(q.get("w") || 1600), K = +(q.get("scale") || 1), DETAIL = +(q.get("detail") || 1), HATCHING = +(q.get("hatch") || 1), GRADE = +(q.get("grade") ?? 1), SEED = +(q.get("seed") || 7), COLORS = +(q.get("colors") || 20);
   const HATCH = -0.62;                         // the shared stroke direction, in radians (rising to the right)
   const status = document.getElementById("status");
 
@@ -156,11 +157,24 @@
     }
   }
 
-  /* ---------- 4. paper grain ---------- */
+  /* ---------- 4. the site's colour grade, then paper grain ----------
+     Every picture keeps its own colours, but all of them share:
+     - shadows that sink into one deep navy ink (near the site's ink, #0b0b0b, with a little blue),
+     - highlights that lean to the site's paper colour (#f3f3ee) instead of pure white,
+     - a ceiling on how vivid a colour may be, so no picture shouts over the others. */
+  const INK = [20, 27, 42], PAPER = [243, 243, 238], MAX_CHROMA = 125;
   const d = ctx.getImageData(0, 0, W, H), p = d.data;
   for (let i = 0; i < p.length; i += 4) {
-    const g = (rnd() - 0.5) * 20 + (rnd() < 0.015 ? 24 : 0);
-    p[i] = clamp(p[i] + g, 0, 255); p[i + 1] = clamp(p[i + 1] + g, 0, 255); p[i + 2] = clamp(p[i + 2] + g, 0, 255);
+    let r = p[i], g = p[i + 1], b = p[i + 2];
+    if (GRADE) {
+      const l = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+      const sh = (1 - l) ** 2.2 * 0.65 * GRADE, hi = l ** 3 * 0.45 * GRADE;
+      r += (INK[0] - r) * sh + (PAPER[0] - r) * hi; g += (INK[1] - g) * sh + (PAPER[1] - g) * hi; b += (INK[2] - b) * sh + (PAPER[2] - b) * hi;
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), c = mx - mn;
+      if (c > MAX_CHROMA) { const y = r * 0.299 + g * 0.587 + b * 0.114, k = 1 - (1 - MAX_CHROMA / c) * GRADE; r = y + (r - y) * k; g = y + (g - y) * k; b = y + (b - y) * k; }
+    }
+    const n = (rnd() - 0.5) * 20 + (rnd() < 0.015 ? 24 : 0);
+    p[i] = clamp(r + n, 0, 255); p[i + 1] = clamp(g + n, 0, 255); p[i + 2] = clamp(b + n, 0, 255);
   }
   ctx.putImageData(d, 0, 0);
   status.textContent = `Done: ${W}×${H}, ${palette.length} colours, seed ${SEED}. Right-click the picture to save it.`;

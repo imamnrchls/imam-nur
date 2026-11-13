@@ -378,7 +378,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   position: relative; z-index: 2; overflow: hidden; isolation: isolate;
   display: flex; flex-direction: column; justify-content: flex-end;
   min-height: var(--foot-min);
-  background: #88835e; color: var(--paper); /* the average colour of the picture's top, so a taller footer continues it seamlessly */
+  background: #7e7b5f; color: var(--paper); /* the average colour of the picture's top, so a taller footer continues it seamlessly */
   padding: clamp(40px, 6vw, 80px) calc(var(--frame-w) + var(--pad)) clamp(20px, 2.6vw, 34px);
 }
 .home .site-foot { min-height: clamp(440px, 76vh, 680px); }
