@@ -207,6 +207,13 @@ window.SITE = {
       tracks: [["Lifelike", "1:35"], ["Look at the Sky", "5:10"], ["Get Your Wish", "3:39"], ["Wind Tempos", "6:04"], ["Musician", "3:59"], ["do-re-mi-fa-so-la-ti-do", "3:35"], ["Mother", "3:46"], ["dullscythe", "4:00"], ["Sweet Time", "4:12"], ["Mirror", "5:07"], ["Something Comforting", "4:42"], ["Blossom", "3:46"], ["Unfold", "4:46"], ["Trying to Feel Alive", "4:40"]],
     },
     {
+      url: "https://music.apple.com/id/album/kontemplasi/1741330967",
+      title: "Kontemplasi", artist: "Alkateri", kind: "Album", year: "2024",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/65/a2/f8/65a2f83e-adf1-129a-8d7f-cfc2a2bedfb0/859786864272_cover.jpg/600x600bb.jpg",
+      picks: [1, 3, 4, 6],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Penetrasi", "3:17"], ["Buang", "2:59"], ["Lebih Dari", "4:51"], ["Egosentris", "4:38"], ["BDO", "5:10"], ["Zaman", "5:52"], ["Esok", "4:56"], ["Kontemplasi", "4:33"]],
+    },
+    {
       url: "https://music.apple.com/id/album/getting-killed/1818548779",
       title: "Getting Killed", artist: "Geese", kind: "Album", year: "2025",
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/0b/b8/f1/0bb8f1d7-1df0-20c0-9539-51d08058eeb1/5400863191436_Cover.jpg/400x400bb.webp",
