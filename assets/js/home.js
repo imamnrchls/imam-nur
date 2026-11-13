@@ -103,14 +103,21 @@
   let started = false;
   const go = () => {
     if (started) return; started = true;
-    intro(); scene();
+    // Build the scroll scene first (the heavy part: measuring the whole page), then start the intro on a fresh frame.
+    // GSAP is told not to smooth over slow frames (main.js, for Lenis), so an intro started before this work
+    // would skip its first few hundred milliseconds and lurch.
+    scene();
     U.initReveals(); // created after the pin so their positions include the pinned distance
     ScrollTrigger.refresh(); U.lenis?.resize();
+    requestAnimationFrame(() => requestAnimationFrame(intro));
   };
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   window.scrollTo(0, 0);
-  if (bgImg.complete && bgImg.naturalWidth) go();
-  else { bgImg.addEventListener("load", go, { once: true }); bgImg.addEventListener("error", go, { once: true }); setTimeout(go, 2500); }
+  // Start once the picture has arrived AND every script on the page has run (ascii-field.js loads after this one),
+  // so no set-up work lands in the middle of the intro.
+  const ready = () => { if (bgImg.complete && bgImg.naturalWidth) go(); else { bgImg.addEventListener("load", go, { once: true }); bgImg.addEventListener("error", go, { once: true }); setTimeout(go, 2500); } };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
 
   U.onResize(() => { fit(); ScrollTrigger.refresh(); });
 })();

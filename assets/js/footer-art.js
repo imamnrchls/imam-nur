@@ -5,7 +5,9 @@
    (or browsers without canvas) get. Turn it off with  artMotion: false  under footer in content.js.
 
    Kept cheap on purpose: only the cloud's dots are recomputed, their density comes from a coarse noise grid,
-   only the changed rectangles are sent to the screen, and nothing runs while the footer is off screen. */
+   only the changed rectangles are sent to the screen, and nothing runs while the footer is off screen.
+   Setting up (reading the 1.5-million-pixel picture once) waits until the footer is about a screen away, and is
+   cut into slices of a few milliseconds, so it never holds up the page load or the homepage intro. */
 (function () {
   const S = window.SITE || {};
   const pic = document.querySelector(".foot-pic");
@@ -32,37 +34,72 @@
   // A fixed pseudo-random byte per pixel: the order in which dots drop out
   const hash = (i) => { i = Math.imul(i ^ (i >>> 15), 0x2c1b3c6d); i ^= i >>> 12; i = Math.imul(i, 0x297a2d39); return (i ^ (i >>> 15)) >>> 24; };
 
-  function start() {
+  // Work in slices: give the browser a frame back every few milliseconds
+  const slice = () => new Promise((r) => ("requestIdleCallback" in window ? requestIdleCallback(() => r(), { timeout: 120 }) : setTimeout(r, 16)));
+  let started = false;
+  async function start() {
+    if (started) return; started = true;
     const W = img.naturalWidth, H = img.naturalHeight;
     if (!W || !H || W * H > 3e6) return;
     const canvas = document.createElement("canvas");
     canvas.width = W; canvas.height = H;
-    const ctx = canvas.getContext("2d", { willReadFrequently: false });
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });   // a CPU-backed canvas: reading its pixels needs no copy back from the GPU
     if (!ctx) return;
-    let data;
-    try { ctx.drawImage(img, 0, 0); data = ctx.getImageData(0, 0, W, H); } catch (e) { return; }
-    const buf = new Uint32Array(data.data.buffer), orig = buf.slice();
+    // Decode off the main thread first, so drawing it is quick
+    let src = img;
+    try { if (window.createImageBitmap) src = await createImageBitmap(img); else if (img.decode) await img.decode(); } catch (e) { src = img; }
+    // Read the pixels a strip of rows at a time (one read of the whole picture would hold up a frame)
+    try { ctx.drawImage(src, 0, 0); } catch (e) { return; }
+    if (src.close) src.close();
+    const data = ctx.createImageData(W, H), buf = new Uint32Array(data.data.buffer), orig = new Uint32Array(W * H);
+    const tally = new Uint32Array(256), tone = new Uint32Array(256);   // how often each brightness occurs, and its colour
+    for (let y = 0; y < H;) {
+      const t0 = performance.now();
+      while (y < H && performance.now() - t0 < 6) {
+        const h = Math.min(48, H - y);
+        let part;
+        try { part = new Uint32Array(ctx.getImageData(0, y, W, h).data.buffer); } catch (e) { return; }
+        orig.set(part, y * W);
+        for (let i = 0; i < part.length; i += 5) { const c = part[i], l = c & 255; tally[l]++; tone[l] = c; }
+        y += h;
+      }
+      await slice();
+    }
+    buf.set(orig);
 
     // The flat sky is the most common colour; the cloud is every dot lighter than it
-    const count = new Map();
-    for (let i = 0; i < orig.length; i += 7) count.set(orig[i], (count.get(orig[i]) || 0) + 1);
-    let bg = orig[0], top = 0;
-    count.forEach((n, c) => { if (n > top) { top = n; bg = c; } });
+    let bgL = 0;
+    for (let l = 1; l < 256; l++) if (tally[l] > tally[bgL]) bgL = l;
+    const bg = tone[bgL];
     const lum = (c) => c & 255, bgLum = lum(bg);   // the picture is grey, so one channel is the brightness
 
     const G = 24, cols = Math.ceil(W / G) + 2, rows = Math.ceil(H / G) + 2;
     const field = new Float32Array(cols * rows);
-    let n = 0, x0 = W, y0 = H, x1 = 0, y1 = 0;
-    for (let i = 0; i < orig.length; i++) if (lum(orig[i]) > bgLum + 8) n++;
+    // Find the cloud's dots, a band of rows at a time
+    const found = [];
+    let x0 = W, y0 = H, x1 = 0, y1 = 0;
+    for (let y = 0; y < H;) {
+      const t0 = performance.now();
+      for (; y < H && performance.now() - t0 < 6; y += 8) {
+        const end = Math.min(H, y + 8) * W;
+        for (let i = y * W; i < end; i++) if (lum(orig[i]) > bgLum + 8) found.push(i);
+      }
+      if (y < H) await slice();
+    }
+    const n = found.length;
     if (!n) return;
     const at = new Uint32Array(n), cell = new Uint16Array(n), fx = new Uint8Array(n), fy = new Uint8Array(n), thr = new Uint8Array(n);
-    for (let i = 0, k = 0; i < orig.length; i++) {
-      if (lum(orig[i]) <= bgLum + 8) continue;
-      const x = i % W, y = (i / W) | 0;
-      at[k] = i; cell[k] = ((y / G) | 0) * cols + ((x / G) | 0); fx[k] = ((x % G) / G) * 255; fy[k] = ((y % G) / G) * 255; thr[k] = hash(i);
-      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
-      k++;
+    for (let k = 0; k < n;) {
+      const t0 = performance.now();
+      for (const stop = Math.min(n, k + 4096); k < stop; k++) {
+        const i = found[k], x = i % W, y = (i / W) | 0;
+        at[k] = i; cell[k] = ((y / G) | 0) * cols + ((x / G) | 0); fx[k] = ((x % G) / G) * 255; fy[k] = ((y % G) / G) * 255; thr[k] = hash(i);
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+        if ((k & 1023) === 0 && performance.now() - t0 > 6) { k++; break; }
+      }
+      if (k < n) await slice();
     }
+    await slice();
     const r0 = (y0 / G) | 0, r1 = Math.min(rows - 1, ((y1 / G) | 0) + 1);
 
     // Pointer, in picture pixels
@@ -144,6 +181,11 @@
     wake();
   }
 
-  if (img.complete && img.naturalWidth) start();
-  else img.addEventListener("load", start, { once: true });
+  // Start once the footer is about a screen away (and the picture has arrived)
+  const go = () => { if (img.complete && img.naturalWidth) start(); else img.addEventListener("load", start, { once: true }); };
+  const foot0 = pic.closest("footer") || pic;
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(); } }, { rootMargin: "0px 0px 100% 0px" });
+    io.observe(foot0);
+  } else addEventListener("load", go, { once: true });
 })();

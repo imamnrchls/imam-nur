@@ -136,6 +136,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   transform: scaleY(0); transform-origin: bottom; pointer-events: none;
 }
 .js .wipe.is-cover { transform: scaleY(1); }
+/* The cover is created by main.js, which loads last. Until then CSS draws a stand-in, so the page does not show
+   for a moment and then flash dark when the real cover appears. If the scripts never arrive it fades after a few seconds. */
+.js:not(.has-wipe) body::before {
+  content: ""; position: fixed; inset: 0; z-index: 85; background: var(--ink); pointer-events: none;
+  animation: precover-out .6s ease 6s forwards;
+}
+@keyframes precover-out { to { opacity: 0; visibility: hidden; } }
 
 /* ============================================================
    Split text (big titles)

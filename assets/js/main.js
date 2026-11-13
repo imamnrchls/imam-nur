@@ -3,7 +3,13 @@
   const S = window.SITE;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const hasGsap = !!window.gsap;
-  if (hasGsap && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+  if (hasGsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    // ScrollTrigger re-measures the whole page by itself when the HTML is parsed and when everything has loaded.
+    // Both land in the middle of the homepage intro (about 40 ms each on a phone). The pages already measure when
+    // they are built and when fonts arrive, and the load handler below re-measures only if the height changed.
+    ScrollTrigger.config({ autoRefreshEvents: "visibilitychange,resize" });
+  }
 
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -134,8 +140,13 @@
     window.addEventListener("resize", bar);
     bar();
   }
-  footer.querySelector(".foot-art img")?.addEventListener("load", () => window.ScrollTrigger?.refresh(), { once: true });
-  window.addEventListener("load", () => window.ScrollTrigger?.refresh());
+  // Once everything has loaded, measure the page again, but only if its height actually changed since the last
+  // measurement: a needless refresh (about 100 ms on a phone) would otherwise land in the middle of the homepage intro.
+  if (window.ScrollTrigger) {
+    let measured = -1;
+    ScrollTrigger.addEventListener("refresh", () => { measured = document.documentElement.scrollHeight; });
+    window.addEventListener("load", () => { if (document.documentElement.scrollHeight !== measured) ScrollTrigger.refresh(); });
+  }
 
   /* ---------- Custom cursor (mouse only): a disc that follows the pointer and grows over anything clickable ---------- */
   if (!matchMedia("(pointer: coarse)").matches) {
@@ -184,6 +195,7 @@
 
   /* ---------- Page transitions ---------- */
   const wipe = document.querySelector(".wipe");
+  document.documentElement.classList.add("has-wipe");   // the real cover is in place: drop the stand-in drawn by CSS (style.css, .js body::before)
   function reveal() {
     if (!hasGsap || reduced) { wipe.classList.remove("is-cover"); wipe.style.transform = "scaleY(0)"; return Promise.resolve(); }
     return new Promise((res) => {
