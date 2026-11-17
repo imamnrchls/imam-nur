@@ -632,3 +632,4 @@ svg.art .a-hi + .a-txt { fill: #fff; }
 }
 @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } .plate-frame img, .plate-frame svg { transition: none; } }
 @media (max-width: 600px) { .plate .art-cap { display: none; } }
+.shot-band .shot:only-child { grid-column: 1 / -1; }
