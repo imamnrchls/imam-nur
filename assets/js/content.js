@@ -69,12 +69,20 @@ window.SITE = {
     ],
   },
 
-  // Add  cover: "images/your-cover.jpg"  to a project to show an image for it (and a hover preview in the list).
+  // Words that scroll past on the Portfolio page.
+  portfolioTags: ["Talent acquisition", "Competency design", "Defensive driving", "ADDIE", "PDCA", "8 Steps", "DMAIC", "Design Thinking", "Next.js", "TypeScript", "Prisma", "Psychology"],
+
+  // Each project is one "plate" on the Portfolio page.
+  //   cover / coverAlt : a screenshot or picture. Without one, the plate is drawn from  art  (see pages.js: dots, rings, bars, waves, stairs).
+  //   stats            : [["350+", "what it counts"], …]  (the big figures; use real numbers only)
+  //   gallery          : [{ src, caption, w, h, phone: true }, …]  shown on the project page; two phone shots in a row share one band.
   portfolio: [
     {
       id: "driver-management", code: "PF-001-1", title: "Driver Management at MODA", year: "2026", type: "Leadership",
       summary: "Leading the full employee lifecycle for a 350+ person driver workforce across Toyota, Daihatsu and FMCG accounts.",
       body: "Since January 2026 I have led the Driver Management function at MODA, covering talent acquisition, onboarding, training and development, and performance management.\n\n## What I own\n\nEnd-to-end recruitment strategy, turning client SLA requirements into competency profiles and hiring criteria. This delivered 40+ hires within two months at a 2-day average time-to-hire.\n\nCompetency-based training programs built on the ADDIE framework, plus company onboarding for every new hire.\n\nPerformance management frameworks that turn operational data into reports senior stakeholders can act on.",
+      stats: [["350+", "drivers in the workforce"], ["40+", "hires in two months"], ["2 days", "average time-to-hire"]],
+      art: { kind: "dots", total: 350, hi: 40, label: "350 drivers · 40 hired" },
       gallery: [],
       url: "",
     },
@@ -82,6 +90,8 @@ window.SITE = {
       id: "driver-development", code: "PF-002-4", title: "Driver Recruitment & Development", year: "2024–2025", type: "Talent & training",
       summary: "Recruiting and developing drivers for high-value accounts, from first screening to continuous development.",
       body: "As Driver Development Officer (2025) and in the earlier recruitment and development role (2024), I managed the driver lifecycle end to end.\n\n## Talent acquisition\n\nRecruited and onboarded 100+ long-haul drivers within five months using competency-based screening. For the ADM Milkrun logistics scheme I recruited 27 specialized drivers in two months, to Toyota Production System standards.\n\n## Training\n\nFacilitated defensive driving training for 150+ drivers as a certified Master Trainer, and delivered safety and operational training for 100+ drivers across project sites.",
+      stats: [["100+", "long-haul drivers hired in 5 months"], ["27", "milkrun specialists in 2 months"], ["150+", "drivers trained as Master Trainer"]],
+      art: { kind: "rings", rings: [150, 100, 27], label: "150 trained · 100 hired · 27 milkrun" },
       gallery: [],
       url: "",
     },
@@ -89,6 +99,8 @@ window.SITE = {
       id: "astra-trainee", code: "PF-003-9", title: "Astra Human Capital Trainee", year: "2024", type: "Program",
       summary: "An 11-month rotational program across Astra Group: classroom training with hands-on assignments.",
       body: "A highly competitive program combining two months of in-class training (grade A) with two on-the-job assignments.\n\n## In class\n\nEight core HC modules, from organizational development and recruitment to performance management, culture and industrial relations, plus continuous-improvement methods: 8 Steps, DMAIC, DMADV and Design Thinking.\n\n## PT Serasi Autoraya\n\nBuilt a technical competency assessment framework for 5+ critical fleet management positions. Simplified the competency framework from 13 to 7 core competencies while improving operational alignment. Delivered leadership competency training to 50+ supervisors.\n\n## PT Mobilitas Digital Indonesia\n\nStandardized driver lifecycle SOPs from recruitment to termination, designed a self-learning management system, and ran performance analytics for 30+ drivers with recommendations for customer leadership.",
+      stats: [["11", "months, rotational"], ["13 → 7", "core competencies"], ["50+", "supervisors trained"]],
+      art: { kind: "bars", from: 13, to: 7, label: "13 competencies → 7" },
       gallery: [],
       url: "",
     },
@@ -96,6 +108,8 @@ window.SITE = {
       id: "social-commerce-research", code: "PF-004-6", title: "Customer Engagement & Purchase Intent on TikTok", year: "Research", type: "Publication",
       summary: "A study of how customer engagement relates to purchase intent in TikTok social commerce among Gen Z in Semarang.",
       body: "Published research, from my Psychology studies at Diponegoro University, on the relationship between customer engagement and product purchase intent in social commerce, focused on Generation Z in Semarang.",
+      stats: [["Gen Z", "Semarang"], ["TikTok", "social commerce"], ["Published", "Diponegoro University"]],
+      art: { kind: "waves", label: "engagement → purchase intent" },
       gallery: [],
       url: "",
     },
@@ -103,15 +117,37 @@ window.SITE = {
       id: "moda-dmis", code: "PF-005-3", title: "MODA DMIS", year: "2026", type: "Web app",
       summary: "A Driver Management Information System I designed and built for MODA, covering the whole driver lifecycle in one place.",
       body: "DMIS replaces scattered spreadsheets with one system for the Driver Management function I lead. I designed and built it end to end, from the data model to the screens.\n\n## What it covers\n\nRecruitment → driver database → training → discipline and rewards → KPI → termination. Every module links back to the driver's profile and writes to an audit log.\n\n## Rules in the system, not in people's heads\n\nRecruitment is a staged pipeline: screening, health test, written test, driving test, interview, offer. The server decides pass or fail from set thresholds and blocks a candidate who hasn't passed. Licence (SIM/SIO) expiry alerts, a daily digest, route matching and coverage, and Excel import and export for the existing HR master.\n\n## Access by role\n\nSeven roles, from Super Admin to read-only management, defined in one permission table. Supervisors can be limited to their own pools, and sensitive data such as ID numbers and health results is shown only to the roles that need it.\n\nBuilt with Next.js, TypeScript and Prisma. Screens are in Bahasa Indonesia. Access is by company login.",
-      gallery: [],
+      stats: [["6", "recruitment stages"], ["7", "access roles"], ["1", "system for the whole lifecycle"]],
+      cover: "images/work/dmis-dashboard.webp", coverAlt: "The DMIS dashboard: sidebar with modules and four KPI cards (figures hidden)",
+      gallery: [
+        { src: "images/work/dmis-dashboard.webp", caption: "Dashboard — modules for recruitment, manpower, training, incentives, discipline, KPI and termination. Figures, client names and locations are hidden for confidentiality.", w: 1600, h: 1000 },
+        { src: "images/work/dmis-login.webp", caption: "Sign-in screen. Access is by company login.", w: 1440, h: 900 },
+      ],
       url: "",
     },
     {
       id: "akar-asa", code: "PF-006-8", title: "Akar Asa", year: "2026", type: "Websites",
       summary: "Two sites I designed and built for Akar Asa, a nature-lovers' group from Kopeng on the slopes of Mount Merbabu: a public website and a gear-rental app.",
       body: "Akar Asa is a Kelompok Pecinta Alam from Kopeng, Semarang Regency, founded on 12 December 2017. It works on spring conservation, forest-fire response, river clean-ups, tree planting and environmental education on Mount Merbabu. I designed and built both of its sites.\n\n## Website: [akarasa.space](https://akarasa.space)\n\nThe public face of the group: its mission, history and activities, plus a library of articles. A static site, fully self-contained (fonts, images and scripts all served locally), so it stays fast and cheap to host.\n\n## Akar Asa Rental: [akar-asa.web.id](https://akar-asa.web.id)\n\nAn internal app that runs the group's outdoor gear rental day to day: inventory and stock movements, availability checks, customers, bookings and walk-ins, check-out and partial check-in with late, damage and loss fees, deposits, payments, a finance ledger, cash counts, reports and an audit log. Owner, Manager and Staff roles; screens in Bahasa Indonesia and English.\n\nBuilt with Next.js, TypeScript and Prisma, and deployed with atomic, rollback-safe releases.",
-      gallery: [],
+      cover: "images/work/akarasa-hero.webp", coverAlt: "The Akar Asa homepage: a pixel-art Mount Merbabu with the line “Salam Lestari, Untuk Bumi”",
+      stats: [["2", "sites, designed and built"], ["3", "roles in the rental app"], ["2", "languages (ID / EN)"]],
+      gallery: [
+        { src: "images/work/akarasa-focus.webp", caption: "akarasa.space — “Fokus Kami”, pixel-art scenes for each focus area", w: 1440, h: 700 },
+        { src: "images/work/rental-login.webp", caption: "Akar Asa Rental — sign-in screen (the app itself is behind a login)", w: 1440, h: 900 },
+        { src: "images/work/akarasa-mobile.webp", caption: "akarasa.space on a phone", w: 600, h: 1300, phone: true },
+        { src: "images/work/rental-mobile.webp", caption: "Akar Asa Rental on a phone", w: 600, h: 1300, phone: true },
+      ],
       url: "https://akarasa.space",
+    },
+    {
+      id: "wedding-invitation", code: "PF-007-2", title: "Sifa & Yoga — Online Wedding Invitation", year: "2026", type: "Website",
+      summary: "A personalised online wedding invitation: a cinematic cover, a countdown and the couple's story told as a timeline.",
+      body: "I made the online invitation for the wedding of Sifa and Yoga. The invitation is private, so there is no public link.\n\n## The experience\n\nGuests land on a dark cover with the couple in silhouette and a greeting addressed to them (\"Dear …\"), then tap Open Invitation to enter. Inside there is a live countdown to the day, the couple's introduction, and a \"Love Story\" timeline from their reunion, through the engagement, to the wedding.\n\n## Design\n\nA dark, editorial look: a large high-contrast serif for the names and monogram, small spaced capitals for labels, and a cover that works as a quiet title screen. Only the cover is shown here; the rest of the invitation is for the couple's guests.",
+      cover: "images/work/wedding-cover.webp", coverAlt: "The invitation's cover: a couple in silhouette inside a dark red circle, the monogram S | Y and an Open Invitation button",
+      gallery: [
+        { src: "images/work/wedding-mobile.webp", caption: "The cover on a phone", w: 600, h: 1300, phone: true },
+      ],
+      url: "",
     },
   ],
 

@@ -43,20 +43,78 @@
   };
   const menuItem = (key) => S.menu.find((m) => m.href.startsWith(key)) || { code: "" };
 
+  /* ---------- Portfolio artwork ----------
+     Projects without a public screenshot get a small artwork drawn from their real numbers
+     (dots, rings, bars… in SVG). Same seed → same picture on every visit. */
+  const rng = (seed) => () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const hash = (str) => [...String(str)].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7);
+  const f = (n) => Math.round(n * 10) / 10;
+  function artSvg(p) {
+    const a = p.art || {}, r = rng(hash(p.id)), W = 600, H = 400;
+    let g = "";
+    if (a.kind === "dots") {
+      const cols = 25, rows = Math.ceil(a.total / cols), gap = 20, x0 = (W - (cols - 1) * gap) / 2, y0 = (H - (rows - 1) * gap) / 2;
+      const hi = new Set(); while (hi.size < a.hi) hi.add(Math.floor(r() * a.total));
+      for (let k = 0; k < a.total; k++) g += `<circle data-a class="${hi.has(k) ? "a-hi" : "a-ink"}" cx="${f(x0 + (k % cols) * gap)}" cy="${f(y0 + Math.floor(k / cols) * gap)}" r="${hi.has(k) ? 6.5 : 3.6}"/>`;
+    } else if (a.kind === "rings") {
+      a.rings.forEach((n, ri) => {
+        const rad = [172, 122, 72][ri] || 40, dr = [2.6, 3.2, 5][ri] || 3;
+        g += `<circle class="a-line" cx="${W / 2}" cy="${H / 2}" r="${rad}" fill="none"/>`;
+        for (let k = 0; k < n; k++) { const t = (k / n) * Math.PI * 2 - Math.PI / 2; g += `<circle data-a class="${ri === 2 ? "a-hi" : "a-ink"}" cx="${f(W / 2 + Math.cos(t) * rad)}" cy="${f(H / 2 + Math.sin(t) * rad)}" r="${dr}"/>`; }
+      });
+    } else if (a.kind === "bars") {
+      const n = a.from, gap = 38, x0 = (W - (n - 1) * gap) / 2, drop = new Set(); while (drop.size < n - a.to) drop.add(Math.floor(r() * n));
+      for (let k = 0; k < n; k++) { const h = 150 + r() * 120, gone = drop.has(k); g += `<rect data-b class="${gone ? "a-faint" : "a-ink"}" x="${f(x0 + k * gap - 5)}" y="${f(330 - h)}" width="10" height="${f(h)}"/>`; }
+      g += `<line class="a-line" x1="${x0 - 20}" x2="${W - x0 + 20}" y1="344" y2="344"/>`;
+    } else if (a.kind === "waves") {
+      for (let k = 0; k < 9; k++) {
+        const amp = 46 - k * 3.4, ph = k * 0.5, y = 90 + k * 28; let d = "";
+        for (let x = 0; x <= W; x += 10) d += `${x ? "L" : "M"}${x} ${f(y + Math.sin(x / 62 + ph) * amp * (1 - x / (W * 1.25)))} `;
+        g += `<path data-w pathLength="1" class="${k === 4 ? "a-hi-line" : "a-line"}" d="${d}" fill="none"/>`;
+      }
+    } else if (a.kind === "stairs") {
+      const n = a.steps.length, w = 82, gap = 8, x0 = (W - (n * w + (n - 1) * gap)) / 2;
+      a.steps.forEach((label, k) => {
+        const h = 70 + k * 46, x = x0 + k * (w + gap);
+        g += `<g data-b><rect class="${k === n - 1 ? "a-hi" : "a-ink"}" x="${f(x)}" y="${f(350 - h)}" width="${w}" height="${h}"/><text class="a-txt" x="${f(x + 8)}" y="${f(350 - h + 20)}">${esc(label)}</text></g>`;
+      });
+    }
+    return `<svg class="art" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(a.label || p.title)}" preserveAspectRatio="xMidYMid slice">${g}</svg>${a.label ? `<figcaption class="art-cap small">${esc(a.label)}</figcaption>` : ""}`;
+  }
+  const plate = (p, i) => {
+    const n = String(i + 1).padStart(2, "0"), href = `project.html?id=${encodeURIComponent(p.id)}`;
+    return `<article class="plate${i % 2 ? " flip" : ""}" id="${esc(p.id)}" data-plate>
+      <a class="plate-art tone-${i % 4}" href="${href}" aria-label="Open ${esc(p.title)}" data-reveal>
+        <div class="plate-frame">${p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" loading="lazy">` : artSvg(p)}</div>
+        <span class="plate-tag small">PL.${n}</span>
+      </a>
+      <div class="plate-body">
+        <span class="plate-no" aria-hidden="true">${n}</span>
+        <p class="small muted" data-reveal>${esc(p.code)} · ${esc(p.type)} · ${esc(p.year)}</p>
+        <h2 class="plate-t" data-reveal><a href="${href}">${esc(p.title)}</a></h2>
+        <p class="plate-sum" data-reveal>${esc(p.summary)}</p>
+        ${p.stats?.length ? `<ul class="figs" data-reveal>${p.stats.map(([v, l]) => `<li><b>${esc(v)}</b><span>${esc(l)}</span></li>`).join("")}</ul>` : ""}
+        <a class="plate-open small" href="${href}" data-reveal>Open project ${U.icon("ne")}</a>
+      </div>
+    </article>`;
+  };
+
   let titleLines = [], html = "";
   const notFound = (what) => { titleLines = ["NOT", "FOUND"]; html = head(titleLines) + `<p class="prose">That ${what} doesn't exist. <a href="index.html">Back home</a>.</p>`; };
 
   switch (page) {
     case "portfolio": {
       titleLines = ["PORTFOLIO"];
-      const anyCover = S.portfolio.some((p) => p.cover);
-      html = head(titleLines, anyCover ? "Selected projects. Hover a row to preview, click to open." : "Selected projects. Click one to open.", menuItem("portfolio").code) +
-        `<ol class="rows">${S.portfolio.map((p) => `
-          <li class="row" data-reveal><a href="project.html?id=${encodeURIComponent(p.id)}"${p.cover ? ` data-cover="${esc(p.cover)}"` : ""}>
+      const years = S.portfolio.map((p) => (String(p.year).match(/\d{4}/g) || [])).flat().map(Number).filter(Boolean);
+      const span = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "";
+      html = head(titleLines, `${S.portfolio.length} pieces of work${span ? `, ${span}` : ""}: people systems, software and research. Walk the exhibition, or jump from the index.`, menuItem("portfolio").code) +
+        `<div class="marquee" aria-hidden="true"><div class="marquee-track">${[0, 1].map(() => `<span>${(S.portfolioTags || []).map((t) => `<i>${esc(t)}</i>`).join("")}</span>`).join("")}</div></div>
+        <ol class="rows index" data-reveal>${S.portfolio.map((p, i) => `
+          <li class="row"><a href="#${esc(p.id)}" data-jump>
             <span class="code">${esc(p.code)}</span><span class="t">${esc(p.title)}</span>
             <span class="code x mid">${esc(p.type)}</span><span class="code r">${esc(p.year)}</span>
-            ${p.cover ? `<img class="thumb" src="${esc(p.cover)}" alt="" loading="lazy">` : ""}
-          </a></li>`).join("")}</ol>`;
+          </a></li>`).join("")}</ol>
+        <div class="plates">${S.portfolio.map((p, i) => plate(p, i)).join("")}</div>`;
       break;
     }
     case "project": {
@@ -65,14 +123,24 @@
       const p = S.portfolio[i], next = S.portfolio[(i + 1) % S.portfolio.length];
       document.title = `${p.title} — ${S.name.join(" ")}`;
       titleLines = toLines(p.title);
+      const shots = (p.gallery || []).map((g) => (typeof g === "string" ? { src: g } : g));
+      const shotFig = (g) => `<figure class="shot${g.phone ? " phone" : ""}" data-reveal><div class="shot-img"><img src="${esc(g.src)}" alt="${esc(g.alt || g.caption || "")}"${size(g)} loading="lazy" decoding="async"></div>${g.caption ? `<figcaption class="small muted">${esc(g.caption)}</figcaption>` : ""}</figure>`;
+      // consecutive phone shots sit together in one tinted band
+      const shotsHtml = shots.reduce((acc, g, k) => {
+        if (g.phone) { if (shots[k - 1]?.phone) acc[acc.length - 1].items.push(g); else acc.push({ band: true, items: [g] }); } else acc.push({ items: [g] });
+        return acc;
+      }, []).map((grp) => grp.band ? `<div class="shot-band">${grp.items.map(shotFig).join("")}</div>` : shotFig(grp.items[0])).join("");
       html = head(titleLines, p.summary, p.code) +
-        `${p.cover ? `<figure class="cover" data-reveal><img src="${esc(p.cover)}" alt="${esc(p.title)}" class="parallax"></figure>` : ""}
+        `<figure class="cover ${p.cover ? "" : "art-cover tone-" + (i % 4)}" data-reveal>${p.cover
+          ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" class="parallax">`
+          : artSvg(p)}</figure>
+         ${p.stats?.length ? `<ul class="figs wide" data-reveal>${p.stats.map(([n, l]) => `<li><b>${esc(n)}</b><span>${esc(l)}</span></li>`).join("")}</ul>` : ""}
          <article class="article">
            <div class="meta small" data-reveal><span>${esc(p.code)}</span><span class="muted">${esc(p.type)}</span><span class="muted">${esc(p.year)}</span>
-             ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">Visit project ${U.icon("ne")}</a>` : ""}</div>
+             ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">Visit project ${U.icon("ne")}</a>` : ""}<a href="portfolio.html">${U.icon("left")} All work</a></div>
            <div class="prose" data-reveal>${prose(p.body)}</div>
          </article>
-         ${p.gallery?.length ? `<div class="gallery">${p.gallery.map((g) => `<img src="${esc(g)}" alt="" loading="lazy" data-reveal>`).join("")}</div>` : ""}
+         ${shotsHtml ? `<div class="shots">${shotsHtml}</div>` : ""}
          ${S.portfolio.length > 1 ? `<a class="next-link" href="project.html?id=${encodeURIComponent(next.id)}"><span class="small">Next project — ${esc(next.code)}</span><span class="t">${esc(next.title)}</span></a>` : ""}`;
       break;
     }
@@ -216,17 +284,25 @@
   } else U.reveal();
   U.initReveals();
 
-  /* ---------- Portfolio: floating cover preview ---------- */
-  if (page === "portfolio" && U.hasGsap && matchMedia("(hover: hover)").matches) {
-    const fp = document.createElement("div");
-    fp.className = "float-preview"; fp.innerHTML = "<img alt=''>";
-    document.body.appendChild(fp);
-    const img = fp.querySelector("img");
-    const xTo = gsap.quickTo(fp, "x", { duration: 0.6, ease: "power3" }), yTo = gsap.quickTo(fp, "y", { duration: 0.6, ease: "power3" });
-    addEventListener("mousemove", (e) => { xTo(e.clientX); yTo(e.clientY); });
-    document.querySelectorAll(".row a[data-cover]").forEach((a) => {
-      a.addEventListener("mouseenter", () => { img.src = a.dataset.cover; gsap.to(fp, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }); });
-      a.addEventListener("mouseleave", () => gsap.to(fp, { opacity: 0, scale: 0.9, duration: 0.4, ease: "expo.out" }));
+  /* ---------- Portfolio: index jumps + artwork that draws itself in ---------- */
+  document.querySelectorAll("[data-jump]").forEach((link) => link.addEventListener("click", (e) => {
+    const t = document.getElementById(link.getAttribute("href").slice(1)); if (!t) return;
+    e.preventDefault(); history.replaceState(null, "", link.getAttribute("href"));
+    U.lenis ? U.lenis.scrollTo(t, { offset: -70 }) : t.scrollIntoView({ behavior: U.reduced ? "auto" : "smooth" });
+  }));
+  if (U.hasGsap && !U.reduced && window.ScrollTrigger) {
+    document.querySelectorAll("svg.art").forEach((svg) => {
+      const st = { trigger: svg, start: "top 85%", once: true };
+      const dots = svg.querySelectorAll("circle[data-a]"), bars = svg.querySelectorAll("[data-b]"), waves = svg.querySelectorAll("path[data-w]");
+      if (dots.length) gsap.from(dots, { scale: 0, opacity: 0, transformOrigin: "50% 50%", duration: .7, ease: "back.out(2)", stagger: { amount: 1.4, from: "random" }, scrollTrigger: st });
+      if (bars.length) gsap.from(bars, { scaleY: 0, transformOrigin: "50% 100%", duration: 1, ease: "expo.out", stagger: .07, scrollTrigger: st });
+      if (waves.length) gsap.fromTo(waves, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 2, ease: "power2.inOut", stagger: .1, scrollTrigger: st });
+    });
+    document.querySelectorAll(".plate-art img").forEach((img) => {
+      gsap.fromTo(img, { scale: 1.07 }, { scale: 1, ease: "none", scrollTrigger: { trigger: img.parentElement, start: "top bottom", end: "center center", scrub: true } });
+    });
+    document.querySelectorAll(".plate-no").forEach((no) => {
+      gsap.fromTo(no, { yPercent: 10 }, { yPercent: -10, ease: "none", scrollTrigger: { trigger: no.closest(".plate"), start: "top bottom", end: "bottom top", scrub: true } });
     });
   }
 
