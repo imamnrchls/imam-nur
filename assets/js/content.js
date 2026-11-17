@@ -142,12 +142,12 @@ window.SITE = {
     {
       id: "wedding-invitation", code: "PF-007-2", title: "Sifa & Yoga — Online Wedding Invitation", year: "2026", type: "Website",
       summary: "A personalised online wedding invitation: a cinematic cover, a countdown and the couple's story told as a timeline.",
-      body: "I made the online invitation for the wedding of Sifa and Yoga: [sifayoga.web.id](https://sifayoga.web.id).\n\n## The experience\n\nGuests land on a dark cover with the couple in silhouette and a greeting addressed to them (\"Dear …\"), then tap Open Invitation to enter. Inside there is a live countdown to the day, the couple's introduction, and a \"Love Story\" timeline from their reunion, through the engagement, to the wedding.\n\n## Design\n\nA dark, editorial look: a large high-contrast serif for the names and monogram, small spaced capitals for labels, and a cover that works as a quiet title screen. Only the cover is shown here; the rest of the invitation is for the couple's guests.",
+      body: "I made the online invitation for the wedding of Sifa and Yoga. The invitation is private, so there is no public link.\n\n## The experience\n\nGuests land on a dark cover with the couple in silhouette and a greeting addressed to them (\"Dear …\"), then tap Open Invitation to enter. Inside there is a live countdown to the day, the couple's introduction, and a \"Love Story\" timeline from their reunion, through the engagement, to the wedding.\n\n## Design\n\nA dark, editorial look: a large high-contrast serif for the names and monogram, small spaced capitals for labels, and a cover that works as a quiet title screen. Only the cover is shown here; the rest of the invitation is for the couple's guests.",
       cover: "images/work/wedding-cover.webp", coverAlt: "The invitation's cover: a couple in silhouette inside a dark red circle, the monogram S | Y and an Open Invitation button",
       gallery: [
         { src: "images/work/wedding-mobile.webp", caption: "The cover on a phone", w: 600, h: 1300, phone: true },
       ],
-      url: "https://sifayoga.web.id",
+      url: "",
     },
   ],
 
