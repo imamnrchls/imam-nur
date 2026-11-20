@@ -45,21 +45,23 @@ window.SITE = {
   ],
 
   about: {
-    image: "images/portrait.webp",
-    ascii: true,   // the same drifting characters as the homepage, over the portrait (false = plain photo)
-    paragraphs: [
-      "I'm Imam, a psychology graduate from Diponegoro University, living in Jakarta. I'm curious by nature: I like to understand how things, and people, work before I try to change them.",
-      "Outside work you'll most likely find me outdoors: on a mountain trail with a heavy pack, camping above the clouds, or on a road trip with friends. On ordinary days it's the gym, a run or a ride. There's usually music in my ears (Pink Floyd, The Smashing Pumpkins, Oasis) and a camera somewhere nearby. Now and then I write too: short poems, essays and notes, some of them under Writing.",
-      "By day I work in human capital. I lead Driver Management at MODA, a joint venture of Astra and Toyota, looking after a 350+ person frontline workforce, after starting out in Astra's Human Capital Trainee program. The work and the rest share a root: I like people, and I like watching them grow.",
+    image: "images/portrait-painted.webp",   // drawn from images/portrait.webp by tools/paint.js (&w=900&scale=0.55&detail=0.6)
+    caption: "Self-portrait in a convex mirror",
+    ascii: true,   // the same drifting characters as the homepage, over the portrait (false = plain picture)
+    // The big opening line, then one short paragraph under it
+    statement: "I like to understand how things, and people, work before I try to change them.",
+    intro: "I'm Imam: a psychology graduate from Diponegoro University, living in Jakarta. I spend my weeks with people, and my free days, whenever I can, outdoors.",
+    // Short numbered chapters. "{records}" is replaced by the number of records on the Music page.
+    // A link is optional: { label, href }.
+    chapters: [
+      { title: "People", text: "By day I work in human capital. I lead Driver Management at MODA, a joint venture of Astra and Toyota, and look after a frontline workforce of more than 350 people, from the day they are recruited to the day they move on. I started out in Astra's Human Capital Trainee program. What keeps me there is simple: I like people, and I like watching them grow.", link: { label: "Work", href: "portfolio.html" } },
+      { title: "Trails", text: "Outside work you'll most likely find me on a mountain trail with a heavy pack, camping above the clouds, or on a road trip with friends. On ordinary days it's the gym, a run or a ride. A camera usually comes along.", link: { label: "Gallery", href: "photos.html" } },
+      { title: "Sound & screen", text: "There's nearly always music in my ears: psychedelia, Britpop, and guitar bands from the nineties to now. The {records} records I keep coming back to are on the Music page. In films I go for drama, romance, and anything that gets under the skin.", link: { label: "Music", href: "music.html" } },
+      { title: "Making", text: "Now and then I write: short poems, essays and notes, in Indonesian and in English. I also build small things for the web: a driver management system for my team, two sites for Akar Asa, a nature group on the slopes of Mount Merbabu, a wedding invitation, and this site.", link: { label: "Writing", href: "writing.html" } },
     ],
-    // "Off the clock": the things I like. One [label, value] pair per row.
-    likes: [
-      ["Outdoors", "Hiking, camping, road trips"],
-      ["Moving", "Gym, running, cycling"],
-      ["Music", "Alternative & indie rock, psychedelic, Britpop"],
-      ["Films", "Drama, romance, psychological thrillers, horror"],
-      ["Also", "Photography, writing, good conversations"],
-    ],
+    // "A partial index": the records come from the Music page by themselves; these are the rest
+    films: ["Sinners", "Fight Club", "Forrest Gump", "Train Dreams", "500 Days of Summer", "La La Land"],
+    also: ["Hiking", "Camping above the clouds", "Road trips", "Running", "Cycling", "Photography", "Poems", "Good conversations"],
     // "At work"
     facts: [
       ["Role", "Driver Management Head, MODA (PT Mobilitas Digital Indonesia)"],

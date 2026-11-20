@@ -172,7 +172,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero-bg img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 60%; }
 .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.32), rgba(0,0,0,.30) 40%, rgba(0,0,0,.40)); } /* dark enough that the white name keeps about 3:1 (large text) even over the pale clouds of the current photo */
 .ascii-field { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
-.about-grid .portrait { position: relative; }
+.about-fig .portrait { position: relative; }
 
 .lines { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 .lines i { position: absolute; background: var(--ln); }
@@ -347,9 +347,36 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .next-link .t { font-family: var(--display); font-size: clamp(44px, 9vw, 150px); letter-spacing: -.01em; line-height: 1; text-transform: uppercase; font-weight: 400; display: block; margin-top: 8px; transition: transform .6s var(--ease); }
 .next-link:hover .t { transform: translateX(1.5vw); }
 
-.about-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; margin-bottom: 120px; }
-.about-grid .portrait { overflow: hidden; aspect-ratio: 3/4; background: #ddd; width: 80%; }
-.about-grid .portrait img { width: 100%; height: 109%; object-fit: cover; } /* taller than the frame, so the parallax never shows a gap at the bottom */
+.about-open { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; align-items: end; margin-bottom: clamp(90px, 12vw, 180px); }
+.about-fig { margin: 0; width: 80%; }
+.about-fig .portrait { overflow: hidden; aspect-ratio: 3/4; background: #ddd; }
+.about-fig .portrait img { width: 100%; height: 109%; object-fit: cover; } /* taller than the frame, so the parallax never shows a gap at the bottom */
+.about-fig figcaption { margin-top: 10px; }
+.statement { font-family: var(--display); font-size: clamp(36px, 4.8vw, 84px); line-height: 1; letter-spacing: -.01em; margin: 0 0 .55em; max-width: 16ch; text-wrap: balance; }
+.intro { margin: 0; max-width: 46ch; font-size: clamp(17px, 1.25vw, 20px); line-height: 1.6; }
+.about-open.no-portrait .about-words { grid-column: 2; }
+
+/* Chapters: oversized outlined numerals on the left, the story on the right */
+.chapters { list-style: none; padding: 0; margin: 0 0 clamp(90px, 11vw, 170px); border-top: 1px solid var(--line); }
+.chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; padding: clamp(30px, 4vw, 60px) 0; border-bottom: 1px solid var(--line); }
+.ch-no { grid-column: 1; grid-row: 1 / span 2; font-family: var(--display); font-size: clamp(96px, 14vw, 240px); line-height: .78; color: transparent; -webkit-text-stroke: 1px var(--ink); user-select: none; }
+.ch-title { grid-column: 2; margin: 0 0 .45em; font-family: var(--display); font-weight: 400; font-size: clamp(32px, 3.6vw, 60px); line-height: 1; }
+.ch-text { grid-column: 2; max-width: 56ch; font-size: clamp(16px, 1.15vw, 19px); line-height: 1.6; }
+.ch-text p { margin: 0 0 1.1em; }
+.ch-link { display: inline-flex; align-items: center; gap: 6px; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+/* A partial index: run-in serif lists, the site's "+" between the words */
+.index-of { margin-bottom: clamp(90px, 11vw, 170px); }
+.index-of h2 + .index-row { margin-top: 12px; border-top: 1px solid var(--line); }
+.index-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: .42em; row-gap: .08em; margin: 0; padding: 20px 0 22px; border-bottom: 1px solid var(--line); font-family: var(--display); font-size: clamp(24px, 2.7vw, 46px); line-height: 1.15; }
+.index-key { flex-basis: 100%; margin-bottom: 8px; font-family: var(--font); color: var(--muted); }
+a.index-key:hover { color: var(--ink); }
+.index-row .pick-mark { width: 11px; height: 13px; }
+.index-row .pick-mark::before, .index-row .pick-mark::after { top: 6px; }
+
+.about-work { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; margin-bottom: 120px; }
+.about-work .facts-label { margin: 12px 0 0; }
+.about-work .facts { margin: 0; max-width: none; }
 .facts { list-style: none; padding: 0; margin: 12px 0 0; border-top: 1px solid var(--line); max-width: 62ch; }
 .facts-label { margin: 48px 0 0; font-weight: 400; }
 .facts li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
@@ -357,7 +384,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .contact .mail { display: inline-block; font-size: clamp(30px, 6.5vw, 110px); letter-spacing: -.035em; line-height: 1.05; margin: 14px 0 40px; border-bottom: 1px solid currentColor; word-break: break-all; }
 .contact nav { display: flex; gap: 24px; flex-wrap: wrap; }
 .contact nav a:hover { text-decoration: underline; }
-@media (max-width: 700px) { .about-grid { grid-template-columns: minmax(0, 1fr); } .about-grid .portrait { width: 100%; } }
+@media (max-width: 700px) {
+  .about-open, .chapter, .about-work { grid-template-columns: minmax(0, 1fr); }
+  .about-fig { width: 100%; }
+  .about-open.no-portrait .about-words { grid-column: 1; }
+  .ch-no, .ch-title, .ch-text { grid-column: 1; grid-row: auto; }
+  .ch-no { font-size: 92px; margin-bottom: 6px; }
+}
 
 /* Reveal helper (JS adds motion) */
 .js [data-reveal] { opacity: 0; transform: translateY(30px); }
@@ -368,7 +401,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 
 /* Grid children may shrink below their content, so wide code blocks scroll inside themselves instead of widening the page. */
-.article > *, .about-grid > * { min-width: 0; }
+.article > *, .about-open > *, .chapter > *, .about-work > * { min-width: 0; }
 .page { overflow-x: clip; }
 
 /* ============================================================
@@ -450,9 +483,7 @@ html.has-custom-cursor body { cursor: none; }
 html.has-custom-cursor a, html.has-custom-cursor button, html.has-custom-cursor label, html.has-custom-cursor .photo, html.has-custom-cursor .tile, html.has-custom-cursor summary { cursor: pointer; }
 html.has-custom-cursor input, html.has-custom-cursor textarea, html.has-custom-cursor select { cursor: auto; }
 
-/* About without a portrait: the text keeps the right two thirds of the grid */
-.about-grid.no-portrait > div { grid-column: 2; }
-@media (max-width: 700px) { .about-grid.no-portrait > div { grid-column: 1; } }
+
 
 /* Grid lines: kept on the homepage and in every footer; hidden in the body of inner pages. */
 .page-lines { display: none; }
