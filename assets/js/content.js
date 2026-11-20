@@ -242,6 +242,13 @@ window.SITE = {
       tracks: [["Lifelike", "1:35"], ["Look at the Sky", "5:10"], ["Get Your Wish", "3:39"], ["Wind Tempos", "6:04"], ["Musician", "3:59"], ["do-re-mi-fa-so-la-ti-do", "3:35"], ["Mother", "3:46"], ["dullscythe", "4:00"], ["Sweet Time", "4:12"], ["Mirror", "5:07"], ["Something Comforting", "4:42"], ["Blossom", "3:46"], ["Unfold", "4:46"], ["Trying to Feel Alive", "4:40"]],
     },
     {
+      url: "https://music.apple.com/id/album/3d-country/1822502596",
+      title: "3D Country", artist: "Geese", kind: "Album", year: "2023",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/d8/9a/c1/d89ac16c-b578-7698-1b7b-f18ff9a5eea9/5400863192808_Cover.jpg/600x600bb.jpg",
+      picks: [1, 2, 4],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["2122", "3:53"], ["3D Country", "5:14"], ["Cowboy Nudes", "2:51"], ["I See Myself", "3:01"], ["Undoer", "7:00"], ["Crusades", "2:39"], ["Gravity Blues", "4:01"], ["Mysterious Love", "3:16"], ["Domoto", "3:48"], ["Tomorrow's Crusades", "4:32"], ["St. Elmo", "3:21"]],
+    },
+    {
       url: "https://music.apple.com/id/album/kontemplasi/1741330967",
       title: "Kontemplasi", artist: "Alkateri", kind: "Album", year: "2024",
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/65/a2/f8/65a2f83e-adf1-129a-8d7f-cfc2a2bedfb0/859786864272_cover.jpg/600x600bb.jpg",
