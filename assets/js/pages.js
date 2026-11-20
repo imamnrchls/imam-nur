@@ -188,17 +188,37 @@
     }
     case "about": {
       titleLines = ["ABOUT"];
-      const a = S.about;
+      const a = S.about, records = (S.music || []).length;
+      const num = (i) => String(i + 1).padStart(2, "0");
+      const words = (list, cls) => list.map((w) => `<span class="${cls}">${esc(w)}</span>`).join('<i class="pick-mark" aria-hidden="true"></i>');
       html = head(titleLines, S.role, menuItem("about").code) +
-        `<section class="about-grid${a.image ? "" : " no-portrait"}">
-           ${a.image ? `<div class="portrait"${a.ascii === false ? "" : " data-ascii"} data-reveal><img src="${esc(a.image)}" alt="Portrait" class="parallax"></div>` : ""}
-           <div>
-             <div class="prose" data-reveal>${a.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
-             ${[["Off the clock", a.likes], ["At work", a.facts]].filter(([, rows]) => rows?.length).map(([label, rows]) => `
-             <h2 class="facts-label small" data-reveal>${esc(label)}</h2>
-             <ul class="facts" data-reveal>${rows.map(([k, v]) => `<li><span class="small muted">${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>`).join("")}
+        `<section class="about-open${a.image ? "" : " no-portrait"}">
+           ${a.image ? `<figure class="about-fig" data-reveal>
+             <div class="portrait"${a.ascii === false ? "" : " data-ascii"}><img src="${esc(a.image)}" alt="Portrait of Imam" class="parallax"></div>
+             ${a.caption ? `<figcaption class="small muted">${esc(a.caption)}</figcaption>` : ""}
+           </figure>` : ""}
+           <div class="about-words">
+             ${a.statement ? `<p class="statement" data-reveal>${esc(a.statement)}</p>` : ""}
+             ${a.intro ? `<p class="intro" data-reveal>${esc(a.intro)}</p>` : ""}
            </div>
          </section>
+         ${a.chapters?.length ? `<ol class="chapters">${a.chapters.map((c, i) => `
+           <li class="chapter" data-reveal>
+             <span class="ch-no" aria-hidden="true">${num(i)}</span>
+             <h2 class="ch-title">${esc(c.title)}</h2>
+             <div class="ch-text"><p>${esc(String(c.text).replace("{records}", records))}</p>
+               ${c.link ? `<a class="ch-link small" href="${esc(c.link.href)}">${esc(c.link.label)} ${U.icon("ne")}</a>` : ""}</div>
+           </li>`).join("")}</ol>` : ""}
+         <section class="index-of" aria-labelledby="index-h">
+           <h2 class="facts-label small" id="index-h" data-reveal>A partial index</h2>
+           ${records ? `<p class="index-row" data-reveal><a class="index-key small" href="music.html">Records</a>${words(S.music.map((m) => m.title), "iw")}</p>` : ""}
+           ${a.films?.length ? `<p class="index-row" data-reveal><span class="index-key small">Films</span>${words(a.films, "iw")}</p>` : ""}
+           ${a.also?.length ? `<p class="index-row" data-reveal><span class="index-key small">Also</span>${words(a.also, "iw")}</p>` : ""}
+         </section>
+         ${a.facts?.length ? `<section class="about-work">
+           <h2 class="facts-label small" data-reveal>At work</h2>
+           <ul class="facts" data-reveal>${a.facts.map(([k, v]) => `<li><span class="small muted">${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>
+         </section>` : ""}
          <section class="contact" id="contact">
            <span class="small">${esc(menuItem("about.html#contact").code)} — Contact</span><br>
            <a class="mail" href="mailto:${esc(S.email)}" data-reveal>${esc(S.email)}</a>
