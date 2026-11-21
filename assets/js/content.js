@@ -20,7 +20,7 @@ window.SITE = {
   ],
 
   // Homepage background. Put a photo credit in heroCredit ({ label, url }) or leave it empty to hide it.
-  heroImage: "images/hero-scene.webp",   // drawn by tools/scene.js (?scene=hero, see README)
+  heroImage: "images/hero-painted-2.webp",   // drawn from images/hero-trail.webp by tools/paint.js (see README)
   heroAscii: true,   // drifting characters behind the name and on the six homepage tiles (false = off)
   heroCredit: null,
 
@@ -28,7 +28,7 @@ window.SITE = {
   footer: {
     cta: "Up for a hike, a good album or a long conversation",
     ctaLink: "say hello",
-    art: "images/footer-scene.webp",   // drawn by tools/scene.js (?scene=footer)
+    art: "images/footer-painted.webp",   // drawn from images/footer-photo.webp by tools/paint.js (&detail=0.3&hatch=0.25)
   },
 
   // The second title that appears while scrolling (one entry per line)
@@ -36,12 +36,12 @@ window.SITE = {
 
   // The six tiles on the homepage. Each one is a menu entry.
   menu: [
-    { label: "About",      code: "AB-010-7", href: "about.html",     image: "images/tiles/about-scene.webp" },
-    { label: "Gallery",    code: "GA-118-4", href: "photos.html",    image: "images/tiles/gallery-scene.webp" },
-    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "images/tiles/writing-scene.webp" },
-    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "images/tiles/portfolio-scene.webp" },
-    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "images/tiles/music-scene.webp" },
-    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "images/tiles/contact-scene.webp" },
+    { label: "About",      code: "AB-010-7", href: "about.html",     image: "images/tiles/about-painted.webp" },
+    { label: "Gallery",    code: "GA-118-4", href: "photos.html",    image: "images/tiles/gallery-painted.webp" },
+    { label: "Writing",    code: "WR-207-3", href: "writing.html",   image: "images/tiles/writing-painted.webp" },
+    { label: "Portfolio",  code: "PF-001-1", href: "portfolio.html", image: "images/tiles/portfolio-painted.webp" },
+    { label: "Music",      code: "MU-129-2", href: "music.html",     image: "images/tiles/music-painted.webp" },
+    { label: "Contact",    code: "CT-024-8", href: "about.html#contact", image: "images/tiles/contact-painted.webp" },
   ],
 
   about: {
