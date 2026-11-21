@@ -81,11 +81,27 @@
     }
     return `<svg class="art" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(a.label || p.title)}" preserveAspectRatio="xMidYMid slice">${g}</svg>${a.label ? `<figcaption class="art-cap small">${esc(a.label)}</figcaption>` : ""}`;
   }
+  /* ---------- Dial cover (project with `dial`) ----------
+     A watch made of watches: the faces sit around a dial like hour marks, a seconds hand sweeps in step
+     with the real clock, and each face lifts as the hand passes it. The centre shows the visitor's time
+     and the name of the face under the hand. Started by initDials() after render. */
+  const dialHtml = (p) => {
+    const ticks = Array.from({ length: 60 }, (_, k) => { const t = (k * 6 * Math.PI) / 180, r1 = k % 6 ? 47.2 : 45.6; return `<line x1="${f(50 + Math.sin(t) * r1)}" y1="${f(50 - Math.cos(t) * r1)}" x2="${f(50 + Math.sin(t) * 49)}" y2="${f(50 - Math.cos(t) * 49)}"${k % 6 ? "" : ' class="major"'}/>`; }).join("");
+    return `<div class="dial" role="img" aria-label="${esc(p.coverAlt || p.title)}">
+      <div class="dial-ring">
+        <svg class="dial-ticks" viewBox="0 0 100 100" aria-hidden="true">${ticks}</svg>
+        <div class="dial-sweep" aria-hidden="true"></div>
+        ${p.dial.map((d, k) => `<span class="dial-face" data-name="${esc(d.name)}"><img src="${esc(d.src)}" alt="" width="216" height="216" decoding="async"></span>`).join("")}
+        <div class="dial-hand" aria-hidden="true"></div>
+        <div class="dial-read" aria-hidden="true"><span class="dial-by small">imemnur</span><b class="dial-time">00:00</b><span class="dial-name small"></span></div>
+      </div>
+    </div>`;
+  };
   const plate = (p, i) => {
     const n = String(i + 1).padStart(2, "0"), href = `project.html?id=${encodeURIComponent(p.id)}`;
     return `<article class="plate${i % 2 ? " flip" : ""}" id="${esc(p.id)}" data-plate>
       <a class="plate-art tone-${i % 4}" href="${href}" aria-label="Open ${esc(p.title)}" data-reveal>
-        <div class="plate-frame">${p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" loading="lazy">` : artSvg(p)}</div>
+        <div class="plate-frame${p.dial ? " is-dial" : ""}">${p.dial ? dialHtml(p) : p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" loading="lazy">` : artSvg(p)}</div>
         <span class="plate-tag small">PL.${n}</span>
       </a>
       <div class="plate-body">
@@ -131,7 +147,7 @@
         return acc;
       }, []).map((grp) => grp.band ? `<div class="shot-band">${grp.items.map(shotFig).join("")}</div>` : shotFig(grp.items[0])).join("");
       html = head(titleLines, p.summary, p.code) +
-        `<figure class="cover ${p.cover ? "" : "art-cover tone-" + (i % 4)}" data-reveal>${p.cover
+        `<figure class="cover ${p.dial ? "dial-cover" : p.cover ? "" : "art-cover tone-" + (i % 4)}" data-reveal>${p.dial ? dialHtml(p) : p.cover
           ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" class="parallax">`
           : artSvg(p)}</figure>
          ${p.stats?.length ? `<ul class="figs wide" data-reveal>${p.stats.map(([n, l]) => `<li><b>${esc(n)}</b><span>${esc(l)}</span></li>`).join("")}</ul>` : ""}
@@ -406,6 +422,31 @@
     lb.addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
     lb.addEventListener("touchend", (e) => { const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); });
   }
+
+  /* ---------- Dial covers: sync to the clock ---------- */
+  (function initDials() {
+    const dials = [...document.querySelectorAll(".dial")];
+    if (!dials.length) return;
+    const pad = (n) => String(n).padStart(2, "0");
+    dials.forEach((d) => {
+      const faces = d.querySelectorAll(".dial-face"), n = faces.length, step = 60 / n;
+      d.style.setProperty("--step", `${step}s`);
+      faces.forEach((el, k) => { el.style.setProperty("--a", `${(k * 360) / n}deg`); el.style.setProperty("--k", k); });
+    });
+    const sync = () => dials.forEach((d) => d.style.setProperty("--sync", `${((Date.now() / 1000) % 60).toFixed(3)}s`));
+    const tick = () => {
+      const now = new Date(), sec = now.getSeconds() + now.getMilliseconds() / 1000;
+      dials.forEach((d) => {
+        const faces = d.querySelectorAll(".dial-face"), n = faces.length, k = Math.round(sec / (60 / n)) % n;
+        d.querySelector(".dial-time").textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        const name = d.querySelector(".dial-name"), label = faces[k].dataset.name;
+        if (name.textContent !== label) name.textContent = label;
+      });
+    };
+    sync(); tick();
+    setInterval(tick, 250);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) { sync(); tick(); } });
+  })();
 
   /* ---------- Code blocks: copy button ---------- */
   async function copyText(text) {
