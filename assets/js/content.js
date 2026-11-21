@@ -72,7 +72,7 @@ window.SITE = {
   },
 
   // Words that scroll past on the Portfolio page.
-  portfolioTags: ["Talent acquisition", "Competency design", "Defensive driving", "ADDIE", "PDCA", "8 Steps", "DMAIC", "Design Thinking", "Next.js", "TypeScript", "Prisma", "Psychology"],
+  portfolioTags: ["Talent acquisition", "Competency design", "Defensive driving", "ADDIE", "PDCA", "8 Steps", "DMAIC", "Design Thinking", "Next.js", "TypeScript", "Prisma", "Watch faces", "Psychology"],
 
   // Each project is one "plate" on the Portfolio page.
   //   cover / coverAlt : a screenshot or picture. Without one, the plate is drawn from  art  (see pages.js: dots, rings, bars, waves, stairs).
@@ -149,6 +149,15 @@ window.SITE = {
       gallery: [
         { src: "images/work/wedding-mobile.webp", caption: "The cover on a phone", w: 600, h: 1300, phone: true },
       ],
+      url: "",
+    },
+    {
+      id: "watch-faces", code: "PF-008-5", title: "Watch Faces", year: "2026", type: "Watch faces",
+      summary: "Nine smartwatch faces I designed and published under the name imemnur, from pixel-art and terminal styles to live workout dashboards.",
+      body: "A side practice in very small screens: everything has to read at a glance, on a circle a few centimetres wide. I designed and published nine faces under the name imemnur; some are free and some are paid.\n\n## Playful\n\nSprout grows a pixel-art flower with your steps (\u201cgrown by you\u201d). Termigarm reads like a command-line prompt, with weather, heart rate and a progress bar in monospace. Agni wraps the time in a ring of fire.\n\n## Type-led\n\nSlab sets a heavy digital time between rows of small complications. Sphere stacks huge numerals over a wireframe globe. Dotted C and Pixly Pix are built from dot-matrix and pixel lettering.\n\n## Data for workouts\n\nRunners Data shows pace, distance, heart rate, calories and the current heart-rate zone. Gym Data tracks session time, a live heart-rate line, time since peak and the drop after a set.",
+      cover: "images/work/watchfaces-grid.webp", coverAlt: "Nine round watch faces on a navy background: Sprout, Slab, Sphere, Runners Data, Gym Data, Termigarm, Agni, Dotted C and Pixly Pix",
+      stats: [["9", "watch faces published"], ["2", "workout faces: running and gym"], ["5.0", "top rating (Gym Data, Termigarm, Agni)"]],
+      gallery: [],
       url: "",
     },
   ],
