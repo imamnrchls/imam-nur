@@ -664,3 +664,46 @@ svg.art .a-hi + .a-txt { fill: #fff; }
 @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } .plate-frame img, .plate-frame svg { transition: none; } }
 @media (max-width: 600px) { .plate .art-cap { display: none; } }
 .shot-band .shot:only-child { grid-column: 1 / -1; }
+
+/* ---------- Dial cover (Watch Faces): a watch made of watches ----------
+   Faces sit around the dial like hour marks; the hand runs on the real clock (--sync, set by pages.js),
+   and each face lifts out of the dark, in colour, as the hand reaches it, then fades back. */
+.dial { position: absolute; inset: 0; overflow: hidden; color: #efeee6;
+  background: radial-gradient(circle at 50% 50%, #2a3655 0, #1d2740 42%, #121829 100%); }
+.dial-ring { position: absolute; left: 50%; top: 50%; height: 90%; aspect-ratio: 1; transform: translate(-50%, -50%); container-type: size; }
+.dial-ticks { position: absolute; inset: 0; width: 100%; height: 100%; stroke: currentColor; stroke-width: .25; opacity: .32; }
+.dial-ticks .major { stroke-width: .5; opacity: 1; }
+.dial-face { --d: calc(var(--k) * var(--step) - var(--sync) - 60s);
+  position: absolute; width: 16%; aspect-ratio: 1;
+  left: calc(50% + 35% * sin(var(--a))); top: calc(50% - 35% * cos(var(--a)));
+  transform: translate(-50%, -50%) scale(.9); opacity: .62; filter: saturate(.25) brightness(.8);
+  animation: dial-lift 60s linear infinite; animation-delay: var(--d); }
+.dial-face img, .cover .dial-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.dial-face::after { content: ""; position: absolute; inset: -9%; border: 1px solid var(--vermilion); border-radius: 24%; opacity: 0;
+  animation: dial-glow 60s linear infinite; animation-delay: var(--d); }
+@keyframes dial-lift {
+  0%   { transform: translate(-50%, -50%) scale(1.14); opacity: 1;  filter: saturate(1) brightness(1); }
+  12%  { transform: translate(-50%, -50%) scale(.9);   opacity: .62; filter: saturate(.25) brightness(.8); }
+  95%  { transform: translate(-50%, -50%) scale(.9);   opacity: .62; filter: saturate(.25) brightness(.8); }
+  100% { transform: translate(-50%, -50%) scale(1.14); opacity: 1;  filter: saturate(1) brightness(1); }
+}
+@keyframes dial-glow { 0% { opacity: 1; transform: scale(1); } 8% { opacity: 0; transform: scale(1.12); } 97% { opacity: 0; transform: scale(1); } 100% { opacity: 1; transform: scale(1); } }
+/* the hand and its fading wake turn once a minute, in step with the clock */
+.dial-hand, .dial-sweep { position: absolute; inset: 0; animation: dial-spin 60s linear infinite; animation-delay: calc(var(--sync) * -1); }
+.dial-hand::before { content: ""; position: absolute; left: calc(50% - .6px); top: 3%; width: 1.2px; height: 22%; background: var(--vermilion); }
+.dial-hand::after { content: ""; position: absolute; left: 50%; top: 25%; width: 1.4%; aspect-ratio: 1; border-radius: 50%; background: var(--vermilion); transform: translate(-50%, -50%); }
+.dial-sweep { border-radius: 50%;
+  background: conic-gradient(from -42deg, transparent 0deg, rgba(212, 80, 47, .28) 42deg, transparent 42.2deg);
+  -webkit-mask: radial-gradient(circle, transparent 0 24%, #000 25% 49%, transparent 49.5%);
+          mask: radial-gradient(circle, transparent 0 24%, #000 25% 49%, transparent 49.5%); }
+@keyframes dial-spin { to { transform: rotate(360deg); } }
+.dial-read { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 1.2cqw; text-align: center; pointer-events: none; }
+.dial-read .small { font-size: max(9px, 2.3cqw); letter-spacing: .18em; text-transform: uppercase; opacity: .7; white-space: nowrap; }
+.dial-time { font-family: var(--display); font-weight: 400; font-size: 13cqw; line-height: .9; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.dial-name { color: var(--vermilion); opacity: 1 !important; min-height: 1.2em; }
+.cover.dial-cover { position: relative; background: #121829; }
+@media (max-width: 760px) { .cover.dial-cover, .plate-frame.is-dial { aspect-ratio: 1; } .dial-ring { height: 94%; } }
+@media (prefers-reduced-motion: reduce) {
+  .dial-hand, .dial-sweep, .dial-face::after { display: none; }
+  .dial-face { animation: none; opacity: 1; filter: none; transform: translate(-50%, -50%); }
+}
