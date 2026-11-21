@@ -54,7 +54,8 @@
     let g = "";
     if (a.kind === "dots") {
       const cols = 25, rows = Math.ceil(a.total / cols), gap = 20, x0 = (W - (cols - 1) * gap) / 2, y0 = (H - (rows - 1) * gap) / 2;
-      const hi = new Set(); while (hi.size < a.hi) hi.add(Math.floor(r() * a.total));
+      const hi = new Set(), hiMax = Math.min(Math.max(0, a.hi || 0), a.total);
+      while (hi.size < hiMax) hi.add(Math.floor(r() * a.total));
       for (let k = 0; k < a.total; k++) g += `<circle data-a class="${hi.has(k) ? "a-hi" : "a-ink"}" cx="${f(x0 + (k % cols) * gap)}" cy="${f(y0 + Math.floor(k / cols) * gap)}" r="${hi.has(k) ? 6.5 : 3.6}"/>`;
     } else if (a.kind === "rings") {
       a.rings.forEach((n, ri) => {
@@ -63,7 +64,8 @@
         for (let k = 0; k < n; k++) { const t = (k / n) * Math.PI * 2 - Math.PI / 2; g += `<circle data-a class="${ri === 2 ? "a-hi" : "a-ink"}" cx="${f(W / 2 + Math.cos(t) * rad)}" cy="${f(H / 2 + Math.sin(t) * rad)}" r="${dr}"/>`; }
       });
     } else if (a.kind === "bars") {
-      const n = a.from, gap = 38, x0 = (W - (n - 1) * gap) / 2, drop = new Set(); while (drop.size < n - a.to) drop.add(Math.floor(r() * n));
+      const n = a.from, gap = 38, x0 = (W - (n - 1) * gap) / 2, drop = new Set(), dropMax = Math.min(Math.max(0, n - (a.to || 0)), n);
+      while (drop.size < dropMax) drop.add(Math.floor(r() * n));
       for (let k = 0; k < n; k++) { const h = 150 + r() * 120, gone = drop.has(k); g += `<rect data-b class="${gone ? "a-faint" : "a-ink"}" x="${f(x0 + k * gap - 5)}" y="${f(330 - h)}" width="10" height="${f(h)}"/>`; }
       g += `<line class="a-line" x1="${x0 - 20}" x2="${W - x0 + 20}" y1="344" y2="344"/>`;
     } else if (a.kind === "waves") {
@@ -308,9 +310,8 @@
 
   if (U.hasGsap && !U.reduced) {
     gsap.set(chars, { yPercent: 110 });
-    U.reveal().then(() => {});
+    U.reveal();
     gsap.to(chars, { yPercent: 0, duration: 1.4, ease: "expo.out", stagger: 0.04, delay: 0.45 });
-    gsap.from(".page-lines i", { scaleY: 0, duration: 1.6, ease: "expo.inOut", stagger: 0.1, delay: 0.2 });
     gsap.from(".topbar > *", { autoAlpha: 0, y: -10, duration: 1, stagger: 0.08, delay: 0.6 });
     if (window.ScrollTrigger) {
       document.querySelectorAll(".parallax").forEach((img) => {
@@ -345,17 +346,28 @@
   /* ---------- Music: open a record (one at a time); the cover follows the cursor over the list ---------- */
   if (page === "music" && (S.music || []).length) {
     const rows = [...document.querySelectorAll(".rec-row")];
+    const scrollToRow = (btn) => {
+      if (U.lenis) U.lenis.scrollTo(btn, { offset: -90 });
+      else btn.scrollIntoView({ behavior: U.reduced ? "auto" : "smooth", block: "start" });
+    };
+    const refreshAfterToggle = () => { window.ScrollTrigger?.refresh(); U.lenis?.resize(); };
+    document.querySelectorAll(".rec-panel").forEach((panel) => {
+      panel.addEventListener("transitionend", (e) => { if (e.propertyName === "grid-template-rows") refreshAfterToggle(); });
+    });
     const setOpen = (btn, open) => {
       btn.setAttribute("aria-expanded", open); btn.closest(".rec").classList.toggle("open", open);
     };
+    let scrollTimer;
     const toggle = (btn) => {
       const open = btn.getAttribute("aria-expanded") !== "true";
       rows.forEach((r) => r !== btn && r.getAttribute("aria-expanded") === "true" && setOpen(r, false));
       setOpen(btn, open);
-      if (open) setTimeout(() => (U.lenis ? U.lenis.scrollTo(btn, { offset: -90 }) : btn.scrollIntoView({ behavior: "smooth", block: "start" })), 350);
+      clearTimeout(scrollTimer);
+      if (U.reduced) { refreshAfterToggle(); if (open) scrollToRow(btn); }
+      else if (open) scrollTimer = setTimeout(() => { refreshAfterToggle(); scrollToRow(btn); }, 720);
     };
     rows.forEach((btn) => btn.addEventListener("click", () => toggle(btn)));
-    document.querySelectorAll(".covers [data-open]").forEach((c) => c.addEventListener("click", () => { const btn = rows[+c.dataset.open]; if (btn.getAttribute("aria-expanded") !== "true") toggle(btn); else U.lenis ? U.lenis.scrollTo(btn, { offset: -90 }) : btn.scrollIntoView({ behavior: "smooth" }); }));
+    document.querySelectorAll(".covers [data-open]").forEach((c) => c.addEventListener("click", () => { const btn = rows[+c.dataset.open]; if (btn.getAttribute("aria-expanded") !== "true") toggle(btn); else scrollToRow(btn); }));
 
     if (U.hasGsap && matchMedia("(hover: hover)").matches) {
       const fp = document.createElement("div");
@@ -397,13 +409,15 @@
       if (U.hasGsap) gsap.fromTo(p.video ? lbVid : lbImg, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" });
     };
     const open = (i) => {
-      lastFocus = document.activeElement; show(i); U.lenis?.stop();
+      lastFocus = document.activeElement; show(i);
+      document.body.classList.add("lb-open"); U.lenis?.stop();
       if (U.hasGsap) gsap.to(lb, { autoAlpha: 1, duration: 0.4 }); else { lb.style.visibility = "visible"; lb.style.opacity = 1; }
       lb.querySelector(".lb-close").focus();
     };
     const close = () => {
       lbVid.pause();
-      U.lenis?.start();
+      document.body.classList.remove("lb-open");
+      if (!document.body.classList.contains("menu-open")) U.lenis?.start();
       if (U.hasGsap) gsap.to(lb, { autoAlpha: 0, duration: 0.3 }); else { lb.style.visibility = "hidden"; lb.style.opacity = 0; }
       lastFocus?.focus();
     };
@@ -415,8 +429,17 @@
     lb.querySelector(".lb-prev").addEventListener("click", () => show(cur - 1));
     lb.querySelector(".lb-next").addEventListener("click", () => show(cur + 1));
     addEventListener("keydown", (e) => {
-      if (lb.style.visibility !== "visible" && getComputedStyle(lb).visibility !== "visible") return;
-      if (e.key === "Escape") close(); if (e.key === "ArrowLeft") show(cur - 1); if (e.key === "ArrowRight") show(cur + 1);
+      if (!document.body.classList.contains("lb-open")) return;
+      if (e.key === "Escape") { e.stopImmediatePropagation(); close(); return; }
+      if (e.key === "ArrowLeft") show(cur - 1);
+      if (e.key === "ArrowRight") show(cur + 1);
+      if (e.key === "Tab") {
+        const focusable = [...lb.querySelectorAll("button:not([disabled]), video:not([hidden])")];
+        if (!focusable.length) return;
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
     let sx = 0;
     lb.addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
@@ -429,30 +452,41 @@
     if (!dials.length) return;
     const pad = (n) => String(n).padStart(2, "0");
     dials.forEach((d) => {
-      const faces = d.querySelectorAll(".dial-face"), n = faces.length, step = 60 / n;
-      d.style.setProperty("--step", `${step}s`);
+      const faces = d.querySelectorAll(".dial-face"), n = faces.length;
+      if (!n) return;
+      d.style.setProperty("--step", `${60 / n}s`);
       faces.forEach((el, k) => { el.style.setProperty("--a", `${(k * 360) / n}deg`); el.style.setProperty("--k", k); });
     });
     const sync = () => dials.forEach((d) => d.style.setProperty("--sync", `${((Date.now() / 1000) % 60).toFixed(3)}s`));
     const tick = () => {
       const now = new Date(), sec = now.getSeconds() + now.getMilliseconds() / 1000;
+      const hm = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
       dials.forEach((d) => {
-        const faces = d.querySelectorAll(".dial-face"), n = faces.length, k = Math.round(sec / (60 / n)) % n;
-        d.querySelector(".dial-time").textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        const faces = d.querySelectorAll(".dial-face"), n = faces.length;
+        if (!n) return;
+        d.querySelector(".dial-time").textContent = hm;
+        if (U.reduced) return;
+        const k = Math.round(sec / (60 / n)) % n;
         const name = d.querySelector(".dial-name"), label = faces[k].dataset.name;
         if (name.textContent !== label) name.textContent = label;
       });
     };
-    sync(); tick();
-    setInterval(tick, 250);
-    document.addEventListener("visibilitychange", () => { if (!document.hidden) { sync(); tick(); } });
+    let timer = 0;
+    const start = () => {
+      if (timer || document.hidden) return;
+      sync(); tick();
+      timer = setInterval(tick, U.reduced ? 15000 : 250);
+    };
+    const stop = () => { clearInterval(timer); timer = 0; };
+    start();
+    document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
   })();
 
   /* ---------- Code blocks: copy button ---------- */
   async function copyText(text) {
     try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* fall back below (http pages, older browsers) */ }
     const ta = document.createElement("textarea");
-    ta.value = text; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    ta.value = text; ta.setAttribute("readonly", ""); ta.className = "sr-only";
     document.body.appendChild(ta); ta.select();
     let ok = false;
     try { ok = document.execCommand("copy"); } catch (e) { ok = false; }

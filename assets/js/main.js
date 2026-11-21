@@ -80,7 +80,7 @@
     document.body.classList.toggle("menu-open", open);
     plus.setAttribute("aria-expanded", open);
     plus.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-    if (open) lenis?.stop(); else lenis?.start();
+    if (open) lenis?.stop(); else if (!document.body.classList.contains("lb-open")) lenis?.start();
     if (!hasGsap) { menu.style.visibility = open ? "visible" : "hidden"; menu.style.clipPath = open ? "none" : ""; return; }
     gsap.killTweensOf([menu, ".menu .inner"]);
     if (open) {
@@ -97,7 +97,7 @@
   /* ---------- Footer (shared by every page) ---------- */
   const F = S.footer || {};
   const isHome = document.body.classList.contains("home");
-  const niceName = S.name.join(" ").replace(/\b(\w)(\w*)/g, (m, x, y) => x + y.toLowerCase());
+  const niceName = S.name.join(" ").replace(/\b(\w)(\w*)/g, (m, x, y) => x.toUpperCase() + y.toLowerCase());
   const words = (t) => String(t).split(" ").map((w) => `<span class="w"><span>${esc(w)}</span></span>`).join(" ");
   const footer = document.createElement("footer");
   footer.className = "site-foot";
@@ -168,7 +168,7 @@
       if (!raf) raf = requestAnimationFrame(loop);
     }, { passive: true });
     document.addEventListener("mouseover", (e) => { if (e.target.closest?.(HOT)) dot.classList.add("hovered"); });
-    document.addEventListener("mouseout", (e) => { if (e.target.closest?.(HOT)) dot.classList.remove("hovered"); });
+    document.addEventListener("mouseout", (e) => { if (e.target.closest?.(HOT) && !e.relatedTarget?.closest?.(HOT)) dot.classList.remove("hovered"); });
     document.addEventListener("mousedown", () => dot.classList.add("pressed"));
     document.addEventListener("mouseup", () => dot.classList.remove("pressed"));
     document.documentElement.addEventListener("mouseleave", () => dot.classList.remove("visible"));
@@ -210,7 +210,7 @@
     const a = e.target.closest("a");
     if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank") return;
     const url = new URL(a.href, location.href);
-    if (url.origin !== location.origin || a.hasAttribute("download")) return;
+    if (!/^https?:$/.test(url.protocol) || url.origin !== location.origin || a.hasAttribute("download")) return;
     const samePage = url.pathname === location.pathname && url.search === location.search;
     if (samePage && url.hash) { // in-page anchor
       e.preventDefault(); if (menuOpen) toggleMenu(false);

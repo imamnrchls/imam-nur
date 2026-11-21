@@ -2,10 +2,12 @@
 const http = require("http"), fs = require("fs"), path = require("path");
 const root = __dirname;
 const types = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".mp4": "video/mp4", ".woff2": "font/woff2" };
-// Use the same headers as production (vercel.json), minus caching, so the local preview behaves like the live site.
+// Use the same headers as production (vercel.json), minus caching and HTTPS-only directives, so local HTTP preview works cleanly.
 const rules = JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8")).headers || [];
 const headersFor = (url) => Object.fromEntries(rules.filter((r) => new RegExp(`^${r.source}$`).test(url))
-  .flatMap((r) => r.headers).filter((h) => h.key.toLowerCase() !== "cache-control").map((h) => [h.key, h.value]));
+  .flatMap((r) => r.headers)
+  .filter((h) => !["cache-control", "strict-transport-security"].includes(h.key.toLowerCase()))
+  .map((h) => [h.key, h.key.toLowerCase() === "content-security-policy" ? h.value.replace(/;\s*upgrade-insecure-requests\b/i, "") : h.value]));
 const security = headersFor("/");
 http.createServer((req, res) => {
   let rel;

@@ -20,6 +20,7 @@ window.SITE = {
   ],
 
   // Homepage background. Put a photo credit in heroCredit ({ label, url }) or leave it empty to hide it.
+  // Also update the matching <img src="…"> in index.html so the browser preloads the same file.
   heroImage: "images/hero-painted-2.webp",   // drawn from images/hero-trail.webp by tools/paint.js (see README)
   heroAscii: true,   // drifting characters behind the name and on the six homepage tiles (false = off)
   heroCredit: null,

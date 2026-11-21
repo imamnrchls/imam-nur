@@ -12,7 +12,7 @@ Built with plain HTML, CSS and JavaScript. Animations use [GSAP](https://gsap.co
 | `photos.html` | Gallery: photo and video grid with a lightbox (keyboard and swipe) |
 | `writing.html` → `article.html?slug=…` | Writing list, plus a reading page for each piece |
 | `about.html` (`#contact`) | Bio, facts, email and links. The portrait has the same drifting characters as the homepage, and the mouse clears them (`ascii: false` under `about` in `content.js` turns this off). |
-| `music.html` | Music recommendations with Apple Music players |
+| `music.html` | Editorial record list with cover strip, spinning vinyl, tracklists with recommended picks, and Apple Music links |
 
 ## Editing content
 

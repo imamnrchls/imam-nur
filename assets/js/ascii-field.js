@@ -152,7 +152,7 @@
           if (d >= t0) {
             const n = c * 2;
             let ch, alpha;
-            if (edge && d < t1) {
+            if (nE && d < t1) {
               ch = edge[(((rnd[n] * 97) | 0) + Math.floor(step + rnd[n + 1] * 4)) % nE];  // each cell changes letter on its own beat
               alpha = 0.3;
             } else {
@@ -177,6 +177,12 @@
 
     let onScreen = true;
     if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; wake(); }).observe(host);
+    if (o.follow && !reduced) {
+      // Sync parallax transform at display refresh rate instead of waiting for the 24 fps draw loop
+      const syncFollow = () => { if (onScreen) canvas.style.transform = o.follow.style.transform; };
+      if (window.gsap) gsap.ticker.add(syncFollow);
+      else addEventListener("scroll", syncFollow, { passive: true });
+    }
     fields.push({ draw, resize, live: () => onScreen && cols > 0 && (!o.visible || o.visible()) });
     resize();
     if (o.follow && !o.follow.complete) o.follow.addEventListener("load", resize, { once: true });

@@ -7,7 +7,7 @@
   const indexEl = document.querySelector(".title--index");
   const tilesEl = document.querySelector(".tiles");
 
-  bgImg.src = S.heroImage;
+  if (bgImg.getAttribute("src") !== S.heroImage) bgImg.src = S.heroImage;
   const credit = document.querySelector(".credit");
   if (S.heroCredit && S.heroCredit.label) { credit.href = S.heroCredit.url || "#"; credit.textContent = S.heroCredit.label; }
   else credit.remove();
@@ -42,13 +42,21 @@
   }
 
   /* ---------- Initial states ---------- */
-  gsap.set(indexChars, { yPercent: 110 });
-  gsap.set(".hero-bg", { clipPath: "inset(0% 0% 0% 0%)" });
-  gsap.set(tiles, { autoAlpha: 1 });
-  gsap.set(tileImgs, { clipPath: "inset(100% 0% 0% 0%)" });
-  gsap.set(tileImgs.length ? tilesEl.querySelectorAll(".tile-img img") : [], { scale: 1.35 });
-  gsap.set(tileLabels, { autoAlpha: 0, y: 12 });
+  if (U.reduced) {
+    gsap.set(indexEl, { autoAlpha: 0 });
+    gsap.set(tiles, { autoAlpha: 0 });
+    gsap.set(tileImgs, { clipPath: "inset(0% 0% 0% 0%)" });
+    gsap.set(tileLabels, { autoAlpha: 1, y: 0 });
+  } else {
+    gsap.set(indexChars, { yPercent: 110 });
+    gsap.set(".hero-bg", { clipPath: "inset(0% 0% 0% 0%)" });
+    gsap.set(tiles, { autoAlpha: 1 });
+    gsap.set(tileImgs, { clipPath: "inset(100% 0% 0% 0%)" });
+    gsap.set(tileImgs.length ? tilesEl.querySelectorAll(".tile-img img") : [], { scale: 1.35 });
+    gsap.set(tileLabels, { autoAlpha: 0, y: 12 });
+  }
   gsap.set(tilesEl, { pointerEvents: "none" });
+  tilesEl.inert = true;
 
   /* ---------- Intro (runs once, after the background is ready) ---------- */
   function intro() {
@@ -74,14 +82,27 @@
     const mm = gsap.matchMedia();
     mm.add({ mobile: "(max-width: 700px)", desktop: "(min-width: 701px)" }, (ctx) => {
       const { mobile } = ctx.conditions;
+      const setTilesActive = (active) => {
+        gsap.set(tilesEl, { pointerEvents: active ? "auto" : "none" });
+        tilesEl.inert = !active;
+      };
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
-          trigger: stage, start: "top top", end: mobile ? "+=220%" : "+=260%",
-          pin: true, scrub: 1, anticipatePin: 1,
-          onUpdate: (st) => gsap.set(tilesEl, { pointerEvents: st.progress > 0.82 ? "auto" : "none" }),
+          trigger: stage, start: "top top", end: U.reduced ? "+=120%" : mobile ? "+=220%" : "+=260%",
+          pin: true, scrub: U.reduced ? true : 1, anticipatePin: 1,
+          onUpdate: (st) => setTilesActive(st.progress > (U.reduced ? 0.55 : 0.82)),
         },
       });
+      if (U.reduced) {
+        // Reduced motion: simple opacity crossfade without shutter clip, scaling, or character roll
+        tl.to([".hero-bg", ".hero-meta", nameEl], { autoAlpha: 0, duration: 0.4 }, 0)
+          .to(stage, { "--fg": "#0b0b0b", "--ln": "rgba(11,11,11,.55)", duration: 0.3 }, 0.25)
+          .to(".plus", { color: "#0b0b0b", duration: 0.3 }, 0.25)
+          .to([indexEl, tiles], { autoAlpha: 1, duration: 0.4 }, 0.4)
+          .to({}, { duration: 0.4 });
+        return () => tl.scrollTrigger?.kill();
+      }
       // 1. the photo closes like a shutter onto the horizontal grid line
       tl.to(".hero-bg", { clipPath: "inset(50% 0% 50% 0%)", duration: 1, ease: "power2.inOut" }, 0)
         .to(bgImg, { scale: 1.2, duration: 1, ease: "power2.inOut" }, 0)
