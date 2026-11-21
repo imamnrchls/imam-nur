@@ -1,6 +1,7 @@
 /* Draws the site's illustrations (hero, footer and the six homepage tiles) as crayon / pastel pictures, in the browser,
-   with nothing but canvas. Unlike paint.js, which redraws a photo, these are composed: each scene below is a few flat
-   fields of colour (sky, ridges, meadows), small figures, and a handful of props, laid back to front.
+   with nothing but canvas. The tiles are composed: each is a few flat fields of colour (sky, ridges, meadows), small
+   figures and a handful of props, laid back to front. The hero and footer are the site's photographs redrawn in the
+   same style (photo mode, see photoDraw below).
 
    How a field is drawn
    1. It is filled flat, slightly darker than its colour.
@@ -131,6 +132,8 @@
   /* ---------- the canvas ---------- */
   const SC = SCENES()[NAME];
   if (!SC) { status.textContent = `No scene called "${NAME}".`; return; }
+  let IMG = null;
+  if (SC.photo) { IMG = new Image(); IMG.src = "../" + SC.photo; await IMG.decode(); SC.h = Math.round(SC.w * IMG.naturalHeight / IMG.naturalWidth); }
   const OUT_W = +(q.get("w") || SC.out || SC.w), U = OUT_W / SC.w, W = SC.w, H = SC.h;
   const out = document.getElementById("out");
   out.width = OUT_W; out.height = Math.round(H * U);
@@ -140,19 +143,19 @@
   const pathOf = (poly) => { const p = new Path2D(); poly.forEach(([x, y], i) => (i ? p.lineTo(x, y) : p.moveTo(x, y))); p.closePath(); return p; };
 
   // One stroke: a bundle of thin wavering lines with gaps between them (chalk grain)
-  function stroke(x, y, ang, len, wid, col, alpha) {
+  function stroke(x, y, ang, len, wid, col, alpha, g = ctx) {
     const dx = Math.cos(ang), dy = Math.sin(ang), nx = -dy, ny = dx;
     const lw = clamp(wid * 0.14, 0.7, 2.6), lines = Math.max(2, Math.round(wid / (lw * 1.05))), bend = rr(-0.1, 0.1) * len;
     for (let k = 0; k < lines; k++) {
       if (rnd() < 0.24) continue;                                 // a gap: paper shows through
       const o = (k / (lines - 1) - 0.5) * wid + rr(-0.4, 0.4) * lw;
       const a = (-len / 2) * rr(0.7, 1.05), b = (len / 2) * rr(0.7, 1.05), l = rr(-9, 9);
-      ctx.strokeStyle = rgba(shade(col, l), alpha * rr(0.5, 1));
-      ctx.lineWidth = lw * rr(0.7, 1.45);
-      ctx.beginPath();
-      ctx.moveTo(x + dx * a + nx * o, y + dy * a + ny * o);
-      ctx.quadraticCurveTo(x + nx * (o + bend), y + ny * (o + bend), x + dx * b + nx * (o + rr(-1, 1) * lw), y + dy * b + ny * (o + rr(-1, 1) * lw));
-      ctx.stroke();
+      g.strokeStyle = rgba(shade(col, l), alpha * rr(0.5, 1));
+      g.lineWidth = lw * rr(0.7, 1.45);
+      g.beginPath();
+      g.moveTo(x + dx * a + nx * o, y + dy * a + ny * o);
+      g.quadraticCurveTo(x + nx * (o + bend), y + ny * (o + bend), x + dx * b + nx * (o + rr(-1, 1) * lw), y + dy * b + ny * (o + rr(-1, 1) * lw));
+      g.stroke();
     }
   }
 
@@ -295,10 +298,185 @@
     }
   }
 
+  /* ---------- photo mode: a photograph redrawn in the same style ----------
+     The photo keeps its composition, but its colours are reduced to a few flat fields from the palette above:
+     1. The photo, blurred, is split into its main colours (k-means), and each one is replaced by the nearest
+        palette colour. Small islands are smoothed away (a majority filter), which leaves broad shapes.
+     2. Each field is painted like a composed one: flat colour, then crayon strokes, cut to the field's shape with a
+        ragged edge. Strokes run along the shapes' edges (ridges, cloud rims); some take the palette colour nearest to
+        the photo at that spot, which keeps the photo's light and shade as patches of a neighbouring colour.
+     3. Small dark things (people, shrubs, rocks) are lost in step 1, so they are put back as small dark marks
+        wherever the photo is much darker than its field.
+     Scene options (see hero/footer below): photo, k, sat/con/bri/blur (how the photo is read), smooth, ang, follow,
+     angles { paletteName: angle }, speck { paletteName: amount }, swap { from: to }, dark (how much darker a detail
+     must be), sw (stroke width), palette (which colours may be used).  */
+  async function photoDraw(o, img) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    const OW = out.width, OH = out.height, K = OW / 1600;
+    const mk = (w, h) => { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; };
+    const read = (w, h, f) => { const c = mk(w, h), x = c.getContext("2d", { willReadFrequently: true }); x.filter = f; x.drawImage(img, -4, -4, w + 8, h + 8); return x.getImageData(0, 0, w, h).data; };
+    // colour distance in CIE Lab, so "nearest colour" matches what the eye sees
+    const lab = ([r, g, b]) => {
+      const f = (v) => { v /= 255; return v > 0.04045 ? ((v + 0.055) / 1.055) ** 2.4 : v / 12.92; };
+      const R = f(r), G = f(g), B = f(b);
+      const t = (v) => (v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116);
+      const X = t((R * 0.4124 + G * 0.3576 + B * 0.1805) / 0.9505), Y = t(R * 0.2126 + G * 0.7152 + B * 0.0722), Z = t((R * 0.0193 + G * 0.1192 + B * 0.9505) / 1.089);
+      return [116 * Y - 16, 500 * (X - Y), 200 * (Y - Z)];
+    };
+    const keys = o.palette || ["sky", "skyHi", "skyDeep", "haze", "paper", "pink", "peach", "ochre", "orange", "yellow", "olive", "moss", "green", "teal", "deep", "navy", "ink", "stone"];
+    const PC = keys.map((k) => hex(C[k])), PL = PC.map(lab);
+    const nearest = (c, only) => {
+      const L = lab(c); let best = 0, bd = 1e9;
+      for (let i = 0; i < PL.length; i++) { if (only && !only.includes(i)) continue; const p = PL[i], d = (L[0] - p[0]) ** 2 * (o.lw ?? 1) + (L[1] - p[1]) ** 2 + (L[2] - p[2]) ** 2; if (d < bd) { bd = d; best = i; } }
+      return best;
+    };
+    const swap = (i) => (o.swap && o.swap[keys[i]] ? keys.indexOf(o.swap[keys[i]]) : i);
+    const lum = (c) => c[0] * 0.299 + c[1] * 0.587 + c[2] * 0.114;
+
+    // 1. flat fields, at a small working size
+    const ww = o.work || 400, wh = Math.round((ww * OH) / OW), N = ww * wh;
+    const look = `saturate(${o.sat ?? 1.35}) contrast(${o.con ?? 1.12}) brightness(${o.bri ?? 1})`;
+    const px = read(ww, wh, `${look} blur(${o.blur ?? 2}px)`);
+    let cent = Array.from({ length: o.k || 9 }, () => { const i = ((rnd() * N) | 0) * 4; return [px[i], px[i + 1], px[i + 2]]; });
+    const cl = new Uint8Array(N);
+    for (let it = 0; it < 14; it++) {
+      const sum = cent.map(() => [0, 0, 0, 0]);
+      for (let i = 0; i < N; i++) {
+        const r = px[i * 4], g = px[i * 4 + 1], b = px[i * 4 + 2]; let best = 0, bd = 1e9;
+        for (let k = 0; k < cent.length; k++) { const c = cent[k], d = (r - c[0]) ** 2 + (g - c[1]) ** 2 + (b - c[2]) ** 2; if (d < bd) { bd = d; best = k; } }
+        cl[i] = best; const t = sum[best]; t[0] += r; t[1] += g; t[2] += b; t[3]++;
+      }
+      cent = cent.map((c, k) => (sum[k][3] ? [sum[k][0] / sum[k][3], sum[k][1] / sum[k][3], sum[k][2] / sum[k][3]] : c));
+    }
+    const toPal = cent.map((c) => swap(nearest(c)));
+    let lab0 = new Uint8Array(N);
+    for (let i = 0; i < N; i++) lab0[i] = toPal[cl[i]];
+    // ramp: for a hazy photo whose shapes are in its light, not its colours (ridges fading with distance),
+    // band it by brightness instead, light to dark, each band an equal share of the picture
+    if (o.ramp) {
+      const ramp = o.ramp.map((k) => keys.indexOf(k)), Ls = new Float32Array(N);
+      for (let i = 0; i < N; i++) Ls[i] = lum([px[i * 4], px[i * 4 + 1], px[i * 4 + 2]]);
+      if (o.flatten) {   // take out the broad glow of light, so the bands follow ridges rather than the sun
+        const big = read(ww, wh, `${look} blur(${ww / 12}px)`);
+        for (let i = 0; i < N; i++) Ls[i] -= lum([big[i * 4], big[i * 4 + 1], big[i * 4 + 2]]) * o.flatten;
+      }
+      const sorted = Float32Array.from(Ls).sort(), cuts = ramp.map((_, k) => sorted[Math.floor(((k + 1) / ramp.length) * (N - 1))]);
+      for (let i = 0; i < N; i++) { let k = 0; while (k < ramp.length - 1 && Ls[i] > cuts[k]) k++; lab0[i] = ramp[ramp.length - 1 - k]; }
+    }
+    // majority filter: each pixel takes the most common field around it
+    const R = 2, cnt = new Uint16Array(PC.length);
+    for (let pass = 0; pass < (o.smooth ?? 4); pass++) {
+      const nx = new Uint8Array(N);
+      for (let y = 0; y < wh; y++) for (let x = 0; x < ww; x++) {
+        cnt.fill(0); let best = lab0[y * ww + x], bc = 0;
+        for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+          const v = lab0[clamp(y + dy, 0, wh - 1) * ww + clamp(x + dx, 0, ww - 1)];
+          if (++cnt[v] > bc) { bc = cnt[v]; best = v; }
+        }
+        nx[y * ww + x] = best;
+      }
+      lab0 = nx;
+    }
+    const at = (X, Y) => lab0[clamp((Y * wh / OH) | 0, 0, wh - 1) * ww + clamp((X * ww / OW) | 0, 0, ww - 1)];
+
+    // which way strokes run: along the fields' edges, else the scene's default direction
+    const fl = new Float32Array(N);
+    for (let i = 0; i < N; i++) fl[i] = lum(PC[lab0[i]]);
+    const bl = new Float32Array(N), RB = 4;
+    for (let y = 0; y < wh; y++) for (let x = 0; x < ww; x++) { let s2 = 0, n = 0; for (let dy = -RB; dy <= RB; dy += 2) for (let dx = -RB; dx <= RB; dx += 2) { s2 += fl[clamp(y + dy, 0, wh - 1) * ww + clamp(x + dx, 0, ww - 1)]; n++; } bl[y * ww + x] = s2 / n; }
+    const dirAt = (X, Y, base) => {
+      const x = clamp((X * ww / OW) | 0, 2, ww - 3), y = clamp((Y * wh / OH) | 0, 2, wh - 3), i = y * ww + x;
+      const gx = bl[i + 2] - bl[i - 2], gy = bl[i + 2 * ww] - bl[i - 2 * ww], k = clamp(Math.hypot(gx, gy) / 30, 0, 1) * (o.follow ?? 0.7);
+      const t = Math.atan2(gy, gx) + Math.PI / 2, vx = Math.cos(2 * base) * (1 - k) + Math.cos(2 * t) * k, vy = Math.sin(2 * base) * (1 - k) + Math.sin(2 * t) * k;
+      return Math.atan2(vy, vx) / 2;
+    };
+
+    // the photo's own colours, a little sharper, for the strokes that follow its light and shade
+    const pw = (ww * 2) | 0, ph = (wh * 2) | 0, mid = read(pw, ph, `${look} blur(${o.midBlur ?? 2.5}px)`);
+    const photoAt = (X, Y) => { const i = (clamp((Y * ph / OH) | 0, 0, ph - 1) * pw + clamp((X * pw / OW) | 0, 0, pw - 1)) * 4; return [mid[i], mid[i + 1], mid[i + 2]]; };
+
+    // the flat picture underneath, so no paper shows between fields
+    const flat = mk(ww, wh), fx = flat.getContext("2d"), fd = fx.createImageData(ww, wh);
+    for (let i = 0; i < N; i++) { const c = shade(PC[lab0[i]], -6); fd.data.set([c[0], c[1], c[2], 255], i * 4); }
+    fx.putImageData(fd, 0, 0);
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(flat, 0, 0, OW, OH);
+
+    // 2. each field: strokes on their own layer, cut to the field's shape with a ragged edge
+    const present = [...new Set(lab0)];
+    const area = (r) => { let n = 0; for (let i = 0; i < N; i++) if (lab0[i] === r) n++; return n; };
+    present.sort((a, b) => area(b) - area(a));
+    const W0 = (o.sw || 20) * K, off = rnd() * 100;
+    for (const [n, r] of present.entries()) {
+      status.textContent = `Drawing… field ${n + 1} of ${present.length}`;
+      await new Promise((res) => setTimeout(res));
+      const m = mk(ww, wh), mx = m.getContext("2d"), md = mx.createImageData(ww, wh);
+      let x0 = ww, y0 = wh, x1 = 0, y1 = 0, cntR = 0;
+      for (let y = 0; y < wh; y++) for (let x = 0; x < ww; x++) if (lab0[y * ww + x] === r) { md.data[(y * ww + x) * 4 + 3] = 255; cntR++; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      mx.putImageData(md, 0, 0);
+      const M = mk(OW, OH), Mx = M.getContext("2d", { willReadFrequently: true });
+      Mx.imageSmoothingQuality = "high";
+      Mx.filter = `blur(${(o.edge ?? 7) * K}px)`;   // a soft edge first, so the cut below can wander either side of it
+      Mx.drawImage(m, 0, 0, OW, OH);
+      const Md = Mx.getImageData(0, 0, OW, OH), ma = Md.data, ef = 0.035 / K;
+      for (let y = 0; y < OH; y++) for (let x = 0; x < OW; x++) {
+        const i = (y * OW + x) * 4 + 3, a = ma[i];
+        if (a === 0 || a === 255) continue;
+        ma[i] = a > 128 + (noise(x * ef + off, y * ef * 2.2) - 0.5) * 190 + (rnd() - 0.5) * 110 ? 255 : 0;   // a chalky, uneven edge
+      }
+      Mx.putImageData(Md, 0, 0);
+      const L = mk(OW, OH), Lx = L.getContext("2d");
+      Lx.lineCap = "round";
+      const col = PC[r], base = o.angles?.[keys[r]] ?? (o.ang ?? -0.12), jit = keys[r].startsWith("sky") ? 0.35 : 0.13;
+      Lx.fillStyle = rgba(shade(col, -6)); Lx.fillRect(0, 0, OW, OH);
+      const X0 = (x0 / ww) * OW - W0 * 2, Y0 = (y0 / wh) * OH - W0 * 2, X1 = ((x1 + 1) / ww) * OW + W0 * 2, Y1 = ((y1 + 1) / wh) * OH + W0 * 2;
+      const strokes = Math.round(((cntR / N) * OW * OH) / (W0 * W0 * 4.5 * 0.3));
+      for (let k = 0; k < strokes * 2.4; k++) {
+        const X = rr(X0, X1), Y = rr(Y0, Y1);
+        if (at(X, Y) !== r) continue;
+        let c = col;
+        const pc = swap(nearest(photoAt(X, Y)));
+        if (pc !== r && rnd() < (o.follows ?? 0.45)) c = PC[pc];
+        else if (rnd() < 0.45) c = shade(col, rnd() < 0.5 ? rr(12, 24) : -rr(10, 20));   // a lighter or darker stick
+        stroke(X, Y, dirAt(X, Y, base) + rr(-1, 1) * jit, W0 * 4.5 * rr(0.7, 1.25), W0 * rr(0.8, 1.15), c, 0.9, Lx);
+      }
+      // paper specks
+      const sp = (o.speck && o.speck[keys[r]]) ?? (o.speckAll ?? 0.1);
+      if (sp) {
+        Lx.fillStyle = rgba(hex(C.paper));
+        const ns = Math.round(((cntR / N) * OW * OH) / 90 * sp);
+        for (let k = 0; k < ns; k++) { const X = rr(X0, X1), Y = rr(Y0, Y1); if (at(X, Y) !== r) continue; Lx.globalAlpha = rr(0.35, 0.95); Lx.beginPath(); Lx.ellipse(X, Y, 1.6 * K * rr(0.4, 1.4), 1.6 * K * rr(0.3, 0.8), base + rr(-0.4, 0.4), 0, Math.PI * 2); Lx.fill(); }
+        Lx.globalAlpha = 1;
+      }
+      Lx.globalCompositeOperation = "destination-in";
+      Lx.drawImage(M, 0, 0);
+      ctx.drawImage(L, 0, 0);
+    }
+
+    // 3. small dark things put back: people, shrubs, rocks
+    status.textContent = "Drawing… details";
+    await new Promise((res) => setTimeout(res));
+    const dw = Math.round(OW / 2), dh = Math.round(OH / 2), det = read(dw, dh, `${look} blur(0.6px)`), soft = read(dw, dh, `${look} blur(${12 * K}px)`);
+    const darks = (o.darks || ["navy", "ink", "deep", "green", "teal", "moss"]).map((k) => keys.indexOf(k)).filter((i) => i >= 0);
+    // dark enough, and part of a blob, not a thin line: an opening (shrink, then grow back) drops grass blades and keeps people
+    const D = new Uint8Array(dw * dh);
+    for (let i = 0; i < dw * dh; i++) D[i] = lum([soft[i * 4], soft[i * 4 + 1], soft[i * 4 + 2]]) - lum([det[i * 4], det[i * 4 + 1], det[i * 4 + 2]]) > (o.dark ?? 55) ? 1 : 0;
+    const morph = (A, keep) => { const B = new Uint8Array(dw * dh); for (let y = 1; y < dh - 1; y++) for (let x = 1; x < dw - 1; x++) { let n = 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) n += A[(y + dy) * dw + x + dx]; B[y * dw + x] = keep(n) ? 1 : 0; } return B; };
+    let Dm = D; for (let k = 0; k < (o.open ?? 1); k++) Dm = morph(Dm, (n) => n === 9); for (let k = 0; k < (o.open ?? 1); k++) Dm = morph(Dm, (n) => n > 0);
+    // the silhouette solid first (so a person keeps its shape), then a few strokes over it for the crayon grain
+    for (let y = 0; y < dh; y++) for (let x = 0; x < dw; x++) {
+      if (!Dm[y * dw + x]) continue;
+      const i = (y * dw + x) * 4, pick = nearest([det[i], det[i + 1], det[i + 2]], darks);
+      ctx.fillStyle = rgba(shade(PC[pick], rr(-6, 6)));
+      ctx.fillRect(x * 2 - 0.4, y * 2 - 0.4, 2.8, 2.8);
+      if (rnd() < 0.3) { const w = rr(2, 3.2) * K; stroke(x * 2, y * 2, rr(-1.6, -1.2), w * rr(1.2, 2), w, shade(PC[pick], rr(-10, 14)), 0.9); }
+    }
+  }
+
   const API = { paint, figure, ridge, smooth, ribbon, band, rect, ellipse, capsule, closed, blob, rot, yAt, mix, shade, rr, rnd, C, W, H };
   status.textContent = "Drawing…";
   await new Promise((r) => setTimeout(r));
-  SC.draw(API);
+  if (SC.photo) await photoDraw(SC, IMG); else SC.draw(API);
 
   /* ---------- paper grain ---------- */
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -316,9 +494,99 @@
      ===================================================================== */
   function SCENES() {
     return {
+      /* Homepage background and footer: the site's own photographs, redrawn in this style (photo mode, see photoDraw). */
+      // Homepage background: the hero photo (images/hero-trail.webp, same size), its shapes traced by hand.
+      hero: { w: 1600, h: 1200, draw(S) {
+        const { paint, figure, ridge, band, rect, closed, blob, ribbon, mix, C, H } = S;
+        paint(rect(0, 0, 1600, H), { col: C.sky, w: 26, len: 3.2, ang: 0.22, jit: 0.4, alt: [[C.skyHi, 0.25], [C.skyDeep, 0.1]], speck: { col: C.paper, amt: 0.55 } });
+        // the two volcanoes far off on the horizon
+        for (const v of [[[470, 186], [530, 146], [556, 130], [576, 129], [602, 146], [645, 168], [690, 186]], [[696, 172], [730, 146], [748, 131], [762, 131], [782, 150], [806, 172]]])
+          paint(closed(v, 3), { col: mix(C.sky, C.navy, 0.35), w: 8, ang: 0.9, alt: [[mix(C.haze, C.navy, 0.3), 0.3]], fringe: { len: 5, w: 3 } });
+        // the sea of cloud below them, and the big clouds
+        paint(band(ridge([[0, 192], [400, 186], [800, 176], [1200, 192], [1600, 186]], 8, 0.01), H), { col: mix(C.skyHi, C.paper, 0.5), w: 22, ang: -0.05, jit: 0.2, alt: [[C.paper, 0.25], [C.skyHi, 0.2]], streaks: [{ col: C.pink, th: 0.72, freq: 0.004, w: 10 }], fringe: { len: 18, w: 7, side: "up", ang: -0.08 } });
+        const cloud = (x, y, rx, ry) => {   // a flat base with round bumps on top
+          const bumps = Math.max(2, Math.round(rx / 55));
+          for (let i = 0; i < bumps; i++) { const t = (i + 0.5) / bumps, bx = x - rx + 2 * rx * t, br = ry * (0.7 + 0.6 * Math.sin(Math.PI * t)) * S.rr(0.85, 1.15);
+            paint(blob(bx, y - br * 0.35, br * 1.15, br, 0.2), { col: C.paper, w: 12, ang: -0.1, alt: [[mix(C.paper, C.skyHi, 0.3), 0.2], [C.pink, 0.08]], fringe: { len: 10, w: 5, side: "up" } }); }
+          paint(blob(x, y + ry * 0.25, rx, ry * 0.45, 0.15), { col: mix(C.paper, C.skyHi, 0.25), w: 12, ang: -0.05, alt: [[C.paper, 0.3]] });
+        };
+        for (const [x, y, rx, ry] of [[1250, 235, 220, 70], [1545, 172, 70, 30], [960, 435, 260, 60], [780, 400, 90, 38], [1120, 478, 120, 34], [170, 348, 150, 40]]) cloud(x, y, rx, ry);
+        paint(blob(470, 188, 150, 12, 0.2), { col: C.paper, w: 8, ang: -0.05, fringe: { len: 8, w: 4, side: "up" } });
+        // hills beyond the dark peak
+        paint(closed([[1050, 610], [1085, 548], [1120, 530], [1152, 538], [1175, 575], [1250, 528], [1300, 545], [1400, 590], [1400, 640], [1050, 640]], 4), { col: mix(C.teal, C.haze, 0.4), w: 12, ang: 0.6, alt: [[C.teal, 0.3]], fringe: { len: 8, w: 4, side: "up" } });
+        // the dark green peak on the right, its valley in shadow
+        paint(closed([[935, 700], [1000, 645], [1060, 600], [1110, 560], [1155, 528], [1200, 502], [1222, 502], [1255, 526], [1295, 562], [1335, 592], [1385, 600], [1450, 588], [1505, 558], [1555, 520], [1600, 496], [1600, 950], [1340, 810], [1150, 790], [980, 760]], 4), { col: C.green, w: 16, ang: 0.7, alt: [[C.deep, 0.35], [C.moss, 0.15]], streaks: [{ col: C.deep, th: 0.5, freq: 0.006, w: 14, ang: 0.7 }], fringe: { len: 14, w: 5, side: "up", ang: -1.5 } });
+        paint(blob(1500, 800, 170, 110, 0.3), { col: mix(C.deep, C.navy, 0.3), w: 14, ang: 0.6, alt: [[C.deep, 0.35], [C.green, 0.1]], fringe: { len: 18, w: 5 } });
+        // the long grassy ridge on the left, and its cliff dropping into the valley
+        const crest = ridge([[0, 372], [100, 367], [160, 371], [250, 392], [290, 382], [400, 389], [480, 372], [510, 353], [540, 372], [600, 395], [650, 406], [700, 428], [760, 431], [830, 466], [880, 520], [930, 560], [975, 600]], 3, 0.03);
+        paint(crest.concat([[960, 650], [940, 700], [880, 740], [0, 740]]), { col: mix(C.olive, C.yellow, 0.25), w: 18, ang: 0.3, alt: [[C.olive, 0.3]], streaks: [{ col: C.moss, th: 0.52, freq: 0.004, w: 14, ang: 0.45 }, { col: C.ochre, th: 0.66, freq: 0.005, w: 12, ang: 0.3 }], fringe: { len: 12, w: 4, side: "up", ang: -1.5, every: 2.5 } });
+        // the cliff face, in shade
+        paint(closed([[840, 470], [880, 520], [930, 560], [975, 600], [962, 650], [942, 700], [900, 690], [870, 600], [845, 520]], 4), { col: mix(C.moss, C.deep, 0.35), w: 10, ang: 1.0, alt: [[C.moss, 0.3]], fringe: { len: 8, w: 3 } });
+        for (const [x, y, r] of [[140, 420, 7], [162, 440, 6], [205, 410, 7], [262, 422, 6], [272, 462, 8], [182, 466, 7], [132, 540, 8], [152, 548, 6], [42, 495, 7], [62, 502, 8], [96, 515, 7], [332, 396, 6], [410, 401, 6], [472, 390, 6], [590, 412, 6], [500, 568, 12], [410, 610, 9], [612, 592, 8], [686, 606, 9], [936, 546, 8], [380, 470, 6], [290, 500, 7], [520, 380, 7]])
+          paint(blob(x, y, r * 1.3, r, 0.3), { col: C.deep, w: 4, ang: -1.2, len: 2.5, fringe: { len: 5, w: 2.5, side: "up" } });
+        // the slope the hikers are on
+        const slope = ridge([[0, 600], [200, 600], [300, 612], [420, 642], [480, 612], [530, 600], [600, 598], [680, 610], [760, 640], [840, 670], [900, 692], [960, 730], [1050, 760], [1150, 790], [1250, 802], [1350, 832], [1450, 872], [1550, 916], [1600, 936]], 4, 0.03);
+        paint(band(slope, H), { col: mix(C.yellow, C.moss, 0.22), w: 22, ang: -0.3, alt: [[C.yellow, 0.25], [C.olive, 0.15]], streaks: [{ col: C.olive, th: 0.55, freq: 0.004, w: 16, ang: -0.35 }, { col: C.moss, th: 0.64, freq: 0.006, w: 12, ang: -1.3, len: 3 }], fringe: { len: 22, w: 5, side: "up", ang: -1.5, every: 2.2 }, speck: { col: C.paper, amt: 0.15 } });
+        paint(ribbon([[60, 1210], [70, 1100], [60, 1000], [40, 900], [10, 830]], 70, 30), { col: mix(C.ochre, C.peach, 0.4), w: 10, ang: -1.3, alt: [[C.olive, 0.3]], fringe: { len: 10, w: 4 } });
+        paint(closed([[150, 1200], [170, 1060], [260, 1005], [420, 1000], [560, 1030], [650, 1100], [680, 1200]], 4), { col: mix(C.moss, C.green, 0.4), w: 16, ang: -1.3, len: 3, alt: [[C.moss, 0.3], [C.yellow, 0.12]], fringe: { len: 26, w: 5, side: "up", ang: -1.5, every: 2.5 } });
+        // shrubs on the slope
+        for (const [x, y, rx, ry] of [[640, 705, 50, 34], [765, 745, 40, 30], [925, 835, 62, 42], [1380, 885, 36, 30], [880, 706, 24, 18], [1060, 806, 42, 18], [1000, 790, 24, 14], [310, 625, 62, 24], [765, 648, 40, 28], [445, 742, 42, 40], [690, 612, 12, 16], [930, 728, 12, 12]])
+          paint(blob(x, y, rx, ry, 0.3), { col: C.deep, w: 7, ang: -1.2, len: 3, alt: [[C.green, 0.3]], fringe: { len: 8, w: 3, side: "up" } });
+        // the hikers (shadow first)
+        paint(S.ellipse(190, 748, 36, 9, -0.3), { col: mix(C.olive, C.deep, 0.5), w: 6, ang: -0.3 });
+        figure(240, 778, 132, { pose: "stand", top: C.navy, bottom: mix(C.stone, C.navy, 0.4), hair: C.ink });
+        figure(505, 770, 124, { pose: "walk", top: C.ink, bottom: C.navy, pack: "#2f63c4" });
+        figure(530, 796, 136, { pose: "walk", top: C.navy, bottom: C.ink });
+        figure(812, 886, 110, { pose: "walk", top: mix(C.ochre, C.ink, 0.6), bottom: C.ink });
+        // the big bush in front
+        paint(blob(735, 1015, 135, 135, 0.22), { col: C.deep, w: 12, ang: -1.1, len: 3, alt: [[C.green, 0.3], [C.navy, 0.15]], streaks: [{ col: C.moss, th: 0.6, freq: 0.02, w: 8 }], fringe: { len: 16, w: 5 } });
+      } },
+      // The footer photo is all haze and soft light, with no edges for photo mode to find, so its shapes are traced by
+      // hand instead (from images/footer-photo.webp, same size) and painted like a composed scene.
+      footer: { w: 1600, h: 1063, draw(S) {
+        const { paint, figure, ridge, band, rect, closed, ribbon, mix, C, H } = S;
+        // golden haze, cooler to the left
+        paint(rect(0, 0, 1600, H), { col: mix(C.yellow, C.paper, 0.35), w: 26, len: 3.4, ang: 0.15, jit: 0.3, alt: [[C.peach, 0.2], [mix(C.haze, C.olive, 0.4), 0.15]], streaks: [{ col: mix(C.teal, C.haze, 0.5), th: 0.55, freq: 0.002, w: 18, ang: 0.1 }], speck: { col: C.paper, amt: 0.4 } });
+        // far ridges, fading with distance
+        paint(band(ridge([[0, 130], [400, 150], [800, 140], [1200, 185], [1600, 165]], 10, 0.01), H), { col: mix(C.olive, C.paper, 0.45), w: 22, ang: 0.05, alt: [[mix(C.teal, C.paper, 0.5), 0.2]], fringe: { len: 12, w: 6, side: "up" } });
+        paint(band(ridge([[0, 248], [300, 256], [600, 300], [900, 330], [1200, 362], [1420, 392], [1600, 360]], 8, 0.012), H), { col: mix(C.olive, C.yellow, 0.4), w: 22, ang: 0.08, alt: [[C.ochre, 0.2], [C.olive, 0.2]], streaks: [{ col: C.moss, th: 0.6, freq: 0.004, w: 14 }], fringe: { len: 14, w: 6, side: "up", ang: -1.45 } });
+        // the ridge on the right, rising into the light
+        paint(band(ridge([[640, 590], [800, 545], [950, 505], [1100, 455], [1250, 428], [1400, 382], [1500, 360], [1600, 364]], 8, 0.015), H), { col: C.moss, w: 20, ang: -0.25, alt: [[C.olive, 0.3]], streaks: [{ col: C.ochre, th: 0.62, freq: 0.004, w: 12, ang: -0.25 }], fringe: { len: 18, w: 5, side: "up", ang: -1.5, every: 2.5 } });
+        // the dark forested slope on the left
+        paint(band(ridge([[0, 238], [120, 290], [250, 380], [350, 440], [470, 505], [620, 565], [700, 600]], 6, 0.02), H), { col: C.green, w: 20, ang: 0.45, alt: [[C.deep, 0.3], [C.teal, 0.15]], streaks: [{ col: C.deep, th: 0.55, freq: 0.004, w: 16, ang: 0.45 }], fringe: { len: 20, w: 5, ang: -1.5, every: 2.5 } });
+        // the forest behind the rocks
+        paint(band(ridge([[0, 600], [300, 610], [550, 600], [750, 610], [950, 590], [1150, 600], [1350, 620], [1600, 640]], 14, 0.02), H), { col: C.deep, w: 18, ang: -0.05, alt: [[C.green, 0.3], [C.teal, 0.12]], fringe: { len: 22, w: 5, side: "up", ang: -1.5, every: 2.2 } });
+        // rock pinnacles
+        // a rock lit from the upper right: the whole shape, then its left part again in shadow
+        const rock = (poly, lit = 0) => {
+          const sh = closed(poly, 4), x0 = Math.min(...sh.map((p) => p[0]));
+          paint(sh, { col: mix(C.stone, C.pink, lit), w: 9, ang: -1.3, len: 3.5, alt: [[mix(C.stone, C.paper, 0.3), 0.25]], fringe: { len: 6, w: 3 } });
+          paint(sh.map(([x, y]) => [x0 + (x - x0) * 0.48, y]), { col: mix(C.stone, C.navy, 0.45), w: 8, ang: -1.3, len: 3.5, alt: [[mix(C.stone, C.navy, 0.3), 0.3]], fringe: { len: 5, w: 3 } });
+        };
+        rock([[200, 805], [205, 732], [226, 708], [256, 705], [276, 742], [300, 762], [304, 805]], 0.15);
+        rock([[306, 805], [309, 700], [318, 655], [340, 626], [360, 617], [378, 640], [395, 700], [405, 760], [402, 808]], 0.45);
+        rock([[640, 815], [690, 782], [712, 746], [745, 702], [770, 674], [795, 673], [812, 702], [832, 760], [862, 800], [895, 840], [880, 862], [700, 852]], 0.2);
+        paint(closed([[700, 852], [740, 780], [760, 750], [800, 760], [830, 800], [880, 862]], 3), { col: mix(C.moss, C.deep, 0.4), w: 9, ang: -1.2, len: 3, alt: [[C.green, 0.3]], fringe: { len: 8, w: 3 } });
+        // the sunlit meadow in front, and a knoll
+        paint(closed([[0, 800], [150, 800], [300, 812], [420, 792], [520, 800], [610, 804], [700, 822], [800, 865], [860, 960], [880, H], [0, H]], 4), { col: C.moss, w: 20, ang: -0.1, alt: [[C.green, 0.3]], streaks: [{ col: C.yellow, th: 0.5, freq: 0.004, w: 14, ang: -0.1 }, { col: C.deep, th: 0.62, freq: 0.006, w: 12 }], fringe: { len: 20, w: 5, side: "up", ang: -1.5, every: 2.2 } });
+        paint(closed([[330, H], [390, 985], [450, 962], [540, 960], [600, 985], [650, H]], 4), { col: mix(C.moss, C.yellow, 0.35), w: 14, ang: -0.1, alt: [[C.moss, 0.3]], fringe: { len: 16, w: 4, side: "up", ang: -1.5, every: 2 } });
+        for (const [bx, by, r] of [[115, 965, 18], [240, 960, 22], [470, 830, 14], [560, 820, 10]]) paint(S.blob(bx, by, r, r * 1.5, 0.3), { col: C.deep, w: 6, ang: -1.4, fringe: { len: 8, w: 3, side: "up" } });
+        // the big boulder, lit along its top, its lower side in shadow
+        const top = [[975, 770], [1000, 742], [1040, 731], [1095, 729], [1150, 742], [1210, 775], [1258, 812], [1278, 845]];
+        paint(closed([[760, H], [820, 960], [880, 870], [930, 820], ...top, [1275, 900], [1262, H]], 4), { col: C.stone, w: 14, ang: -0.9, len: 3.5, alt: [[mix(C.stone, C.pink, 0.4), 0.3], [mix(C.stone, C.navy, 0.3), 0.2]], fringe: { len: 8, w: 4 } });
+        paint(closed([[760, H], [820, 960], [880, 870], [930, 825], [975, 800], [960, 900], [1010, 1000], [1050, H]], 4), { col: mix(C.stone, C.navy, 0.6), w: 12, ang: -1.1, alt: [[C.navy, 0.3]], fringe: { len: 10, w: 4 } });
+        paint(ribbon(top, 12, 7), { col: mix(C.pink, C.peach, 0.3), w: 7, ang: -0.3, alt: [[C.paper, 0.3]], fringe: { len: 6, w: 3 } });
+        // moss between the rocks, and the rocks on the right
+        paint(closed([[1255, H], [1268, 880], [1300, 862], [1400, 872], [1470, 852], [1530, 880], [1600, 900], [1600, H]], 4), { col: C.deep, w: 14, ang: -1.3, len: 3, alt: [[C.moss, 0.25], [C.navy, 0.2]], fringe: { len: 16, w: 4, side: "up", ang: -1.5 } });
+        rock([[1340, 866], [1342, 762], [1350, 722], [1376, 700], [1405, 688], [1432, 696], [1452, 722], [1463, 782], [1458, 842], [1440, 862]], 0.35);
+        paint(closed([[1445, H], [1452, 905], [1472, 862], [1530, 842], [1600, 842], [1600, H]], 4), { col: mix(C.stone, C.navy, 0.4), w: 12, ang: -1.2, alt: [[C.stone, 0.3]], fringe: { len: 8, w: 4 } });
+        // the person on top of the boulder
+        figure(1066, 731, 54, { pose: "stand", top: "#c9563c", bottom: C.navy, pack: C.ochre });
+      } },
+
       /* Homepage background: hikers on a ridge, a volcano over a sea of cloud. Full screen, with the name over the middle,
          so the middle is kept quiet and the figures sit low and near the centre (a phone shows only the middle third). */
-      hero: { w: 1600, h: 1200, draw(S) {
+      ridge: { w: 1600, h: 1200, draw(S) {
         const { paint, figure, ridge, band, rect, blob, yAt, C, H } = S;
         paint(rect(0, 0, 1600, H), { col: C.sky, w: 26, len: 3.2, ang: 0.22, jit: 0.4, alt: [[C.skyHi, 0.22], [C.skyDeep, 0.12]], streaks: [{ col: C.paper, th: 0.74, freq: 0.0022, w: 9, len: 9, ang: 0.25, alpha: 0.5 }], speck: { col: C.paper, amt: 0.55 } });
         // the volcano, hazy with distance, its far side in shadow
@@ -346,7 +614,7 @@
 
       /* Footer: two people sitting talking on a hillside by a tent, with layered ridges behind.
          The top melts into the page, and the big line of text sits over the dark bottom. */
-      footer: { w: 1600, h: 1063, draw(S) {
+      camp: { w: 1600, h: 1063, draw(S) {
         const { paint, figure, ridge, band, rect, blob, yAt, C, H } = S;
         paint(rect(0, 0, 1600, H), { col: C.sky, w: 26, len: 3.2, ang: 0.22, jit: 0.4, alt: [[C.skyHi, 0.25]], speck: { col: C.paper, amt: 0.5 } });
         paint(band(ridge([[0, 500], [300, 465], [620, 500], [1000, 450], [1350, 485], [1600, 465]], 14, 0.01), 700), { col: C.haze, w: 18, ang: 0.5, alt: [[C.pink, 0.15]], fringe: { len: 10, w: 5, side: "up" } });

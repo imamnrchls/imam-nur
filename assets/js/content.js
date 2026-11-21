@@ -20,7 +20,7 @@ window.SITE = {
   ],
 
   // Homepage background. Put a photo credit in heroCredit ({ label, url }) or leave it empty to hide it.
-  heroImage: "images/hero-scene.webp",   // drawn by tools/scene.js (?scene=hero, see README)
+  heroImage: "images/hero-drawn.webp",   // images/hero-trail.webp redrawn by tools/scene.js (?scene=hero, see README)
   heroAscii: true,   // drifting characters behind the name and on the six homepage tiles (false = off)
   heroCredit: null,
 
@@ -28,7 +28,7 @@ window.SITE = {
   footer: {
     cta: "Up for a hike, a good album or a long conversation",
     ctaLink: "say hello",
-    art: "images/footer-scene.webp",   // drawn by tools/scene.js (?scene=footer)
+    art: "images/footer-drawn.webp",   // images/footer-photo.webp redrawn by tools/scene.js (?scene=footer)
   },
 
   // The second title that appears while scrolling (one entry per line)
