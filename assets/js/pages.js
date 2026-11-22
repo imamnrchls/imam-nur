@@ -49,30 +49,68 @@
   const rng = (seed) => () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   const hash = (str) => [...String(str)].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7);
   const f = (n) => Math.round(n * 10) / 10;
-  function artSvg(p) {
+  function artSvg(p, compact = false) {
     const a = p.art || {}, r = rng(hash(p.id)), W = 600, H = 400;
-    let g = "";
+    // Archival poster frame: hairline border, corner registration marks, and faint serif watermark
+    const reg = (x, y) => `<path class="a-reg" d="M${x - 5} ${y}h10M${x} ${y - 5}v10"/>`;
+    const wm = !compact && p.stats?.[0]?.[0] ? `<text class="a-wm" x="${W - 32}" y="${H - 34}" text-anchor="end">${esc(p.stats[0][0])}</text>` : "";
+    let g = `<rect class="a-frame" x="16" y="16" width="${W - 32}" height="${H - 32}" fill="none"/>` +
+      reg(28, 28) + reg(W - 28, 28) + reg(28, H - 28) + reg(W - 28, H - 28) + wm;
     if (a.kind === "dots") {
-      const cols = 25, rows = Math.ceil(a.total / cols), gap = 20, x0 = (W - (cols - 1) * gap) / 2, y0 = (H - (rows - 1) * gap) / 2;
+      const cols = 25, rows = Math.ceil(a.total / cols), gap = 19, x0 = (W - (cols - 1) * gap) / 2, y0 = (H - (rows - 1) * gap) / 2;
       const hi = new Set(), hiMax = Math.min(Math.max(0, a.hi || 0), a.total);
       while (hi.size < hiMax) hi.add(Math.floor(r() * a.total));
-      for (let k = 0; k < a.total; k++) g += `<circle data-a class="${hi.has(k) ? "a-hi" : "a-ink"}" cx="${f(x0 + (k % cols) * gap)}" cy="${f(y0 + Math.floor(k / cols) * gap)}" r="${hi.has(k) ? 6.5 : 3.6}"/>`;
+      const pts = [];
+      for (let k = 0; k < a.total; k++) {
+        const cx = f(x0 + (k % cols) * gap), cy = f(y0 + Math.floor(k / cols) * gap);
+        if (hi.has(k)) pts.push([cx, cy]);
+      }
+      // Faint constellation hairlines linking a subset of highlighted hires
+      for (let k = 1; k < pts.length; k += 2) {
+        g += `<line class="a-hair" x1="${pts[k - 1][0]}" y1="${pts[k - 1][1]}" x2="${pts[k][0]}" y2="${pts[k][1]}"/>`;
+      }
+      for (let k = 0; k < a.total; k++) {
+        const cx = f(x0 + (k % cols) * gap), cy = f(y0 + Math.floor(k / cols) * gap), isHi = hi.has(k);
+        if (isHi) g += `<circle class="a-halo" cx="${cx}" cy="${cy}" r="10.5"/>`;
+        g += `<circle data-a class="${isHi ? "a-hi" : "a-ink"}" cx="${cx}" cy="${cy}" r="${isHi ? 5.6 : 3.2}"/>`;
+      }
     } else if (a.kind === "rings") {
+      // Astrolabe compass spokes + outer drafting ring
+      g += `<circle class="a-hair" cx="${W / 2}" cy="${H / 2}" r="188" fill="none" stroke-dasharray="2 6"/>`;
+      for (let k = 0; k < 12; k++) {
+        const t = (k / 12) * Math.PI * 2;
+        g += `<line class="a-hair" x1="${f(W / 2 + Math.cos(t) * 34)}" y1="${f(H / 2 + Math.sin(t) * 34)}" x2="${f(W / 2 + Math.cos(t) * 188)}" y2="${f(H / 2 + Math.sin(t) * 188)}"/>`;
+      }
+      g += reg(W / 2, H / 2);
       a.rings.forEach((n, ri) => {
-        const rad = [172, 122, 72][ri] || 40, dr = [2.6, 3.2, 5][ri] || 3;
+        const rad = [166, 118, 70][ri] || 40, dr = [2.4, 3.1, 4.8][ri] || 3;
         g += `<circle class="a-line" cx="${W / 2}" cy="${H / 2}" r="${rad}" fill="none"/>`;
         for (let k = 0; k < n; k++) { const t = (k / n) * Math.PI * 2 - Math.PI / 2; g += `<circle data-a class="${ri === 2 ? "a-hi" : "a-ink"}" cx="${f(W / 2 + Math.cos(t) * rad)}" cy="${f(H / 2 + Math.sin(t) * rad)}" r="${dr}"/>`; }
       });
     } else if (a.kind === "bars") {
-      const n = a.from, gap = 38, x0 = (W - (n - 1) * gap) / 2, drop = new Set(), dropMax = Math.min(Math.max(0, n - (a.to || 0)), n);
+      const n = a.from, gap = 36, x0 = (W - (n - 1) * gap) / 2, drop = new Set(), dropMax = Math.min(Math.max(0, n - (a.to || 0)), n);
       while (drop.size < dropMax) drop.add(Math.floor(r() * n));
-      for (let k = 0; k < n; k++) { const h = 150 + r() * 120, gone = drop.has(k); g += `<rect data-b class="${gone ? "a-faint" : "a-ink"}" x="${f(x0 + k * gap - 5)}" y="${f(330 - h)}" width="10" height="${f(h)}"/>`; }
-      g += `<line class="a-line" x1="${x0 - 20}" x2="${W - x0 + 20}" y1="344" y2="344"/>`;
+      // Horizontal architectural guide lines
+      [90, 170, 250].forEach((y) => { g += `<line class="a-hair" x1="${x0 - 24}" x2="${W - x0 + 24}" y1="${y}" y2="${y}"/>`; });
+      for (let k = 0; k < n; k++) {
+        const h = 140 + r() * 125, gone = drop.has(k), x = f(x0 + k * gap), y = f(328 - h);
+        g += `<rect data-b class="${gone ? "a-faint" : "a-ink"}" x="${f(x - 5)}" y="${y}" width="10" height="${f(h)}"/>`;
+        if (!gone) g += `<rect class="a-hi" x="${f(x - 5)}" y="${y}" width="10" height="5"/>`;
+        if (!compact) g += `<text class="a-idx" x="${x}" y="356" text-anchor="middle">${String(k + 1).padStart(2, "0")}</text>`;
+      }
+      g += `<line class="a-line" x1="${x0 - 24}" x2="${W - x0 + 24}" y1="336" y2="336"/>`;
     } else if (a.kind === "waves") {
+      for (let x = 60; x < W; x += 60) g += `<line class="a-hair" x1="${x}" x2="${x}" y1="34" y2="${H - 34}"/>`;
       for (let k = 0; k < 9; k++) {
-        const amp = 46 - k * 3.4, ph = k * 0.5, y = 90 + k * 28; let d = "";
-        for (let x = 0; x <= W; x += 10) d += `${x ? "L" : "M"}${x} ${f(y + Math.sin(x / 62 + ph) * amp * (1 - x / (W * 1.25)))} `;
+        const amp = 44 - k * 3.2, ph = k * 0.5, y = 92 + k * 27; let d = "";
+        for (let x = 24; x <= W - 24; x += 10) d += `${x === 24 ? "M" : "L"}${x} ${f(y + Math.sin(x / 62 + ph) * amp * (1 - x / (W * 1.25)))} `;
         g += `<path data-w pathLength="1" class="${k === 4 ? "a-hi-line" : "a-line"}" d="${d}" fill="none"/>`;
+        if (k === 4) {
+          for (let x = 94; x < W - 60; x += 120) {
+            const cy = f(y + Math.sin(x / 62 + ph) * amp * (1 - x / (W * 1.25)));
+            g += `<circle data-a class="a-hi" cx="${x}" cy="${cy}" r="4.5"/>`;
+          }
+        }
       }
     } else if (a.kind === "stairs") {
       const n = a.steps.length, w = 82, gap = 8, x0 = (W - (n * w + (n - 1) * gap)) / 2;
@@ -81,7 +119,7 @@
         g += `<g data-b><rect class="${k === n - 1 ? "a-hi" : "a-ink"}" x="${f(x)}" y="${f(350 - h)}" width="${w}" height="${h}"/><text class="a-txt" x="${f(x + 8)}" y="${f(350 - h + 20)}">${esc(label)}</text></g>`;
       });
     }
-    return `<svg class="art" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(a.label || p.title)}" preserveAspectRatio="xMidYMid slice">${g}</svg>${a.label ? `<figcaption class="art-cap small">${esc(a.label)}</figcaption>` : ""}`;
+    return `<svg class="art" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(a.label || p.title)}" preserveAspectRatio="xMidYMid slice">${g}</svg>${!compact && a.label ? `<figcaption class="art-cap small">${esc(a.label)}</figcaption>` : ""}`;
   }
   /* ---------- Dial cover (project with `dial`) ----------
      A watch made of watches: the faces sit around a dial like hour marks, a seconds hand sweeps in step
@@ -101,9 +139,10 @@
   };
   const plate = (p, i) => {
     const n = String(i + 1).padStart(2, "0"), href = `project.html?id=${encodeURIComponent(p.id)}`;
+    const isShot = !p.dial && !!p.cover;
     return `<article class="plate${i % 2 ? " flip" : ""}" id="${esc(p.id)}" data-plate>
       <a class="plate-art tone-${i % 4}" href="${href}" aria-label="Open ${esc(p.title)}" data-reveal>
-        <div class="plate-frame${p.dial ? " is-dial" : ""}">${p.dial ? dialHtml(p) : p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" loading="lazy">` : artSvg(p)}</div>
+        <div class="plate-frame${p.dial ? " is-dial" : isShot ? " is-shot" : ""}">${p.dial ? dialHtml(p) : isShot ? `<div class="plate-mat"><img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" loading="lazy" decoding="async"></div><span class="shot-meta small" aria-hidden="true">${esc(p.code)} · ${esc(p.year)}</span>` : artSvg(p)}</div>
         <span class="plate-tag small">PL.${n}</span>
       </a>
       <div class="plate-body">
@@ -136,8 +175,8 @@
             <button type="button" class="view-btn${initView === "index" ? " is-on" : ""}" data-view="index" aria-pressed="${initView === "index"}">Index</button>
           </div>
         </div>
-        <ol class="rows index"${initView === "index" ? "" : " hidden"}>${S.portfolio.map((p) => `
-          <li class="row" data-reveal><a href="project.html?id=${encodeURIComponent(p.id)}"${p.cover ? ` data-cover="${esc(p.cover)}"` : ""}>
+        <ol class="rows index"${initView === "index" ? "" : " hidden"}>${S.portfolio.map((p, i) => `
+          <li class="row" data-reveal><a href="project.html?id=${encodeURIComponent(p.id)}" data-pi="${i}">
             <span class="code">${esc(p.code)}</span><span class="t">${esc(p.title)}</span>
             <span class="code x mid">${esc(p.type)}</span><span class="code r">${esc(p.year)}</span>
           </a></li>`).join("")}</ol>
@@ -158,8 +197,8 @@
         return acc;
       }, []).map((grp) => grp.band ? `<div class="shot-band">${grp.items.map(shotFig).join("")}</div>` : shotFig(grp.items[0])).join("");
       html = head(titleLines, p.summary, p.code) +
-        `<figure class="cover ${p.dial ? "dial-cover" : p.cover ? "" : "art-cover tone-" + (i % 4)}" data-reveal>${p.dial ? dialHtml(p) : p.cover
-          ? `<img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" class="parallax">`
+        `<figure class="cover ${p.dial ? "dial-cover" : p.cover ? "shot-cover tone-" + (i % 4) : "art-cover tone-" + (i % 4)}" data-reveal>${p.dial ? dialHtml(p) : p.cover
+          ? `<div class="plate-mat"><img src="${esc(p.cover)}" alt="${esc(p.coverAlt || p.title)}" class="parallax"></div><span class="shot-meta small" aria-hidden="true">${esc(p.code)} · ${esc(p.year)}</span>`
           : artSvg(p)}</figure>
          ${p.stats?.length ? `<ul class="figs wide" data-reveal>${p.stats.map(([n, l]) => `<li><b>${esc(n)}</b><span>${esc(l)}</span></li>`).join("")}</ul>` : ""}
          <article class="article">
@@ -353,23 +392,54 @@
       window.ScrollTrigger?.refresh();
       U.lenis?.resize();
     };
-    viewBtns.forEach((b) => b.addEventListener("click", () => { if (!b.classList.contains("is-on")) setView(b.dataset.view); }));
-
+    let fp = null;
     if (U.hasGsap && matchMedia("(hover: hover)").matches) {
-      const covers = [...indexEl.querySelectorAll("a[data-cover]")];
-      if (covers.length) {
-        const fp = document.createElement("div");
-        fp.className = "float-preview"; fp.innerHTML = "<img alt=''>";
-        document.body.appendChild(fp);
-        const img = fp.querySelector("img");
-        const xTo = gsap.quickTo(fp, "x", { duration: 0.6, ease: "power3" }), yTo = gsap.quickTo(fp, "y", { duration: 0.6, ease: "power3" });
-        addEventListener("mousemove", (e) => { xTo(e.clientX); yTo(e.clientY); });
-        covers.forEach((a) => {
-          a.addEventListener("mouseenter", () => { img.src = a.dataset.cover; gsap.to(fp, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }); });
-          a.addEventListener("mouseleave", () => gsap.to(fp, { opacity: 0, scale: 0.9, duration: 0.4, ease: "expo.out" }));
+      fp = document.createElement("div");
+      fp.className = "float-preview is-card";
+      fp.setAttribute("aria-hidden", "true");
+      fp.innerHTML = `<div class="fp-stage"></div><div class="fp-cap small"><span class="fp-id"></span><span class="fp-yr"></span></div>`;
+      document.body.appendChild(fp);
+      const stage = fp.querySelector(".fp-stage"), fpId = fp.querySelector(".fp-id"), fpYr = fp.querySelector(".fp-yr");
+      const xTo = gsap.quickTo(fp, "x", { duration: 0.55, ease: "power3" });
+      const yTo = gsap.quickTo(fp, "y", { duration: 0.55, ease: "power3" });
+      const rTo = gsap.quickTo(fp, "rotation", { duration: 0.5, ease: "power3" });
+      let lastX = 0, tiltTimer = 0;
+      addEventListener("mousemove", (e) => {
+        xTo(e.clientX); yTo(e.clientY);
+        if (!U.reduced) {
+          const dx = e.clientX - lastX; lastX = e.clientX;
+          rTo(Math.max(-5, Math.min(5, dx * 0.22)));
+          clearTimeout(tiltTimer);
+          tiltTimer = setTimeout(() => rTo(0), 120);
+        }
+      }, { passive: true });
+      const renderPreview = (idx) => {
+        const p = S.portfolio[idx]; if (!p) return;
+        const n = String(idx + 1).padStart(2, "0");
+        stage.className = `fp-stage tone-${idx % 4}${p.dial ? " is-dial" : p.cover ? " is-shot" : ""}`;
+        if (p.dial) {
+          stage.innerHTML = `<div class="fp-dial">${p.dial.map((d) => `<img src="${esc(d.src)}" alt="" decoding="async">`).join("")}</div>`;
+        } else if (p.cover) {
+          stage.innerHTML = `<div class="plate-mat"><img src="${esc(p.cover)}" alt="" decoding="async"></div>`;
+        } else {
+          stage.innerHTML = artSvg(p, true);
+        }
+        fpId.textContent = `PL.${n} · ${p.code}`;
+        fpYr.textContent = p.year;
+      };
+      indexEl.querySelectorAll("a[data-pi]").forEach((a) => {
+        a.addEventListener("mouseenter", () => {
+          renderPreview(+a.dataset.pi);
+          gsap.to(fp, { opacity: 1, scale: 1, duration: 0.45, ease: "expo.out", overwrite: "auto" });
         });
-      }
+        a.addEventListener("mouseleave", () => gsap.to(fp, { opacity: 0, scale: 0.92, duration: 0.35, ease: "expo.out", overwrite: "auto" }));
+      });
     }
+    viewBtns.forEach((b) => b.addEventListener("click", () => {
+      if (b.classList.contains("is-on")) return;
+      if (fp) gsap.to(fp, { opacity: 0, scale: 0.92, duration: 0.25, overwrite: "auto" });
+      setView(b.dataset.view);
+    }));
   }
   if (U.hasGsap && !U.reduced && window.ScrollTrigger) {
     document.querySelectorAll("svg.art").forEach((svg) => {
@@ -379,8 +449,8 @@
       if (bars.length) gsap.from(bars, { scaleY: 0, transformOrigin: "50% 100%", duration: 1, ease: "expo.out", stagger: .07, scrollTrigger: st });
       if (waves.length) gsap.fromTo(waves, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 2, ease: "power2.inOut", stagger: .1, scrollTrigger: st });
     });
-    document.querySelectorAll(".plate-art img").forEach((img) => {
-      gsap.fromTo(img, { scale: 1.07 }, { scale: 1, ease: "none", scrollTrigger: { trigger: img.parentElement, start: "top bottom", end: "center center", scrub: true } });
+    document.querySelectorAll(".plate-mat img").forEach((img) => {
+      gsap.fromTo(img, { scale: 1.06 }, { scale: 1, ease: "none", scrollTrigger: { trigger: img.parentElement, start: "top bottom", end: "center center", scrub: true } });
     });
     document.querySelectorAll(".plate-no").forEach((no) => {
       gsap.fromTo(no, { yPercent: 10 }, { yPercent: -10, ease: "none", scrollTrigger: { trigger: no.closest(".plate"), start: "top bottom", end: "bottom top", scrub: true } });
