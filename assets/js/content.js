@@ -270,7 +270,7 @@ window.SITE = {
       url: "https://music.apple.com/id/album/3d-country/1822502596",
       title: "3D Country", artist: "Geese", kind: "Album", year: "2023",
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/d8/9a/c1/d89ac16c-b578-7698-1b7b-f18ff9a5eea9/5400863192808_Cover.jpg/600x600bb.jpg",
-      picks: [1, 2, 4],   // track numbers you recommend, e.g. [2, 5]
+      picks: [1, 2, 4, 9],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["2122", "3:53"], ["3D Country", "5:14"], ["Cowboy Nudes", "2:51"], ["I See Myself", "3:01"], ["Undoer", "7:00"], ["Crusades", "2:39"], ["Gravity Blues", "4:01"], ["Mysterious Love", "3:16"], ["Domoto", "3:48"], ["Tomorrow's Crusades", "4:32"], ["St. Elmo", "3:21"]],
     },
     {
