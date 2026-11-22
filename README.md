@@ -8,7 +8,7 @@ Built with plain HTML, CSS and JavaScript. Animations use [GSAP](https://gsap.co
 | File | What it shows |
 | --- | --- |
 | `index.html` | Hero with your name over the mountain photo, with a drifting field of characters behind the name and on the six tiles (`assets/js/ascii-field.js`; turn it off with `heroAscii: false` in `content.js`). The field clears around the mouse and stays still for visitors who prefer reduced motion. Scrolling pins the screen: the photo closes onto the grid line, the name rolls out, a second title rolls in, and six image tiles open. Each tile links to a section. |
-| `portfolio.html` → `project.html?id=…` | An "exhibition": a scrolling word band, an index, then one large plate per project (screenshot, or artwork drawn from the project's real numbers) with its key figures. Each project has a detail page with screenshots. Set `cover`, `stats`, `art` and `gallery` per project in `content.js`. |
+| `portfolio.html` → `project.html?id=…` | Switchable **Exhibition** (one large plate per project—screenshot, animated dial, or artwork drawn from real numbers—with key figures) and **Index** (compact list with hover cover previews) views. Each project has a detail page with screenshots. Set `cover`, `stats`, `art` and `gallery` per project in `content.js`. |
 | `photos.html` | Gallery: photo and video grid with a lightbox (keyboard and swipe) |
 | `writing.html` → `article.html?slug=…` | Writing list, plus a reading page for each piece |
 | `about.html` (`#contact`) | Bio, facts, email and links. The portrait has the same drifting characters as the homepage, and the mouse clears them (`ascii: false` under `about` in `content.js` turns this off). |

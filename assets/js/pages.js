@@ -125,14 +125,23 @@
       titleLines = ["PORTFOLIO"];
       const years = S.portfolio.map((p) => (String(p.year).match(/\d{4}/g) || [])).flat().map(Number).filter(Boolean);
       const span = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "";
-      html = head(titleLines, `${S.portfolio.length} pieces of work${span ? `, ${span}` : ""}: people systems, software and research. Walk the exhibition, or jump from the index.`, menuItem("portfolio").code) +
+      const initView = params.get("view") === "index" ? "index" : "plates";
+      html = head(titleLines, `${S.portfolio.length} pieces of work${span ? `, ${span}` : ""}: people systems, software and research.`, menuItem("portfolio").code) +
         `<div class="marquee" aria-hidden="true"><div class="marquee-track">${[0, 1].map(() => `<span>${(S.portfolioTags || []).map((t) => `<i>${esc(t)}</i>`).join("")}</span>`).join("")}</div></div>
-        <ol class="rows index" data-reveal>${S.portfolio.map((p, i) => `
-          <li class="row"><a href="#${esc(p.id)}" data-jump>
+        <div class="view-bar small" role="group" aria-label="Portfolio view">
+          <span class="muted">${S.portfolio.length} works${span ? ` · ${span}` : ""}</span>
+          <div class="view-tabs">
+            <button type="button" class="view-btn${initView === "plates" ? " is-on" : ""}" data-view="plates" aria-pressed="${initView === "plates"}">Exhibition</button>
+            <span class="muted" aria-hidden="true">/</span>
+            <button type="button" class="view-btn${initView === "index" ? " is-on" : ""}" data-view="index" aria-pressed="${initView === "index"}">Index</button>
+          </div>
+        </div>
+        <ol class="rows index"${initView === "index" ? "" : " hidden"}>${S.portfolio.map((p) => `
+          <li class="row" data-reveal><a href="project.html?id=${encodeURIComponent(p.id)}"${p.cover ? ` data-cover="${esc(p.cover)}"` : ""}>
             <span class="code">${esc(p.code)}</span><span class="t">${esc(p.title)}</span>
             <span class="code x mid">${esc(p.type)}</span><span class="code r">${esc(p.year)}</span>
           </a></li>`).join("")}</ol>
-        <div class="plates">${S.portfolio.map((p, i) => plate(p, i)).join("")}</div>`;
+        <div class="plates"${initView === "plates" ? "" : " hidden"}>${S.portfolio.map((p, i) => plate(p, i)).join("")}</div>`;
       break;
     }
     case "project": {
@@ -321,12 +330,47 @@
   } else U.reveal();
   U.initReveals();
 
-  /* ---------- Portfolio: index jumps + artwork that draws itself in ---------- */
-  document.querySelectorAll("[data-jump]").forEach((link) => link.addEventListener("click", (e) => {
-    const t = document.getElementById(link.getAttribute("href").slice(1)); if (!t) return;
-    e.preventDefault(); history.replaceState(null, "", link.getAttribute("href"));
-    U.lenis ? U.lenis.scrollTo(t, { offset: -70 }) : t.scrollIntoView({ behavior: U.reduced ? "auto" : "smooth" });
-  }));
+  /* ---------- Portfolio: Exhibition / Index view toggle + artwork that draws itself in ---------- */
+  if (page === "portfolio") {
+    const platesEl = document.querySelector(".plates"), indexEl = document.querySelector(".rows.index");
+    const viewBtns = [...document.querySelectorAll(".view-btn")];
+    const setView = (view) => {
+      const isIndex = view === "index";
+      platesEl.hidden = isIndex;
+      indexEl.hidden = !isIndex;
+      viewBtns.forEach((b) => {
+        const on = b.dataset.view === view;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", on);
+      });
+      const url = new URL(location.href);
+      if (isIndex) url.searchParams.set("view", "index"); else url.searchParams.delete("view");
+      history.replaceState(null, "", url);
+      const shown = isIndex ? indexEl : platesEl;
+      const rev = shown.querySelectorAll("[data-reveal]");
+      if (U.hasGsap && !U.reduced) gsap.to(rev, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.04, overwrite: true });
+      else rev.forEach((el) => { el.style.opacity = 1; el.style.transform = "none"; });
+      window.ScrollTrigger?.refresh();
+      U.lenis?.resize();
+    };
+    viewBtns.forEach((b) => b.addEventListener("click", () => { if (!b.classList.contains("is-on")) setView(b.dataset.view); }));
+
+    if (U.hasGsap && matchMedia("(hover: hover)").matches) {
+      const covers = [...indexEl.querySelectorAll("a[data-cover]")];
+      if (covers.length) {
+        const fp = document.createElement("div");
+        fp.className = "float-preview"; fp.innerHTML = "<img alt=''>";
+        document.body.appendChild(fp);
+        const img = fp.querySelector("img");
+        const xTo = gsap.quickTo(fp, "x", { duration: 0.6, ease: "power3" }), yTo = gsap.quickTo(fp, "y", { duration: 0.6, ease: "power3" });
+        addEventListener("mousemove", (e) => { xTo(e.clientX); yTo(e.clientY); });
+        covers.forEach((a) => {
+          a.addEventListener("mouseenter", () => { img.src = a.dataset.cover; gsap.to(fp, { opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }); });
+          a.addEventListener("mouseleave", () => gsap.to(fp, { opacity: 0, scale: 0.9, duration: 0.4, ease: "expo.out" }));
+        });
+      }
+    }
+  }
   if (U.hasGsap && !U.reduced && window.ScrollTrigger) {
     document.querySelectorAll("svg.art").forEach((svg) => {
       const st = { trigger: svg, start: "top 85%", once: true };
