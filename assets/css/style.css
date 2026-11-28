@@ -1,40 +1,40 @@
 /* ============================================================
    Fonts (self-hosted; Latin and Latin Extended subsets, SIL Open Font License)
    ============================================================ */
-/* Instrument Serif, latin-ext */
+/* Cormorant Garamond, latin-ext */
 @font-face {
-  font-family: 'Instrument Serif';
+  font-family: 'Cormorant Garamond';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(../fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  src: url(../fonts/cormorant-garamond-latin-ext.woff2) format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-/* Instrument Serif, latin */
+/* Cormorant Garamond, latin */
 @font-face {
-  font-family: 'Instrument Serif';
+  font-family: 'Cormorant Garamond';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(../fonts/instrument-serif-latin.woff2) format('woff2');
+  src: url(../fonts/cormorant-garamond-latin.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-/* Inter Tight, latin-ext */
+/* Hanken Grotesk, latin-ext */
 @font-face {
-  font-family: 'Inter Tight';
+  font-family: 'Hanken Grotesk';
   font-style: normal;
   font-weight: 300 500;
   font-display: swap;
-  src: url(../fonts/inter-tight-latin-ext.woff2) format('woff2');
+  src: url(../fonts/hanken-grotesk-latin-ext.woff2) format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-/* Inter Tight, latin */
+/* Hanken Grotesk, latin */
 @font-face {
-  font-family: 'Inter Tight';
+  font-family: 'Hanken Grotesk';
   font-style: normal;
   font-weight: 300 500;
   font-display: swap;
-  src: url(../fonts/inter-tight-latin.woff2) format('woff2');
+  src: url(../fonts/hanken-grotesk-latin.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -48,9 +48,9 @@
   --line: rgba(11, 11, 11, .55);
   --frame-w: 0px; /* edge inset used for spacing; the decorative frame was removed */
   --pad: clamp(16px, 3vw, 40px);
-  --font: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --foot-min: clamp(230px, 34vh, 340px); /* inner-page footer height; the picture is sized from this on every page */
-  --display: "Instrument Serif", "Times New Roman", Georgia, serif; /* big titles, menu */
+  --display: "Cormorant Garamond", "Times New Roman", Georgia, serif; /* big titles, menu */
   --ease: cubic-bezier(.77, 0, .175, 1);
   --fs-small: 12px;
   --fs-body: clamp(15px, 1.05vw, 17px);
@@ -360,6 +360,38 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .ch-text p { margin: 0 0 1.1em; }
 .ch-link { display: inline-flex; align-items: center; gap: 6px; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
 
+/* Motto interlude (About): museum-plate typographic pause */
+.motto-plate {
+  position: relative; overflow: hidden; text-align: center;
+  margin: 0 0 clamp(90px, 11vw, 170px);
+  padding: clamp(72px, 11vw, 156px) clamp(18px, 4vw, 48px);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: radial-gradient(ellipse 68% 72% at 50% 50%, rgba(228, 223, 208, .55), transparent 76%);
+}
+.m-reg { position: absolute; width: 11px; height: 11px; opacity: .45; pointer-events: none; }
+.m-reg::before, .m-reg::after { content: ""; position: absolute; background: var(--ink); }
+.m-reg::before { left: 0; right: 0; top: 5px; height: 1px; }
+.m-reg::after { top: 0; bottom: 0; left: 5px; width: 1px; }
+.m-tl { top: 16px; left: 16px; }
+.m-tr { top: 16px; right: 16px; }
+.m-bl { bottom: 16px; left: 16px; }
+.m-br { bottom: 16px; right: 16px; }
+.motto-ghost {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  white-space: nowrap; pointer-events: none; user-select: none;
+  font-family: var(--display); font-size: clamp(110px, 20vw, 320px); line-height: .85; letter-spacing: -.02em;
+  color: transparent; -webkit-text-stroke: 1px rgba(11, 11, 11, .11);
+}
+.motto-line {
+  position: relative; z-index: 1; margin: 0;
+  font-family: var(--display); font-weight: 400; font-size: clamp(46px, 8.6vw, 144px); line-height: 1; letter-spacing: -.01em;
+}
+.motto-line .mc-m { display: inline-block; overflow: hidden; vertical-align: top; padding: .08em .01em .12em; margin: -.08em -.01em -.12em; }
+.motto-line .mc { display: inline-block; will-change: transform; }
+.motto-line .mc-sp { display: inline-block; width: .22em; }
+.motto-mark { position: relative; z-index: 1; display: inline-flex; justify-content: center; margin-top: clamp(20px, 3vw, 34px); opacity: .6; }
+.motto-plate:hover .motto-mark .pick-mark { transform: rotate(90deg); }
+
 /* A partial index: run-in serif lists, the site's "+" between the words */
 .index-of { margin-bottom: clamp(90px, 11vw, 170px); }
 .index-of h2 + .index-row { margin-top: 12px; border-top: 1px solid var(--line); }
@@ -454,6 +486,7 @@ a.index-key:hover { color: var(--ink); }
 }
 .foot-row nav { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
 .foot-row a:hover { text-decoration: underline; }
+.foot-motto { font-family: var(--display); font-size: 16px; line-height: 1; text-transform: none; letter-spacing: .01em; opacity: .82; }
 
 .topbar { transition: opacity .35s; }
 .foot-in-view .topbar { opacity: 0; pointer-events: none; }

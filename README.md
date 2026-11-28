@@ -49,7 +49,7 @@ Then open http://localhost:4174.
 
 GSAP 3.12.5, ScrollTrigger and Lenis 1.1.13 are served from `assets/vendor/`, not a CDN. These files are byte-identical to the npm packages. To upgrade, replace the files and change the `?v=` in the `<script>` tags.
 
-The fonts (Inter Tight and Instrument Serif, SIL Open Font License) are served from `assets/fonts/` (Latin and Latin Extended subsets), not Google Fonts.
+The fonts (Hanken Grotesk and Cormorant Garamond, SIL Open Font License) are served from `assets/fonts/` (Latin and Latin Extended subsets), not Google Fonts.
 
 Nothing loads from another site except the Apple Music covers on the Music page. So visitors' browsers don't contact Google or a CDN, and a compromised third party cannot change what the site runs.
 

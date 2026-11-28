@@ -108,6 +108,7 @@
       ${isHome && F.cta ? `<p class="foot-big">${words(F.cta)} ${words("—")} <a href="about.html#contact">${words(F.ctaLink || "say hello")}</a><span class="w"><span>.</span></span></p>` : ""}
       <div class="foot-row small">
         <span>© ${new Date().getFullYear()} ${esc(niceName)}</span>
+        ${S.motto ? `<span class="foot-motto" lang="fr">${esc(S.motto)}</span>` : ""}
         <nav>${S.links.map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</nav>
       </div>
     </div>`;

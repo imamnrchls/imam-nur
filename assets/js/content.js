@@ -13,6 +13,7 @@ window.SITE = {
   name: ["IMAM", "NURCHOLIS"],          // one entry per line of the big title
   role: "People person, hiker & music lover",
   location: "Jakarta, Indonesia",
+  motto: "jusqu’à la fin",
   email: "imam.nurcholis@outlook.com",   // shown on About / Contact
   links: [
     { label: "Instagram", url: "https://www.instagram.com/imamnrchls/" },
@@ -223,6 +224,13 @@ window.SITE = {
       cover: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/3c/f1/00/3cf10033-6c61-ff25-5c3f-3b1e01dc3bf7/644110049995.png/400x400bb.webp",
       picks: [1, 2, 6],   // track numbers you recommend, e.g. [2, 5]
       tracks: [["Never Meant", "4:29"], ["The Summer Ends", "4:45"], ["Honestly?", "6:07"], ["For Sure", "3:16"], ["You Know I Should Be Leaving Soon", "3:41"], ["But the Regrets Are Killing Me", "3:54"], ["I'll See You When We're Both Not so Emotional", "3:44"], ["Stay Home", "8:11"], ["The One with the Wurlitzer", "2:45"]],
+    },
+    {
+      url: "https://music.apple.com/id/album/for-emma-forever-ago/947059824",
+      title: "For Emma, Forever Ago", artist: "Bon Iver", kind: "Album", year: "2007",
+      cover: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/21/2f/ea/212fea18-5fdc-ba4d-5dd7-1b07aaa88b67/656605211565.tif/400x400bb.webp",
+      picks: [1, 3, 8, 9],   // track numbers you recommend, e.g. [2, 5]
+      tracks: [["Flume", "3:39"], ["Lump Sum", "3:21"], ["Skinny Love", "3:59"], ["The Wolves (Act I and II)", "5:22"], ["Blindsided", "5:29"], ["Creature Fear", "3:06"], ["Team", "1:57"], ["For Emma", "3:41"], ["Re: Stacks", "6:41"]],
     },
     {
       url: "https://music.apple.com/id/album/submarine-ep/422325910",

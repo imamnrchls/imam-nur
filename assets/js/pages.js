@@ -257,6 +257,7 @@
       const a = S.about, records = (S.music || []).length;
       const num = (i) => String(i + 1).padStart(2, "0");
       const words = (list, cls) => list.map((w) => `<span class="${cls}">${esc(w)}</span>`).join('<i class="pick-mark" aria-hidden="true"></i>');
+      const mottoChars = S.motto ? [...S.motto].map((ch) => ch === " " ? `<span class="mc-sp">&nbsp;</span>` : `<span class="mc-m"><span class="mc">${esc(ch)}</span></span>`).join("") : "";
       html = head(titleLines, S.role, menuItem("about").code) +
         `<section class="about-open${a.image ? "" : " no-portrait"}">
            ${a.image ? `<figure class="about-fig" data-reveal>
@@ -275,6 +276,13 @@
              <div class="ch-text"><p>${esc(String(c.text).replace("{records}", records))}</p>
                ${c.link ? `<a class="ch-link small" href="${esc(c.link.href)}">${esc(c.link.label)} ${U.icon("ne")}</a>` : ""}</div>
            </li>`).join("")}</ol>` : ""}
+         ${S.motto ? `<section class="motto-plate" aria-label="Motto" data-reveal>
+           <i class="m-reg m-tl" aria-hidden="true"></i><i class="m-reg m-tr" aria-hidden="true"></i>
+           <i class="m-reg m-bl" aria-hidden="true"></i><i class="m-reg m-br" aria-hidden="true"></i>
+           <span class="motto-ghost" aria-hidden="true">${esc(S.motto)}</span>
+           <p class="motto-line" lang="fr" aria-label="${esc(S.motto)}"><span aria-hidden="true">${mottoChars}</span></p>
+           <span class="motto-mark" aria-hidden="true"><i class="pick-mark"></i></span>
+         </section>` : ""}
          <section class="index-of" aria-labelledby="index-h">
            <h2 class="facts-label small" id="index-h" data-reveal>A partial index</h2>
            ${records ? `<p class="index-row" data-reveal><a class="index-key small" href="music.html">Records</a>${words(S.music.map((m) => m.title), "iw")}</p>` : ""}
@@ -455,6 +463,19 @@
     document.querySelectorAll(".plate-no").forEach((no) => {
       gsap.fromTo(no, { yPercent: 10 }, { yPercent: -10, ease: "none", scrollTrigger: { trigger: no.closest(".plate"), start: "top bottom", end: "bottom top", scrub: true } });
     });
+    const mottoPlate = document.querySelector(".motto-plate");
+    if (mottoPlate) {
+      const mcs = mottoPlate.querySelectorAll(".mc");
+      if (mcs.length) {
+        gsap.set(mcs, { yPercent: 115 });
+        ScrollTrigger.create({
+          trigger: mottoPlate, start: "top 80%", once: true,
+          onEnter: () => gsap.to(mcs, { yPercent: 0, duration: 1.25, ease: "expo.out", stagger: { each: 0.032, from: "center" } }),
+        });
+      }
+      const ghost = mottoPlate.querySelector(".motto-ghost");
+      if (ghost) gsap.fromTo(ghost, { xPercent: -6 }, { xPercent: 6, ease: "none", scrollTrigger: { trigger: mottoPlate, start: "top bottom", end: "bottom top", scrub: true } });
+    }
   }
 
   /* ---------- Music: open a record (one at a time); the cover follows the cursor over the list ---------- */
